@@ -9,11 +9,15 @@
 #include <QGraphicsRectItem>
 #include <QFileDialog>
 
+#include <vibestreemodel.h>
+
 VibesWindow::VibesWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::VibesWindow)
 {
     ui->setupUi(this);
+
+    ui->treeView->setModel(new VibesTreeModel(figures, this));
 
     readFile();
 }
@@ -36,6 +40,10 @@ Figure2D * VibesWindow::newFigure(QString name)
     delete figures[name];
     // Create new figure
     figures[name] = new Figure2D(this);
+    // Set flags to make it a window
+    figures[name]->setWindowFlags(Qt::Window);
+    figures[name]->setWindowTitle(name);
+    figures[name]->show();
     // Return pointer to the new figure
     return figures[name];
 }
@@ -82,14 +90,15 @@ bool VibesWindow::processMessage(const QByteArray &msg_data)
         }
     }
 
-
-    // Process actions
-    if (action == "new")
+    // Create a new figure
+    else if (action == "new")
     {
         // Create a new figure (previous with the same name will be destroyed)
         fig = newFigure(fig_name);
     }
-    if (action == "draw")
+
+    // Draw a shape
+    else if (action == "draw")
     {
         if (!fig) // Create a new figure if it does not exist
             fig = newFigure(fig_name);
@@ -113,8 +122,10 @@ bool VibesWindow::processMessage(const QByteArray &msg_data)
             }
         }
     }
+
+    // Unknown action
     else
-    {   // Unknown action
+    {
         return false;
     }
     return true;

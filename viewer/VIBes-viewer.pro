@@ -14,9 +14,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         vibeswindow.cpp \
-    figure2d.cpp
+    figure2d.cpp \
+    vibestreemodel.cpp
 
 HEADERS  += vibeswindow.h \
-    figure2d.h
+    figure2d.h \
+    vibestreemodel.h
 
 FORMS    += vibeswindow.ui
