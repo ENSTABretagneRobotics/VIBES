@@ -10,7 +10,6 @@
 #include <QFileDialog>
 
 #include <vibestreemodel.h>
-#include <iostream>
 
 VibesWindow::VibesWindow(QWidget *parent) :
 QMainWindow(parent),

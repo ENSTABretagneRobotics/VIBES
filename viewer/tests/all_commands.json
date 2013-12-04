@@ -41,7 +41,10 @@
 	"figure": "Fig2",
 	"shape": {
 		"type": "box",
-		"bounds": [-1, -1, 1, 1]
+		"bounds": [-1, -1, 1, 1.5]
 	}
 }
+
+
+
 
