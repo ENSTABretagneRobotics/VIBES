@@ -29,6 +29,11 @@
 }
 
 {
+	"action": "clear",
+	"figure": "Fig1"
+}
+
+{
 	"action": "draw",
 	"figure": "Fig1",
 	"shape": {
@@ -46,7 +51,4 @@
 		"bounds": [-1, 1, -1, 1.5]
 	}
 }
-
-
-
 

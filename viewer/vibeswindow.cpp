@@ -148,22 +148,30 @@ VibesWindow::processMessage(const QByteArray &msg_data)
     // Close a figure
     if (action == "close")
     {
-        if (fig)
-        {
-            figures.remove(fig_name);
-            delete fig;
-            return true;
-        }
-        else
-        {
+        // Figure has to exist to be closed
+        if (!fig)
             return false;
-        }
-    } // Create a new figure
+        // Remove from the list of figures an delete
+        figures.remove(fig_name);
+        delete fig;
+    }
+    // Create a new figure
     else if (action == "new")
     {
         // Create a new figure (previous with the same name will be destroyed)
         fig = newFigure(fig_name);
-    } // Draw a shape
+    }
+    // Clear the contents of a figure
+    else if (action == "clear")
+    {
+        // Figure has to exist
+        if (!fig)
+            return false;
+        // Clears the scene
+        fig->scene()->clear();
+        /// \todo Remove named objects references if needed
+    }
+    // Draw a shape
     else if (action == "draw")
     {
         if (!fig) // Create a new figure if it does not exist
@@ -198,7 +206,8 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                 }
             }
         }
-    } // Unknown action
+    }
+    // Unknown action
     else
     {
         return false;
