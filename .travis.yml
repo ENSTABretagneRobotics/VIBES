@@ -1,12 +1,12 @@
 language: cpp
 
 compiler:
-	- gcc
+ - gcc
 
 before_script:
-	- cd viewer
-	- mkdir build
-	- cd build
-	- cmake ..
+ - cd viewer
+ - mkdir build
+ - cd build
+ - cmake ..
 
 script: make
