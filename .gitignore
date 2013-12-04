@@ -1,4 +1,5 @@
 /build
 *.user
-/viewer/build
+/viewer/build/
 /viewer/nbproject/
+/client-api/C++/examples/build/
