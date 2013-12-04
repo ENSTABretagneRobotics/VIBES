@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include <QHash>
+#include <QFile>
 class Figure2D;
 
 namespace Ui {
@@ -21,11 +22,14 @@ public:
     ~VibesWindow();
 
     Figure2D * newFigure(QString name=QString());
-    bool processMessage(const QByteArray &msg);
+
+public slots:
     void readFile();
+    bool processMessage(const QByteArray &msg);
 
 private:
     Ui::VibesWindow *ui;
+    QFile file;
 };
 
 #endif // VIBESWINDOW_H

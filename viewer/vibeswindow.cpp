@@ -1,6 +1,5 @@
 #include "vibeswindow.h"
 #include "ui_vibeswindow.h"
-#include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -9,17 +8,29 @@
 #include <QGraphicsRectItem>
 #include <QFileDialog>
 
+#include <QTimer>
+
 #include <vibestreemodel.h>
 
 VibesWindow::VibesWindow(QWidget *parent) :
-QMainWindow(parent),
-ui(new Ui::VibesWindow)
+    QMainWindow(parent),
+    ui(new Ui::VibesWindow)
 {
     ui->setupUi(this);
 
     ui->treeView->setModel(new VibesTreeModel(figures, this));
 
-    readFile();
+    /// \todo Put platform dependent code here for named pipe creation and opening
+    file.setFileName(QFileDialog::getOpenFileName());
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        ui->statusBar->showMessage(QString("Unable to load file %1.").arg(file.fileName()), 2000);
+    }
+    else
+    {
+        ui->statusBar->showMessage(QString("Reading file %1.").arg(file.fileName()), 2000);
+        readFile();
+    }
 }
 
 VibesWindow::~VibesWindow()
@@ -146,11 +157,11 @@ VibesWindow::processMessage(const QByteArray &msg_data)
 void
 VibesWindow::readFile()
 {
-    /// \todo Put platform dependent code here for named pipe creation and opening
-    QFile file(QFileDialog::getOpenFileName());
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
+    // Display we are reading data
+    if (!file.atEnd())
+        ui->statusBar->showMessage("Receiving data...", 200);
 
+    // Read and process data
     QByteArray message;
     while (!file.atEnd())
     {
@@ -159,15 +170,20 @@ VibesWindow::readFile()
         if (line.isEmpty())
         {
             continue;
-        }// Empty new line ("\n\n") is message separator
+        }
+        // Empty new line ("\n\n") is message separator
         else if (line[0] == '\n')
         {
             processMessage(message);
             message.clear();
-        }// Add this line to the current message
+        }
+        // Add this line to the current message
         else
         {
             message.append(line);
         }
     }
+
+    // Program new file-read try in 200 ms.
+    QTimer::singleShot(200, this, SLOT(readFile()));
 }
