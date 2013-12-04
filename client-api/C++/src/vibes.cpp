@@ -9,12 +9,12 @@ namespace vibes
   */
   void connect()
   {
-    channel=fopen("vibes.json","w");
+    channel=fopen("vibes.json","a");
   }
   
   void connect(std::string fileName)
   {
-    channel=fopen("fileName","w");
+    channel=fopen(fileName.c_str(),"a");
   }
   
   void disconnect()

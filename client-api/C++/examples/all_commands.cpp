@@ -3,7 +3,7 @@
 
 int main()
 {
-  vibes::connect("test");
+  vibes::connect();
   std::cout << "open" << std::endl;
   vibes::figure();
   std::cout << "figure" << std::endl;
