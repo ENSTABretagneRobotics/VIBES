@@ -9,9 +9,9 @@ int main()
   std::cout << "figure" << std::endl;
   vibes::figure("figureTest");
   std::cout << "figuretest"<<std::endl;
-  vibes::drawBox(0,1,0,1);
+  vibes::drawBox(0,1.245,0,1);
   std::cout << "drawBox" << std::endl;
-  vibes::drawBox(0,1,0,1,'r');
+  vibes::drawBox(0,1,0,1.879,'r');
   std::cout << "drawBos with color" << std::endl;
   vibes::disconnect();
   std::cout << "disconnect" << std::endl;
