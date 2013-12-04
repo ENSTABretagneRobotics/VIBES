@@ -1,6 +1,5 @@
 #include "vibeswindow.h"
 #include "ui_vibeswindow.h"
-#include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -9,22 +8,84 @@
 #include <QGraphicsRectItem>
 #include <QFileDialog>
 
+#include <QTimer>
+
 #include <vibestreemodel.h>
 
 VibesWindow::VibesWindow(QWidget *parent) :
-QMainWindow(parent),
-ui(new Ui::VibesWindow)
+    QMainWindow(parent),
+    ui(new Ui::VibesWindow),
+    defaultPen(Qt::black, 0)
 {
     ui->setupUi(this);
-
     ui->treeView->setModel(new VibesTreeModel(figures, this));
 
-    readFile();
+    // Init. brushes for default color names
+    initDefaultBrushes();
+
+    /// \todo Put platform dependent code here for named pipe creation and opening
+    const bool showFileOpenDlg = false;
+    if (showFileOpenDlg)
+    {
+        file.setFileName(QFileDialog::getOpenFileName());
+    }
+    else
+    {
+        file.setFileName("vibes.json");
+        // Create and erase file if needed
+        if (file.open(QIODevice::WriteOnly))
+        {
+            file.close();
+        }
+    }
+
+    // Try to open the shared file
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        ui->statusBar->showMessage(QString("Unable to load file %1.").arg(file.fileName()), 2000);
+    }
+    else
+    {
+        ui->statusBar->showMessage(QString("Reading file %1.").arg(file.fileName()), 2000);
+        readFile();
+    }
 }
 
 VibesWindow::~VibesWindow()
 {
     delete ui;
+}
+
+/// Initializes brushes for default color names
+void VibesWindow::initDefaultBrushes()
+{
+#define ADD_DEFAULT_BRUSH(full_name) \
+    brushes[ #full_name ]  = QBrush(Qt::full_name);
+
+#define ADD_DEFAULT_BRUSH2(full_name, short_name) \
+    brushes[ #full_name ]  = QBrush(Qt::full_name); \
+    brushes[ #short_name ] = QBrush(Qt::full_name);
+
+    // Default brush
+    brushes[QString()] = QBrush();
+
+    // Named brushes
+    ADD_DEFAULT_BRUSH2(cyan,c);
+    ADD_DEFAULT_BRUSH2(yellow,y);
+    ADD_DEFAULT_BRUSH2(magenta,m);
+    ADD_DEFAULT_BRUSH2(red,r);
+    ADD_DEFAULT_BRUSH2(green,g);
+    ADD_DEFAULT_BRUSH2(blue,b);
+    ADD_DEFAULT_BRUSH2(black,k);
+    ADD_DEFAULT_BRUSH(darkGray);
+    ADD_DEFAULT_BRUSH(gray);
+    ADD_DEFAULT_BRUSH(lightGray);
+    ADD_DEFAULT_BRUSH(darkCyan);
+    ADD_DEFAULT_BRUSH(darkYellow);
+    ADD_DEFAULT_BRUSH(darkMagenta);
+    ADD_DEFAULT_BRUSH(darkRed);
+    ADD_DEFAULT_BRUSH(darkGreen);
+    ADD_DEFAULT_BRUSH(darkBlue);
 }
 
 Figure2D *
@@ -116,6 +177,8 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         if (msg.contains("shape"))
         {
             QJsonObject shape = msg.value("shape").toObject();
+            // Get shape color (or default if not specified)
+            const QBrush & brush = brushes[shape.value("color").toString()];
             if (shape.contains("type"))
             {
                 QString type = shape["type"].toString();
@@ -130,7 +193,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         double lb_y = bounds[2].toDouble();
                         double ub_y = bounds[3].toDouble();
 
-                        item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+                        item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y, defaultPen, brush);
                     }
                 }
             }
@@ -146,11 +209,11 @@ VibesWindow::processMessage(const QByteArray &msg_data)
 void
 VibesWindow::readFile()
 {
-    /// \todo Put platform dependent code here for named pipe creation and opening
-    QFile file(QFileDialog::getOpenFileName());
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
+    // Display we are reading data
+    if (!file.atEnd())
+        ui->statusBar->showMessage("Receiving data...", 200);
 
+    // Read and process data
     QByteArray message;
     while (!file.atEnd())
     {
@@ -159,15 +222,20 @@ VibesWindow::readFile()
         if (line.isEmpty())
         {
             continue;
-        }// Empty new line ("\n\n") is message separator
+        }
+        // Empty new line ("\n\n") is message separator
         else if (line[0] == '\n')
         {
             processMessage(message);
             message.clear();
-        }// Add this line to the current message
+        }
+        // Add this line to the current message
         else
         {
             message.append(line);
         }
     }
+
+    // Program new file-read try in 200 ms.
+    QTimer::singleShot(200, this, SLOT(readFile()));
 }
