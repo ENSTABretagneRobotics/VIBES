@@ -1,3 +1,4 @@
 /build
 *.user
-viewer/build
+/viewer/build
+/viewer/nbproject/
