@@ -11,11 +11,9 @@ before_script:
  - cd build
  - cmake ..
  - make
- - echo " CMake version before installing the new one: "
  - cmake --version
  - sudo make install
- - echo " CMake version after installing the new one: "
- - cmake --version 
+ - cmake --version
  - sudo apt-add-repository --yes ppa:ubuntu-sdk-team/ppa
  - sudo apt-get update -qq
  - sudo apt-get install -qq qt5-default
