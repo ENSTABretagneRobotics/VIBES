@@ -14,11 +14,14 @@
 
 VibesWindow::VibesWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::VibesWindow)
+    ui(new Ui::VibesWindow),
+    defaultPen(Qt::black, 0)
 {
     ui->setupUi(this);
-
     ui->treeView->setModel(new VibesTreeModel(figures, this));
+
+    // Init. brushes for default color names
+    initDefaultBrushes();
 
     /// \todo Put platform dependent code here for named pipe creation and opening
     file.setFileName(QFileDialog::getOpenFileName());
@@ -36,6 +39,38 @@ VibesWindow::VibesWindow(QWidget *parent) :
 VibesWindow::~VibesWindow()
 {
     delete ui;
+}
+
+/// Initializes brushes for default color names
+void VibesWindow::initDefaultBrushes()
+{
+#define ADD_DEFAULT_BRUSH(full_name) \
+    brushes[ #full_name ]  = QBrush(Qt::full_name);
+
+#define ADD_DEFAULT_BRUSH2(full_name, short_name) \
+    brushes[ #full_name ]  = QBrush(Qt::full_name); \
+    brushes[ #short_name ] = QBrush(Qt::full_name);
+
+    // Default brush
+    brushes[QString()] = QBrush();
+
+    // Named brushes
+    ADD_DEFAULT_BRUSH2(cyan,c);
+    ADD_DEFAULT_BRUSH2(yellow,y);
+    ADD_DEFAULT_BRUSH2(magenta,m);
+    ADD_DEFAULT_BRUSH2(red,r);
+    ADD_DEFAULT_BRUSH2(green,g);
+    ADD_DEFAULT_BRUSH2(blue,b);
+    ADD_DEFAULT_BRUSH2(black,k);
+    ADD_DEFAULT_BRUSH(darkGray);
+    ADD_DEFAULT_BRUSH(gray);
+    ADD_DEFAULT_BRUSH(lightGray);
+    ADD_DEFAULT_BRUSH(darkCyan);
+    ADD_DEFAULT_BRUSH(darkYellow);
+    ADD_DEFAULT_BRUSH(darkMagenta);
+    ADD_DEFAULT_BRUSH(darkRed);
+    ADD_DEFAULT_BRUSH(darkGreen);
+    ADD_DEFAULT_BRUSH(darkBlue);
 }
 
 Figure2D *
@@ -127,6 +162,8 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         if (msg.contains("shape"))
         {
             QJsonObject shape = msg.value("shape").toObject();
+            // Get shape color (or default if not specified)
+            const QBrush & brush = brushes[shape.value("color").toString()];
             if (shape.contains("type"))
             {
                 QString type = shape["type"].toString();
@@ -141,7 +178,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         double lb_y = bounds[2].toDouble();
                         double ub_y = bounds[3].toDouble();
 
-                        item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+                        item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y, defaultPen, brush);
                     }
                 }
             }
