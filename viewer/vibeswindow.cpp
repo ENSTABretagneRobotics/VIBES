@@ -24,7 +24,22 @@ VibesWindow::VibesWindow(QWidget *parent) :
     initDefaultBrushes();
 
     /// \todo Put platform dependent code here for named pipe creation and opening
-    file.setFileName(QFileDialog::getOpenFileName());
+    const bool showFileOpenDlg = false;
+    if (showFileOpenDlg)
+    {
+        file.setFileName(QFileDialog::getOpenFileName());
+    }
+    else
+    {
+        file.setFileName("vibes.json");
+        // Create and erase file if needed
+        if (file.open(QIODevice::WriteOnly))
+        {
+            file.close();
+        }
+    }
+
+    // Try to open the shared file
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         ui->statusBar->showMessage(QString("Unable to load file %1.").arg(file.fileName()), 2000);
