@@ -4,6 +4,7 @@ compiler:
  - gcc
 
 before_script:
+ - sudo apt-get remove -qq cmake
  - wget https://launchpad.net/ubuntu/+archive/primary/+files/cmake_2.8.12.1.orig.tar.gz
  - tar xvzf cmake_2.8.12.1.orig.tar.gz
  - cd cmake-2.8.12.1
