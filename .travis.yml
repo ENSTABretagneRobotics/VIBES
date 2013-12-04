@@ -12,9 +12,9 @@ before_script:
  - cmake ..
  - cmake --version
  - make
- - sudo apt-get remove -qq cmake
  - sudo make install
  - cmake --version
+ - /usr/local/bin/cmake --version
  - sudo apt-add-repository --yes ppa:ubuntu-sdk-team/ppa
  - sudo apt-get update -qq > output
  - sudo apt-get install -qq qt5-default > output
