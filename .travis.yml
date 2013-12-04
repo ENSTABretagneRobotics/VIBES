@@ -5,19 +5,19 @@ compiler:
 
 before_script:
  - wget https://launchpad.net/ubuntu/+archive/primary/+files/cmake_2.8.12.1.orig.tar.gz
- - tar xvzf cmake_2.8.12.1.orig.tar.gz
+ - tar xzf cmake_2.8.12.1.orig.tar.gz
  - cd cmake-2.8.12.1
  - mkdir build
  - cd build
  - cmake ..
- - sudo apt-get remove -qq cmake
- - make
  - cmake --version
+ - make
+ - sudo apt-get remove -qq cmake
  - sudo make install
  - cmake --version
  - sudo apt-add-repository --yes ppa:ubuntu-sdk-team/ppa
- - sudo apt-get update -qq
- - sudo apt-get install -qq qt5-default
+ - sudo apt-get update -qq > output
+ - sudo apt-get install -qq qt5-default > output
  - cd ../../
  - cd viewer
  - mkdir build
