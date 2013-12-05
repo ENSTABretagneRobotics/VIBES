@@ -1,4 +1,4 @@
-#include "vibes.h"
+#include "vibes.h"                                                     // <== Includes the VIBES C++ API
 #include "interval.h"
 #include "box.h"
 #include <list>
@@ -10,7 +10,7 @@ interval dist(box robot, box landmark){return Sqrt(Sqr(robot[1]-landmark[1])+Sqr
 
 int main()
 {
-  vibes::connect();
+  vibes::connect();                                                    // <== Initializes the VIBES "connection"
   box robot(interval(-100,100),interval(-100,100));
   box landmark(interval(0),interval(0));
   
@@ -24,11 +24,11 @@ int main()
     box top = l.front();l.pop_front();
     
     if(Inter(range,dist(top,landmark)).IsEmpty())
-      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,'b');
+      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,'b'); // <== draws outter boxes
     else if(Subset(dist(top,landmark),range))
-      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,'r');
+      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,'r'); // <== draws inner boxes
     else if(Width(top)<EPSILON)
-      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,'y');
+      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,'y'); // <== draws undeterminated boxes
     else
     {
       box b1,b2;
@@ -37,6 +37,6 @@ int main()
     }
   }
   
-  vibes::disconnect();
+  vibes::disconnect();                                                 // <== closes the VIBES "connection"
   return 0;
 }

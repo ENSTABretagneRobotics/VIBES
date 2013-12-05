@@ -1,6 +1,6 @@
 #include "pong.h"
-
 #include <iostream>
+
 using namespace std;
 
 box leftPlayer, rightPlayer, ball, background;
