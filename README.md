@@ -1,6 +1,8 @@
 VIBes
 =====
 
+[![Build Status](https://travis-ci.org/ENSTABretagneRobotics/VIBES.png)](https://travis-ci.org/ENSTABretagneRobotics/VIBES)
+
 **V**isualizer for **I**ntervals and **B**oxes
 
 VIBes is a visualization system that aims at providing people working with interval methods a way to display results (boxes, pavings), without worrying with GUI programming. It provides drawing functions accessible from a lot of programming languages, without complex installation and library dependencies.
