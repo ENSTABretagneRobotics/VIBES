@@ -11,6 +11,8 @@ Figure2D::Figure2D(QWidget *parent) :
     this->scale(1.0, -1.0);
     this->show();
     setDragMode(ScrollHandDrag);
+    // Force full viewport update (avoid problems with axes)
+    setViewportUpdateMode(FullViewportUpdate);
 }
 
 void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)

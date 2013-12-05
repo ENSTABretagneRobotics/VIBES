@@ -108,6 +108,8 @@ VibesWindow::newFigure(QString name)
     figures[name]->setWindowFlags(Qt::Window);
     figures[name]->setWindowTitle(name);
     figures[name]->show();
+    figures[name]->activateWindow();
+    figures[name]->raise();
     // Return pointer to the new figure
     return figures[name];
 }
