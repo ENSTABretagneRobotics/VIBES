@@ -3,7 +3,8 @@
 
 namespace vibes
 {    
-  FILE *channel;
+  FILE *channel=0;
+  std::string current_fig="default";
   /**
   * Connects to the named pipe, not implemented yet.
   */
@@ -25,17 +26,18 @@ namespace vibes
   void figure(const std::string &figureName)
   {
     std::string msg;
+    current_fig = figureName;
     msg ="{\"action\":\"new\",\"figure\":\""+figureName+"\"}\n\n";
     fputs(msg.c_str(),channel);
   }
   
   void figure()
   {
-    figure("default");
+    figure(current_fig);
   }
   void clear()
   {
-    clear("default");
+    clear(current_fig);
   }
   
   void clear(const std::string &figureName)
@@ -54,11 +56,11 @@ namespace vibes
   
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, char color)
   {
-    drawBox(x_lb,x_ub,y_lb,y_ub,"default",color);
+    drawBox(x_lb,x_ub,y_lb,y_ub,current_fig,color);
   }
 
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub)
   {
-    drawBox(x_lb,x_ub,y_lb,y_ub,"default",'b');
+    drawBox(x_lb,x_ub,y_lb,y_ub,current_fig,'b');
   }
 }
