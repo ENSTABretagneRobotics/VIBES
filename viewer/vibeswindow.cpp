@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QJsonValue>
 #include "figure2d.h"
 
 #include <QGraphicsRectItem>
@@ -172,6 +173,29 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         // Clears the scene
         fig->scene()->clear();
         /// \todo Remove named objects references if needed
+    }
+    // Sets the view
+    else if (action == "view")
+    {
+        // Figure has to exist
+        if (!fig)
+            return false;
+        // Set the view rectangle to a box
+        if (msg["box"].isArray())
+        {
+            const QJsonArray box = msg["box"].toArray();
+            if (box.size() < 4) return false;
+            double lb_x = box[0].toDouble();
+            double ub_x = box[1].toDouble();
+            double lb_y = box[2].toDouble();
+            double ub_y = box[3].toDouble();
+            fig->fitInView(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+        }
+        // Auto-set the view rectangle
+        else if (msg["box"].toString() == "auto")
+        {
+            fig->fitInView(fig->scene()->sceneRect());
+        }
     }
     // Draw a shape
     else if (action == "draw")
