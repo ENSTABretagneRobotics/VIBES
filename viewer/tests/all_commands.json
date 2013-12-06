@@ -158,3 +158,32 @@
                 "name": "My tank"
         }
 }
+
+{
+        "action": "new",
+        "figure": "My ellipse figure"
+}
+
+{
+        "action": "draw",
+        "figure": "My ellipse figure",
+        "shape": {
+                "type": "ellipse",
+                "center": [0,0],
+                "axis": [10,20],
+                "orientation": 0
+                "name": "My alligned ellipse"
+        }
+}
+
+{
+        "action": "draw",
+        "figure": "My ellipse figure",
+        "shape": {
+                "type": "ellipse",
+                "center": [10, 60],
+                "axis": [7,4],
+                "orientation": 45,
+                "name": "My rotated ellipse"
+        }
+}
