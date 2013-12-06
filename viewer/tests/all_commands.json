@@ -187,3 +187,15 @@
                 "name": "My rotated ellipse"
         }
 }
+
+{
+        "action": "draw",
+        "figure": "My ellipse figure",
+        "shape": {
+                "type": "ellipse",
+                "center": [-10,60],
+                "covariance": [1,0,0,1],
+                "sigma": 3,
+                "name": "Ellipse described by mean/covariance"
+        }
+}

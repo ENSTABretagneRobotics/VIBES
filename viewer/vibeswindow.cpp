@@ -13,9 +13,9 @@
 #include <vibestreemodel.h>
 
 VibesWindow::VibesWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::VibesWindow),
-    defaultPen(Qt::black, 0)
+QMainWindow(parent),
+ui(new Ui::VibesWindow),
+defaultPen(Qt::black, 0)
 {
     ui->setupUi(this);
     ui->treeView->setModel(new VibesTreeModel(figures, this));
@@ -57,6 +57,7 @@ VibesWindow::~VibesWindow()
 }
 
 /// Initializes brushes for default color names
+
 void VibesWindow::initDefaultBrushes()
 {
 #define ADD_DEFAULT_BRUSH(full_name) \
@@ -70,13 +71,13 @@ void VibesWindow::initDefaultBrushes()
     brushes[QString()] = QBrush();
 
     // Named brushes
-    ADD_DEFAULT_BRUSH2(cyan,c);
-    ADD_DEFAULT_BRUSH2(yellow,y);
-    ADD_DEFAULT_BRUSH2(magenta,m);
-    ADD_DEFAULT_BRUSH2(red,r);
-    ADD_DEFAULT_BRUSH2(green,g);
-    ADD_DEFAULT_BRUSH2(blue,b);
-    ADD_DEFAULT_BRUSH2(black,k);
+    ADD_DEFAULT_BRUSH2(cyan, c);
+    ADD_DEFAULT_BRUSH2(yellow, y);
+    ADD_DEFAULT_BRUSH2(magenta, m);
+    ADD_DEFAULT_BRUSH2(red, r);
+    ADD_DEFAULT_BRUSH2(green, g);
+    ADD_DEFAULT_BRUSH2(blue, b);
+    ADD_DEFAULT_BRUSH2(black, k);
     ADD_DEFAULT_BRUSH(darkGray);
     ADD_DEFAULT_BRUSH(gray);
     ADD_DEFAULT_BRUSH(lightGray);
@@ -157,13 +158,13 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         figures.remove(fig_name);
         delete fig;
     }
-    // Create a new figure
+        // Create a new figure
     else if (action == "new")
     {
         // Create a new figure (previous with the same name will be destroyed)
         fig = newFigure(fig_name);
     }
-    // Clear the contents of a figure
+        // Clear the contents of a figure
     else if (action == "clear")
     {
         // Figure has to exist
@@ -173,7 +174,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         fig->scene()->clear();
         /// \todo Remove named objects references if needed
     }
-    // Draw a shape
+        // Draw a shape
     else if (action == "draw")
     {
         if (!fig) // Create a new figure if it does not exist
@@ -206,10 +207,47 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y, defaultPen, brush);
                     }
                 }
+                else if (type == "ellipse")
+                {
+                    QJsonArray center = shape["center"].toArray();
+                    if (center.size() >= 2)
+                    {
+                        double x = center[0].toDouble();
+                        double y = center[1].toDouble();
+                        double wx, wy, angle;
+                        if (shape.contains("axis") && shape.contains("orientation"))
+                        {
+                            QJsonArray axis = shape["axis"].toArray();
+                            wx = axis[0].toDouble();
+                            wy = axis[1].toDouble();
+                            angle = shape.value("orientation").toDouble();
+                        }
+                        else if(shape.contains("covariance"))
+                        {
+                            double sxx,sxy,syy,s;
+                            s = shape.contains("sigma")?shape["sigma"].toDouble():3;
+                            QJsonArray covariance = shape["covariance"].toArray();
+                            sxx = covariance[0].toDouble();
+                            sxy = covariance[1].toDouble();
+                            syy = covariance[3].toDouble();
+                            
+                            /*
+                             * Compute eigenvalues and orientation here
+                             */
+                        }
+                        else
+                        {
+                            // should not be here
+                            return false;
+                        }
+                        item = fig->scene()->addEllipse(x,y,wx,wy);
+                        item->setRotation(angle);
+                    }
+                }
             }
         }
     }
-    // Unknown action
+        // Unknown action
     else
     {
         return false;
@@ -234,13 +272,13 @@ VibesWindow::readFile()
         {
             continue;
         }
-        // Empty new line ("\n\n") is message separator
+            // Empty new line ("\n\n") is message separator
         else if (line[0] == '\n')
         {
             processMessage(message);
             message.clear();
         }
-        // Add this line to the current message
+            // Add this line to the current message
         else
         {
             message.append(line);
