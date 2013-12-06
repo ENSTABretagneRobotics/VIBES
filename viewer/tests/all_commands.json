@@ -52,3 +52,109 @@
 	}
 }
 
+{
+        "action": "new",
+        "figure": "Robot car"
+}
+
+{
+        "action": "draw",
+        "figure": "Robot car",
+        "shape": {
+                "type": "car",
+                "state": [0,0,0,0],
+                "name": "Car1"
+        }
+}
+
+{
+        "action": "draw",
+        "figure": "Robot car",
+        "shape": {
+                "type": "car",
+                "state": [10,10,3.14,1.07],
+                "name": "Car2"
+        }
+}
+
+{
+        "action": "draw",
+        "figure": "Robot car",
+        "shape": {
+                "type": "car",
+                "state": [10,-10,1.07,-1.07],
+                "name": "Car2"
+        }
+}
+
+{
+        "action": "new",
+        "figure": "Points"
+}
+
+{
+        "action": "draw",
+        "figure": "Points",
+        "shape": {
+                "type": "point",
+                "pose": [0,0],
+                "color": "r"
+                "name": "lonely point"
+        }
+}
+
+{
+        "action": "draw",
+        "figure": "Points",
+        "shape": {
+                "type": "points",
+                "poses": [[5,5],[5,6],[6,5]],
+                "colors": ["r","g","b"],
+                "name": "point cloud"
+        }
+}
+
+{
+        "action": "new",
+        "figure": "Sailboat"
+}
+
+{
+        "action": "draw",
+        "figure": "Sailboat",
+        "shape": {
+                "type": "sailboat",
+                "state": [0,0,1.07,0.535,1.07],
+                "name": "my sailboat"
+        }
+}
+
+{
+        "action": "new",
+        "figure": "Submarine",
+}
+
+{
+        "action": "draw",
+        "figure": "Submarine",
+        "shape": {
+                "type": "submarine",
+                "state": [0,0,1.07],
+                "name": "My Submarine"
+        }
+}
+
+{
+        "action": "new",
+        "figure": "My Tank figure"
+}
+
+{
+        "action": "draw",
+        "figure": "My Tank figure",
+        "shape": {
+                "type":"tank",
+                "state": [0,0,0.98],
+                "name": "My tank"
+        }
+}
