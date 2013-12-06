@@ -19,7 +19,7 @@ class VibesWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit VibesWindow(QWidget *parent = 0);
+    explicit VibesWindow(bool showFileOpenDlg=false, QWidget *parent = 0);
     ~VibesWindow();
 
     Figure2D * newFigure(QString name=QString());

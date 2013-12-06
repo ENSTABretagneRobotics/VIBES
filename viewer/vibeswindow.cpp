@@ -13,7 +13,7 @@
 
 #include <vibestreemodel.h>
 
-VibesWindow::VibesWindow(QWidget *parent) :
+VibesWindow::VibesWindow(bool showFileOpenDlg, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::VibesWindow),
     defaultPen(Qt::black, 0)
@@ -25,7 +25,6 @@ VibesWindow::VibesWindow(QWidget *parent) :
     initDefaultBrushes();
 
     /// \todo Put platform dependent code here for named pipe creation and opening
-    const bool showFileOpenDlg = false;
     if (showFileOpenDlg)
     {
         file.setFileName(QFileDialog::getOpenFileName());
