@@ -10,6 +10,7 @@
 #include <QFileDialog>
 
 #include <QTimer>
+#include <QtCore>
 
 #include <vibestreemodel.h>
 
@@ -31,7 +32,19 @@ VibesWindow::VibesWindow(bool showFileOpenDlg, QWidget *parent) :
     }
     else
     {
-        file.setFileName("vibes.json");
+        QString file_name = "vibes.json";
+
+        // Retrieve user-profile directory from environment variable
+        QByteArray user_dir = qgetenv("USERPROFILE"); // Windows
+        if (user_dir.isNull())
+            user_dir = qgetenv("HOME"); // POSIX
+        if (!user_dir.isNull())
+        { // Environment variable found, connect to a file in user's profile directory
+            file_name = user_dir;
+            file_name.append("/.vibes.json");
+        }
+
+        file.setFileName(file_name);
         // Create and erase file if needed
         if (file.open(QIODevice::WriteOnly))
         {

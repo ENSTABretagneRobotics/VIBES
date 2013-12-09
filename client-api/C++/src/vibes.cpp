@@ -1,5 +1,6 @@
 #include "vibes.h"
 #include <sstream>
+#include <cstdlib>
 
 namespace vibes
 {    
@@ -10,7 +11,20 @@ namespace vibes
   */
   void connect()
   {
-    connect("vibes.json");
+      // Retrieve user-profile directory from envirnment variable
+      char * user_dir = getenv("USERPROFILE"); // Windows
+      if (!user_dir)
+          user_dir = getenv("HOME"); // POSIX
+      if (user_dir)
+      { // Environment variable found, connect to a file in user's profile directory
+          std::string file_name(user_dir);
+          file_name.append("/.vibes.json");
+          connect(file_name);
+      }
+      else
+      { // Connect to a file in working directory
+          connect("vibes.json");
+      }
   }
   
   void connect(const std::string &fileName)
