@@ -12,7 +12,7 @@
 #include <QTimer>
 #include <QtCore>
 
-#include <vibestreemodel.h>
+#include "vibestreemodel.h"
 
 VibesWindow::VibesWindow(bool showFileOpenDlg, QWidget *parent) :
     QMainWindow(parent),
