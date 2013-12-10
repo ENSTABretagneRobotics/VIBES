@@ -209,6 +209,15 @@ VibesWindow::processMessage(const QByteArray &msg_data)
             fig->fitInView(fig->scene()->sceneRect());
         }
     }
+    // Export to a graphical file
+    else if (action == "export")
+    {
+        // Figure has to exist
+        if (!fig)
+            return false;
+        // Exports to given filename (if not defined, shows a save dialog)
+        fig->exportGraphics(msg["file"].toString());
+    }
     // Draw a shape
     else if (action == "draw")
     {
