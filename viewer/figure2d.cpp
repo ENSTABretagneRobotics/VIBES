@@ -2,6 +2,7 @@
 #include <QWheelEvent>
 #include <QtCore>
 #include <QFileDialog>
+#include <QSvgGenerator>
 
 
 Figure2D::Figure2D(QWidget *parent) :
@@ -72,7 +73,8 @@ void Figure2D::exportGraphics(QString fileName)
         fileName = QFileDialog::getSaveFileName(this, tr("Export VIBes graphics"),
                 QString(), tr("Portable Network Graphics (*.png);;"
                               "Joint Photographic Experts Group (*.jpg *.jpeg);;"
-                              "Windows Bitmap (*.bmp)"));
+                              "Windows Bitmap (*.bmp);;"
+                              "Scalable Vector Graphics (*.svg)"));
 
     // Abort if no file selected
     if (fileName.isEmpty())
@@ -91,5 +93,19 @@ void Figure2D::exportGraphics(QString fileName)
         this->render(&painter);
         painter.end();
         image.save(fileName);
+    }
+    // Save as vector (SVG)
+    else if (fileName.endsWith(".svg", Qt::CaseInsensitive))
+    {
+        QSvgGenerator generator;
+        generator.setFileName(fileName);
+        generator.setSize(this->size());
+        generator.setViewBox(QRect(QPoint(0,0),this->size()));
+        generator.setTitle(tr("VIBes figure"));
+        generator.setDescription(tr("Graphics generated with VIBes on %1.").arg(QDateTime::currentDateTime().toString()));
+        QPainter painter;
+        painter.begin(&generator);
+        this->render(&painter);
+        painter.end();
     }
 }
