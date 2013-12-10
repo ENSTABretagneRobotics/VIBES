@@ -1,3 +1,6 @@
+#ifndef VIBES_CPP_API_H
+#define VIBES_CPP_API_H
+
 #include <stdio.h>
 #include <string>
 
@@ -23,3 +26,5 @@ namespace vibes
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, char color);
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub);
 }
+
+#endif //#ifndef VIBES_CPP_API_H
