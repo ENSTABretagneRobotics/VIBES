@@ -27,6 +27,7 @@ public:
 public slots:
     void readFile();
     bool processMessage(const QByteArray &msg);
+    void exportCurrentFigureGraphics();
 
 private:
     Ui::VibesWindow *ui;

@@ -209,6 +209,15 @@ VibesWindow::processMessage(const QByteArray &msg_data)
             fig->fitInView(fig->scene()->sceneRect());
         }
     }
+    // Export to a graphical file
+    else if (action == "export")
+    {
+        // Figure has to exist
+        if (!fig)
+            return false;
+        // Exports to given filename (if not defined, shows a save dialog)
+        fig->exportGraphics(msg["file"].toString());
+    }
     // Draw a shape
     else if (action == "draw")
     {
@@ -251,6 +260,21 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         return false;
     }
     return true;
+}
+
+void VibesWindow::exportCurrentFigureGraphics()
+{
+    // Get current selected item in tree view
+    QModelIndex selectId = ui->treeView->currentIndex();
+    // If no selection, return
+    if (!selectId.isValid())
+        return;
+    // If the selected item is a figure, export it
+    Figure2D * pfig = static_cast<Figure2D*>(selectId.internalPointer());
+    if (figures.values().contains(pfig))
+    {
+        pfig->exportGraphics();
+    }
 }
 
 void

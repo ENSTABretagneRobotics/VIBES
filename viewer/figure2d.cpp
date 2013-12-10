@@ -1,6 +1,8 @@
 #include "figure2d.h"
 #include <QWheelEvent>
 #include <QtCore>
+#include <QFileDialog>
+#include <QSvgGenerator>
 
 
 Figure2D::Figure2D(QWidget *parent) :
@@ -62,4 +64,48 @@ void Figure2D::wheelEvent(QWheelEvent *event)
 {
     double s = qPow(2.0, 0.05*event->delta()/8.0);
     this->scale(s,s);
+}
+
+void Figure2D::exportGraphics(QString fileName)
+{
+    // Open file save dialog if no filename given
+    if (fileName.isEmpty())
+        fileName = QFileDialog::getSaveFileName(this, tr("Export VIBes graphics"),
+                QString(), tr("Portable Network Graphics (*.png);;"
+                              "Joint Photographic Experts Group (*.jpg *.jpeg);;"
+                              "Windows Bitmap (*.bmp);;"
+                              "Scalable Vector Graphics (*.svg)"));
+
+    // Abort if no file selected
+    if (fileName.isEmpty())
+        return;
+
+    // Save as raster
+    if (fileName.endsWith(".jpg", Qt::CaseInsensitive)
+            || fileName.endsWith(".jpg", Qt::CaseInsensitive)
+            || fileName.endsWith(".png", Qt::CaseInsensitive)
+            || fileName.endsWith(".bmp", Qt::CaseInsensitive))
+    {
+        QImage image(this->size(), QImage::Format_ARGB32);
+        image.fill(QColor(255,255,255,0));
+        QPainter painter;
+        painter.begin(&image);
+        this->render(&painter);
+        painter.end();
+        image.save(fileName);
+    }
+    // Save as vector (SVG)
+    else if (fileName.endsWith(".svg", Qt::CaseInsensitive))
+    {
+        QSvgGenerator generator;
+        generator.setFileName(fileName);
+        generator.setSize(this->size());
+        generator.setViewBox(QRect(QPoint(0,0),this->size()));
+        generator.setTitle(tr("VIBes figure"));
+        generator.setDescription(tr("Graphics generated with VIBes on %1.").arg(QDateTime::currentDateTime().toString()));
+        QPainter painter;
+        painter.begin(&generator);
+        this->render(&painter);
+        painter.end();
+    }
 }

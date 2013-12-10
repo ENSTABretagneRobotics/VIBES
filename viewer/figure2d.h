@@ -23,6 +23,7 @@ protected:
 signals:
     
 public slots:
+    void exportGraphics(QString fileName = QString());
     
 };
 
