@@ -222,15 +222,15 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                             wy = axis[1].toDouble();
                             angle = shape.value("orientation").toDouble();
                         }
-                        else if(shape.contains("covariance"))
+                        else if (shape.contains("covariance"))
                         {
-                            double sxx,sxy,syy,s;
-                            s = shape.contains("sigma")?shape["sigma"].toDouble():3;
+                            double sxx, sxy, syy, s;
+                            s = shape.contains("sigma") ? shape["sigma"].toDouble() : 3;
                             QJsonArray covariance = shape["covariance"].toArray();
                             sxx = covariance[0].toDouble();
                             sxy = covariance[1].toDouble();
                             syy = covariance[3].toDouble();
-                            
+
                             /*
                              * Compute eigenvalues and orientation here
                              */
@@ -240,7 +240,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                             // should not be here
                             return false;
                         }
-                        item = fig->scene()->addEllipse(x,y,wx,wy);
+                        item = fig->scene()->addEllipse(x, y, wx, wy);
                         item->setRotation(angle);
                     }
                 }
