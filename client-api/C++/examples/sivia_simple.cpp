@@ -11,13 +11,12 @@ interval dist(box robot, box landmark){return Sqrt(Sqr(robot[1]-landmark[1])+Sqr
 int main()
 {
   vibes::connect();                                                    // <== Initializes the VIBES "connection"
-  vibes::figure();                                                     // <== Create a new VIBes figure
+  vibes::figure("SIVIA");                                                     // <== Create a new VIBes figure
 
-  box robot(interval(-100,100),interval(-100,100));
+  box robot(interval(-10,10),interval(-10,10));
   box landmark(interval(0),interval(0));
   
-  interval range(10,18);
-  interval test(13.6,14.4);
+  interval range(7.8,8.1);
   
   list<box> l;l.push_back(robot);
   
