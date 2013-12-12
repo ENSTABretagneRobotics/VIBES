@@ -11,7 +11,7 @@ int main()
   std::cout << "figuretest"<<std::endl;
   vibes::drawBox(0,1.245,0,1);
   std::cout << "drawBox" << std::endl;
-  vibes::drawBox(0,1,0,1.879,'r');
+  vibes::drawBox(0,1,0,1.879,"r");
   std::cout << "drawBox with color" << std::endl;
   vibes::disconnect();
   std::cout << "disconnect" << std::endl;

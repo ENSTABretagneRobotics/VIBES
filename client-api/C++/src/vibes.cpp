@@ -61,23 +61,18 @@ namespace vibes
     fputs(msg.c_str(),channel);
   }
 
-  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, std::string figureName, char color)
+  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &figureName, const std::string &color)
   {
     std::stringstream msg;
     msg<<"{\"action\":\"draw\",\"figure\":\""+figureName+"\",\"shape\":{\"type\":\"box\",\"color\":\""<<color<<"\",\"bounds\":["<<x_lb<<","<<x_ub<<","<<y_lb<<","<<y_ub<<"]}}\n\n";
     fputs(msg.str().c_str(),channel);
   }
   
-  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, char color)
+  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &color)
   {
     drawBox(x_lb,x_ub,y_lb,y_ub,current_fig,color);
   }
-
-  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub)
-  {
-      drawBox(x_lb,x_ub,y_lb,y_ub,current_fig,'b');
-  }
-
+  
   void saveImage(const std::string &fileName)
   {
       saveImage(fileName, current_fig);

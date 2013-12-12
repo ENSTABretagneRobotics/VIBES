@@ -91,6 +91,7 @@ void VibesWindow::initDefaultBrushes()
     ADD_DEFAULT_BRUSH2(green, g);
     ADD_DEFAULT_BRUSH2(blue, b);
     ADD_DEFAULT_BRUSH2(black, k);
+    ADD_DEFAULT_BRUSH2(white, w);
     ADD_DEFAULT_BRUSH(darkGray);
     ADD_DEFAULT_BRUSH(gray);
     ADD_DEFAULT_BRUSH(lightGray);

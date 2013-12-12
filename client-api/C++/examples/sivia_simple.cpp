@@ -25,11 +25,11 @@ int main()
     box top = l.front();l.pop_front();
     
     if(Inter(range,dist(top,landmark)).IsEmpty())
-      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,'b'); // <== draws outter boxes
+      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,"lightGray"); // <== draws outter boxes
     else if(Subset(dist(top,landmark),range))
-      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,'r'); // <== draws inner boxes
+      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,"darkGray"); // <== draws inner boxes
     else if(Width(top)<EPSILON)
-      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,'y'); // <== draws undeterminated boxes
+      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,"w"); // <== draws undeterminated boxes
     else
     {
       box b1,b2;
