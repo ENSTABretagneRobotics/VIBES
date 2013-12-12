@@ -11,6 +11,8 @@ interval dist(box robot, box landmark){return Sqrt(Sqr(robot[1]-landmark[1])+Sqr
 int main()
 {
   vibes::connect();                                                    // <== Initializes the VIBES "connection"
+  vibes::figure();                                                     // <== Create a new VIBes figure
+
   box robot(interval(-100,100),interval(-100,100));
   box landmark(interval(0),interval(0));
   

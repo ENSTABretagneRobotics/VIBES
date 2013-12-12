@@ -1,3 +1,6 @@
+#ifndef VIBES_CPP_API_H
+#define VIBES_CPP_API_H
+
 #include <stdio.h>
 #include <string>
 
@@ -22,4 +25,9 @@ namespace vibes
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, std::string figureName, char color);
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, char color);
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub);
+
+  void saveImage(const std::string &fileName = std::string());
+  void saveImage(const std::string &fileName, const std::string &figureName);
 }
+
+#endif //#ifndef VIBES_CPP_API_H

@@ -4,3 +4,4 @@
 /viewer/nbproject/
 /client-api/C++/examples/build/
 .SyncIgnore
+/viewer-build

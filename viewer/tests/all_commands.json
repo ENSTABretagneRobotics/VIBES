@@ -38,7 +38,7 @@
 	"figure": "Fig1",
 	"shape": {
 		"type": "box",
-		"bounds": [-5, -3, -5, -2],
+        "bounds": [-5, -3, -10, -2],
 		"color": "darkGreen"
 	}
 }
@@ -199,3 +199,8 @@
                 "name": "Ellipse described by mean/covariance"
         }
 }
+
+{ "action": "view", "figure": "Fig2", "box": "auto" }
+
+{ "action": "view", "figure": "Fig1", "box": [-6, -2, -3, 1] }
+
