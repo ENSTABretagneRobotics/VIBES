@@ -40,7 +40,7 @@ void initScene()
   rightPlayer=box(interval(SCENE_WIDTH/2.0f-PLATFORM_WIDTH,SCENE_WIDTH/2.0f),interval(-PLATFORM_HEIGHT/2.0f,PLATFORM_HEIGHT/2.0f));
   background=box(interval(-SCENE_WIDTH/2.0f,SCENE_WIDTH/2.0f),interval(-SCENE_HEIGHT/2.0f,SCENE_HEIGHT/2.0f));
   ball=box(interval(-10,10),interval(-10,10));
-  vibes::drawBox(background[1].inf,background[1].sup,background[2].inf,background[2].sup,"Interval Pong",'b');
+  vibes::drawBox(background[1].inf,background[1].sup,background[2].inf,background[2].sup,"Interval Pong","b");
 }
 
 void drawScene()
@@ -49,11 +49,11 @@ void drawScene()
   if(iterations%25==0)
   {
     vibes::clear("Interval Pong");
-    vibes::drawBox(background[1].inf,background[1].sup,background[2].inf,background[2].sup,"Interval Pong",'b');
+    vibes::drawBox(background[1].inf,background[1].sup,background[2].inf,background[2].sup,"Interval Pong","b");
   }
-  vibes::drawBox(leftPlayer[1].inf,leftPlayer[1].sup,leftPlayer[2].inf,leftPlayer[2].sup,"Interval Pong",'y');
-  vibes::drawBox(rightPlayer[1].inf,rightPlayer[1].sup,rightPlayer[2].inf,rightPlayer[2].sup,"Interval Pong",'r');
-  vibes::drawBox(ball[1].inf,ball[1].sup,ball[2].inf,ball[2].sup,"Interval Pong",'k');
+  vibes::drawBox(leftPlayer[1].inf,leftPlayer[1].sup,leftPlayer[2].inf,leftPlayer[2].sup,"Interval Pong","y");
+  vibes::drawBox(rightPlayer[1].inf,rightPlayer[1].sup,rightPlayer[2].inf,rightPlayer[2].sup,"Interval Pong","r");
+  vibes::drawBox(ball[1].inf,ball[1].sup,ball[2].inf,ball[2].sup,"Interval Pong","k");
   crossSleepMs(SLEEP_MS);
 }
 

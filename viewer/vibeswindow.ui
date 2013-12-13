@@ -41,10 +41,39 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionExportGraphics"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionExportGraphics">
+   <property name="text">
+    <string>Export Graphics</string>
+   </property>
+   <property name="toolTip">
+    <string>tr(&quot;Exports the current figure to image file.&quot;)</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionExportGraphics</sender>
+   <signal>triggered()</signal>
+   <receiver>VibesWindow</receiver>
+   <slot>exportCurrentFigureGraphics()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>82</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>exportCurrentFigureGraphics()</slot>
+ </slots>
 </ui>

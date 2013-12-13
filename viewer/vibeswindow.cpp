@@ -3,19 +3,21 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QJsonValue>
 #include "figure2d.h"
 
 #include <QGraphicsRectItem>
 #include <QFileDialog>
 
 #include <QTimer>
+#include <QtCore>
 
-#include <vibestreemodel.h>
+#include "vibestreemodel.h"
 
-VibesWindow::VibesWindow(QWidget *parent) :
-QMainWindow(parent),
-ui(new Ui::VibesWindow),
-defaultPen(Qt::black, 0)
+VibesWindow::VibesWindow(bool showFileOpenDlg, QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::VibesWindow),
+    defaultPen(Qt::black, 0)
 {
     ui->setupUi(this);
     ui->treeView->setModel(new VibesTreeModel(figures, this));
@@ -24,14 +26,25 @@ defaultPen(Qt::black, 0)
     initDefaultBrushes();
 
     /// \todo Put platform dependent code here for named pipe creation and opening
-    const bool showFileOpenDlg = false;
     if (showFileOpenDlg)
     {
         file.setFileName(QFileDialog::getOpenFileName());
     }
     else
     {
-        file.setFileName("vibes.json");
+        QString file_name = "vibes.json";
+
+        // Retrieve user-profile directory from environment variable
+        QByteArray user_dir = qgetenv("USERPROFILE"); // Windows
+        if (user_dir.isNull())
+            user_dir = qgetenv("HOME"); // POSIX
+        if (!user_dir.isNull())
+        { // Environment variable found, connect to a file in user's profile directory
+            file_name = user_dir;
+            file_name.append("/.vibes.json");
+        }
+
+        file.setFileName(file_name);
         // Create and erase file if needed
         if (file.open(QIODevice::WriteOnly))
         {
@@ -78,6 +91,7 @@ void VibesWindow::initDefaultBrushes()
     ADD_DEFAULT_BRUSH2(green, g);
     ADD_DEFAULT_BRUSH2(blue, b);
     ADD_DEFAULT_BRUSH2(black, k);
+    ADD_DEFAULT_BRUSH2(white, w);
     ADD_DEFAULT_BRUSH(darkGray);
     ADD_DEFAULT_BRUSH(gray);
     ADD_DEFAULT_BRUSH(lightGray);
@@ -174,7 +188,39 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         fig->scene()->clear();
         /// \todo Remove named objects references if needed
     }
-        // Draw a shape
+    // Sets the view
+    else if (action == "view")
+    {
+        // Figure has to exist
+        if (!fig)
+            return false;
+        // Set the view rectangle to a box
+        if (msg["box"].isArray())
+        {
+            const QJsonArray box = msg["box"].toArray();
+            if (box.size() < 4) return false;
+            double lb_x = box[0].toDouble();
+            double ub_x = box[1].toDouble();
+            double lb_y = box[2].toDouble();
+            double ub_y = box[3].toDouble();
+            fig->fitInView(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+        }
+        // Auto-set the view rectangle
+        else if (msg["box"].toString() == "auto")
+        {
+            fig->fitInView(fig->scene()->sceneRect());
+        }
+    }
+    // Export to a graphical file
+    else if (action == "export")
+    {
+        // Figure has to exist
+        if (!fig)
+            return false;
+        // Exports to given filename (if not defined, shows a save dialog)
+        fig->exportGraphics(msg["file"].toString());
+    }
+    // Draw a shape
     else if (action == "draw")
     {
         if (!fig) // Create a new figure if it does not exist
@@ -253,6 +299,21 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         return false;
     }
     return true;
+}
+
+void VibesWindow::exportCurrentFigureGraphics()
+{
+    // Get current selected item in tree view
+    QModelIndex selectId = ui->treeView->currentIndex();
+    // If no selection, return
+    if (!selectId.isValid())
+        return;
+    // If the selected item is a figure, export it
+    Figure2D * pfig = static_cast<Figure2D*>(selectId.internalPointer());
+    if (figures.values().contains(pfig))
+    {
+        pfig->exportGraphics();
+    }
 }
 
 void
