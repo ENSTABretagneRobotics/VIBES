@@ -257,7 +257,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                 }
                 else if (type == "ellipse")
                 {
-                    QJsonArray center = shape["center"].toArray();                    
+                    QJsonArray center = shape["center"].toArray();
                     if (center.size() >= 2)
                     {
                         double x = center[0].toDouble();
@@ -310,7 +310,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                             // should not be here
                             return false;
                         }
-                        item = fig->scene()->addEllipse(x, y, 2*wx, 2*wy);
+                        item = fig->scene()->addEllipse(x, y, 2*wx, 2*wy, defaultPen, brush);
                         item->setTransformOriginPoint(wx,wy);
                         item->setRotation(angle);
                     }
