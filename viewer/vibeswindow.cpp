@@ -115,7 +115,7 @@ VibesWindow::newFigure(QString name)
             name = QString("Figure %1").arg(i);
         }
     }
-    // Delete exixsting figure with the same name
+    // Delete existing figure with the same name
     delete figures[name];
     // Create new figure
     figures[name] = new Figure2D(this);
@@ -255,7 +255,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                 }
                 else if (type == "ellipse")
                 {
-                    QJsonArray center = shape["center"].toArray();
+                    QJsonArray center = shape["center"].toArray();                    
                     if (center.size() >= 2)
                     {
                         double x = center[0].toDouble();
@@ -270,25 +270,56 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         }
                         else if (shape.contains("covariance"))
                         {
-                            double sxx, sxy, syy, s;
+                            double sxx, sxy, syy, s, eval1, eval2, det, trace, rightTerm;
+                            double evect1[2], evect2[2];
                             s = shape.contains("sigma") ? shape["sigma"].toDouble() : 3;
                             QJsonArray covariance = shape["covariance"].toArray();
                             sxx = covariance[0].toDouble();
                             sxy = covariance[1].toDouble();
                             syy = covariance[3].toDouble();
-
-                            /*
-                             * Compute eigenvalues and orientation here
-                             */
+                            if(sxy==0)
+                            {
+                                eval1=sxx;
+                                eval2=syy;
+                                evect1[0]=1;evect1[1]=0;
+                                evect2[0]=0;evect2[1]=1;
+                            }
+                            else
+                            {
+                            det = sxx*syy-pow(sxy,2);
+                            trace = sxx + syy;
+                            rightTerm = sqrt(pow(sxx + syy,2)/4 - det);
+                            eval1 = trace/2 + rightTerm;
+                            eval2 = trace/2 - rightTerm;
+                            
+                            evect1[0]=evect2[0]=1; // We set the x-component of the eigenvectors to 1
+                            evect1[1]=(eval1-sxy-sxx)/(sxy+syy-eval1);
+                            evect2[1]=(eval2-sxy-sxx)/(sxy+syy-eval2);
+                            }
+                            // (evect1; evect2) give us the rotation matrix
+                            // s*sqrt(eval1) s*sqrt(eval2) give us the main axis-sizes of the ellipse
+                            
+                            angle = (evect1[0]!=evect1[0])||(evect1[1]!=evect1[1])?(atan2(evect2[1],evect2[0])*180*M_1_PI-90):atan2(evect1[1],evect1[0])*180*M_1_PI;
+                            wx = s*sqrt(eval1);
+                            wy = s*sqrt(eval2);
                         }
                         else
                         {
                             // should not be here
                             return false;
                         }
-                        item = fig->scene()->addEllipse(x, y, wx, wy);
+                        item = fig->scene()->addEllipse(x, y, 2*wx, 2*wy);
+                        item->setTransformOriginPoint(wx,wy);
                         item->setRotation(angle);
                     }
+                }
+                else if(type == "point")
+                {
+                    
+                }
+                else if(type == "points")
+                {
+                    
                 }
             }
         }
