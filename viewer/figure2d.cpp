@@ -65,13 +65,14 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
 
 void Figure2D::wheelEvent(QWheelEvent *event)
 {
-    // Gets mouse cursor in scene coordinates
-    QPointF posInScene = mapToScene(event->pos());
     // Scales the view to zoom according to mouse wheel
-    double s = qPow(2.0, 0.04*event->delta()/8.0);
+    double s = qPow(2.0, 0.04*event->angleDelta().y()/8.0);
     this->scale(s,s);
-    // Centers the view where the mouse cursor was
-    this->centerOn(posInScene);
+//    double dx = sceneRect().width() * (s - 1.0);
+//    double dy = sceneRect().height() * (s - 1.0);
+//    this->setSceneRect(sceneRect().adjusted(-dx,-dy,dx,dy));
+//    qDebug() << sceneRect();
+//    fitInView(sceneRect());
 }
 
 void Figure2D::exportGraphics(QString fileName)
