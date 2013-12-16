@@ -12,9 +12,6 @@ before_script:
  - cd build
  - wget http://www.cmake.org/files/v2.8/cmake-2.8.12.1-Linux-i386.tar.gz
  - tar xzf cmake-2.8.12.1-Linux-i386.tar.gz
- - ls -als
- - ls -als cmake-2.8.12.1-Linux-i386/
- - ls -als cmake-2.8.12.1-Linux-i386/bin/
- - ./cmake-2.8.12.1-Linux-i386/bin/cmake ../
+ - cmake-2.8.12.1-Linux-i386/bin/cmake ../
 
 script: make
