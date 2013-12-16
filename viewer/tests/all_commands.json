@@ -98,7 +98,7 @@
         "shape": {
                 "type": "point",
                 "pose": [0,0],
-                "color": "r"
+                "color": "r",
                 "name": "lonely point"
         }
 }
@@ -171,7 +171,7 @@
                 "type": "ellipse",
                 "center": [0,0],
                 "axis": [10,20],
-                "orientation": 0
+                "orientation": 0,
                 "name": "My alligned ellipse"
         }
 }
