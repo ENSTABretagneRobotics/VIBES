@@ -20,7 +20,7 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-    
+    void forceUpdate() {beginResetModel();endResetModel();}
 signals:
     
 public slots:

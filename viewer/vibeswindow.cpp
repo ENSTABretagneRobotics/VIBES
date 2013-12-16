@@ -169,12 +169,14 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         // Remove from the list of figures an delete
         figures.remove(fig_name);
         delete fig;
+        static_cast<VibesTreeModel*>(ui->treeView->model())->forceUpdate();
     }
     // Create a new figure
     else if (action == "new")
     {
         // Create a new figure (previous with the same name will be destroyed)
         fig = newFigure(fig_name);
+        static_cast<VibesTreeModel*>(ui->treeView->model())->forceUpdate();
     }
     // Clear the contents of a figure
     else if (action == "clear")
@@ -285,7 +287,6 @@ VibesWindow::readFile()
         ui->statusBar->showMessage("Receiving data...", 200);
 
     // Read and process data
-    QByteArray message;
     while (!file.atEnd())
     {
         QByteArray line = file.readLine();
@@ -295,7 +296,7 @@ VibesWindow::readFile()
             continue;
         }
         // Empty new line ("\n\n") is message separator
-        else if (line[0] == '\n')
+        else if (line[0] == '\n' && message.endsWith('\n'))
         {
             processMessage(message);
             message.clear();
@@ -307,6 +308,6 @@ VibesWindow::readFile()
         }
     }
 
-    // Program new file-read try in 200 ms.
-    QTimer::singleShot(200, this, SLOT(readFile()));
+    // Program new file-read try in 50 ms.
+    QTimer::singleShot(50, this, SLOT(readFile()));
 }

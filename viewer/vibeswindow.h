@@ -39,6 +39,7 @@ private:
     QPen defaultPen;
 
     void initDefaultBrushes();
+    QByteArray message;
 };
 
 #endif // VIBESWINDOW_H
