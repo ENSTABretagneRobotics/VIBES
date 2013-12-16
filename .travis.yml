@@ -17,7 +17,7 @@ before_script:
  - /usr/local/bin/cmake --version
  - sudo apt-add-repository --yes ppa:ubuntu-sdk-team/ppa
  - sudo apt-get update -qq > output
- - sudo apt-get install -qq qt5-default > output
+ - sudo apt-get install -qq qt5-default libqt5svg5-dev > output
  - cd ../../
  - cd viewer
  - mkdir build

@@ -52,6 +52,154 @@
 	}
 }
 
+{
+        "action": "new",
+        "figure": "Robot car"
+}
+
+{
+        "action": "draw",
+        "figure": "Robot car",
+        "robot": {
+                "type": "car",
+                "state": [0,0,0,0],
+                "name": "Car1"
+        }
+}
+
+{
+        "action": "draw",
+        "figure": "Robot car",
+        "robot": {
+                "type": "car",
+                "state": [10,10,3.14,1.07],
+                "name": "Car2"
+        }
+}
+
+{
+        "action": "draw",
+        "figure": "Robot car",
+        "robot": {
+                "type": "car",
+                "state": [10,-10,1.07,-1.07],
+                "name": "Car2"
+        }
+}
+
+{
+        "action": "new",
+        "figure": "Points"
+}
+
+{
+        "action": "draw",
+        "figure": "Points",
+        "shape": {
+                "type": "point",
+                "pose": [0,0],
+                "color": "r"
+                "name": "lonely point"
+        }
+}
+
+{
+        "action": "draw",
+        "figure": "Points",
+        "shape": {
+                "type": "points",
+                "poses": [[5,5],[5,6],[6,5]],
+                "colors": ["r","g","b"],
+                "name": "point cloud"
+        }
+}
+
+{
+        "action": "new",
+        "figure": "Sailboat"
+}
+
+{
+        "action": "draw",
+        "figure": "Sailboat",
+        "robot": {
+                "type": "sailboat",
+                "state": [0,0,1.07,0.535,1.07],
+                "name": "my sailboat"
+        }
+}
+
+{
+        "action": "new",
+        "figure": "Submarine",
+}
+
+{
+        "action": "draw",
+        "figure": "Submarine",
+        "robot": {
+                "type": "submarine",
+                "state": [0,0,1.07],
+                "name": "My Submarine"
+        }
+}
+
+{
+        "action": "new",
+        "figure": "My Tank figure"
+}
+
+{
+        "action": "draw",
+        "figure": "My Tank figure",
+        "robot": {
+                "type":"tank",
+                "state": [0,0,0.98],
+                "name": "My tank"
+        }
+}
+
+{
+        "action": "new",
+        "figure": "My ellipse figure"
+}
+
+{
+        "action": "draw",
+        "figure": "My ellipse figure",
+        "shape": {
+                "type": "ellipse",
+                "center": [0,0],
+                "axis": [10,20],
+                "orientation": 0
+                "name": "My alligned ellipse"
+        }
+}
+
+{
+        "action": "draw",
+        "figure": "My ellipse figure",
+        "shape": {
+                "type": "ellipse",
+                "center": [10, 60],
+                "axis": [7,4],
+                "orientation": 45,
+                "name": "My rotated ellipse"
+        }
+}
+
+{
+        "action": "draw",
+        "figure": "My ellipse figure",
+        "shape": {
+                "type": "ellipse",
+                "center": [-10,60],
+                "covariance": [1,0,0,1],
+                "sigma": 3,
+                "name": "Ellipse described by mean/covariance"
+        }
+}
+
 { "action": "view", "figure": "Fig2", "box": "auto" }
 
 { "action": "view", "figure": "Fig1", "box": [-6, -2, -3, 1] }

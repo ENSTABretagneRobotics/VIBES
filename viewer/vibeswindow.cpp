@@ -70,6 +70,7 @@ VibesWindow::~VibesWindow()
 }
 
 /// Initializes brushes for default color names
+
 void VibesWindow::initDefaultBrushes()
 {
 #define ADD_DEFAULT_BRUSH(full_name) \
@@ -83,13 +84,14 @@ void VibesWindow::initDefaultBrushes()
     brushes[QString()] = QBrush();
 
     // Named brushes
-    ADD_DEFAULT_BRUSH2(cyan,c);
-    ADD_DEFAULT_BRUSH2(yellow,y);
-    ADD_DEFAULT_BRUSH2(magenta,m);
-    ADD_DEFAULT_BRUSH2(red,r);
-    ADD_DEFAULT_BRUSH2(green,g);
-    ADD_DEFAULT_BRUSH2(blue,b);
-    ADD_DEFAULT_BRUSH2(black,k);
+    ADD_DEFAULT_BRUSH2(cyan, c);
+    ADD_DEFAULT_BRUSH2(yellow, y);
+    ADD_DEFAULT_BRUSH2(magenta, m);
+    ADD_DEFAULT_BRUSH2(red, r);
+    ADD_DEFAULT_BRUSH2(green, g);
+    ADD_DEFAULT_BRUSH2(blue, b);
+    ADD_DEFAULT_BRUSH2(black, k);
+    ADD_DEFAULT_BRUSH2(white, w);
     ADD_DEFAULT_BRUSH(darkGray);
     ADD_DEFAULT_BRUSH(gray);
     ADD_DEFAULT_BRUSH(lightGray);
@@ -251,6 +253,43 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         double ub_y = bounds[3].toDouble();
 
                         item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y, defaultPen, brush);
+                    }
+                }
+                else if (type == "ellipse")
+                {
+                    QJsonArray center = shape["center"].toArray();
+                    if (center.size() >= 2)
+                    {
+                        double x = center[0].toDouble();
+                        double y = center[1].toDouble();
+                        double wx, wy, angle;
+                        if (shape.contains("axis") && shape.contains("orientation"))
+                        {
+                            QJsonArray axis = shape["axis"].toArray();
+                            wx = axis[0].toDouble();
+                            wy = axis[1].toDouble();
+                            angle = shape.value("orientation").toDouble();
+                        }
+                        else if (shape.contains("covariance"))
+                        {
+                            double sxx, sxy, syy, s;
+                            s = shape.contains("sigma") ? shape["sigma"].toDouble() : 3;
+                            QJsonArray covariance = shape["covariance"].toArray();
+                            sxx = covariance[0].toDouble();
+                            sxy = covariance[1].toDouble();
+                            syy = covariance[3].toDouble();
+
+                            /*
+                             * Compute eigenvalues and orientation here
+                             */
+                        }
+                        else
+                        {
+                            // should not be here
+                            return false;
+                        }
+                        item = fig->scene()->addEllipse(x, y, wx, wy);
+                        item->setRotation(angle);
                     }
                 }
             }
