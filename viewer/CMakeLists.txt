@@ -13,5 +13,5 @@ SET(VIBes_viewer_FORMS vibeswindow.ui)
 
 QT5_WRAP_UI(VIBes_viewer_FORMS_HEADERS ${VIBes_viewer_FORMS})
 
-ADD_EXECUTABLE(VIBes-viewer ${VIBes_viewer_SOURCES} ${VIBes_viewer_FORMS_HEADERS})
+ADD_EXECUTABLE(VIBes-viewer WIN32 MACOSX_BUNDLE ${VIBes_viewer_SOURCES} ${VIBes_viewer_FORMS_HEADERS})
 QT5_USE_MODULES(VIBes-viewer Widgets Gui Core Svg)
