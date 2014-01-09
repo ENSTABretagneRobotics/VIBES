@@ -19,6 +19,7 @@ public:
 protected:
     void drawForeground(QPainter *painter, const QRectF &rect);
     void wheelEvent(QWheelEvent *event);
+    void keyPressEvent(QKeyEvent *event);
     
 signals:
     

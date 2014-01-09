@@ -75,6 +75,23 @@ void Figure2D::wheelEvent(QWheelEvent *event)
 //    fitInView(sceneRect());
 }
 
+void Figure2D::keyPressEvent(QKeyEvent *event)
+{
+    switch(event->key())
+    {
+    case Qt::Key_Plus:
+    case Qt::Key_Q:
+        this->scale(1.25,1.25);
+        break;
+    case Qt::Key_Minus:
+    case Qt::Key_W:
+        this->scale(0.8,0.8);
+        break;
+    default:
+        QGraphicsView::keyPressEvent(event);
+    }
+}
+
 void Figure2D::exportGraphics(QString fileName)
 {
     // Open file save dialog if no filename given
