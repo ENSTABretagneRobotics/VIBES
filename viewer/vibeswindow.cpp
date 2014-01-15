@@ -274,7 +274,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         {
                             double sxx, sxy, syy, s, eval1, eval2, det, trace, rightTerm;
                             double evect1[2], evect2[2];
-                            s = shape.contains("sigma") ? shape["sigma"].toDouble() : 3;
+                            s = shape.contains("sigma") ? shape["sigma"].toDouble() : 5;
                             QJsonArray covariance = shape["covariance"].toArray();
                             sxx = covariance[0].toDouble();
                             sxy = covariance[1].toDouble();
@@ -310,9 +310,9 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                             // should not be here
                             return false;
                         }
-                        item = fig->scene()->addEllipse(x, y, 2*wx, 2*wy, defaultPen, brush);
-                        item->setTransformOriginPoint(wx,wy);
+                        item = fig->scene()->addEllipse(-wx, -wy, 2*wx, 2*wy, defaultPen, brush);
                         item->setRotation(angle);
+                        item->setPos(x,y);
                     }
                 }
                 else if(type == "point")

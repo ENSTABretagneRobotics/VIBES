@@ -25,6 +25,9 @@ namespace vibes
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &figureName, const std::string &color);
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &color="b");
 
+  void drawEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy, const std::string &figureName);
+  void drawEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy);
+
   void saveImage(const std::string &fileName = std::string());
   void saveImage(const std::string &fileName, const std::string &figureName);
 }
