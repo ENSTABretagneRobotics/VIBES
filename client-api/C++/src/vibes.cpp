@@ -92,7 +92,7 @@ namespace vibes
   void drawEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy, const std::string &figureName)
   {
       std::stringstream msg;
-      msg<<"{\"action\":\"draw\",\"figure\":\""+figureName+"\",\"shape\":{\"type\":\"ellipse\",\"center\":["<<cx<<","<<cy<<"],\"covariance\":["<<sxx<<","<<sxy<<","<<sxy<<","<<syy<<"],\"sigma\":5}}";
+      msg<<"{\"action\":\"draw\",\"figure\":\""+figureName+"\",\"shape\":{\"type\":\"ellipse\",\"center\":["<<cx<<","<<cy<<"],\"covariance\":["<<sxx<<","<<sxy<<","<<sxy<<","<<syy<<"],\"sigma\":5}}\n\n";
       fputs(msg.str().c_str(),channel);
       fflush(channel);
   }
