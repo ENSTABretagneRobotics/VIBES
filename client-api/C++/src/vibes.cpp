@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 namespace vibes
-{    
+{
   FILE *channel=0;
   std::string current_fig="default";
   /**
@@ -43,6 +43,7 @@ namespace vibes
     current_fig = figureName;
     msg ="{\"action\":\"new\",\"figure\":\""+figureName+"\"}\n\n";
     fputs(msg.c_str(),channel);
+    fflush(channel);
   }
   
   void figure()
@@ -59,6 +60,7 @@ namespace vibes
     std::string msg;
     msg="{\"action\":\"clear\",\"figure\":\""+figureName+"\"}\n\n";
     fputs(msg.c_str(),channel);
+    fflush(channel);
   }
 
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &figureName, const std::string &color)
@@ -66,6 +68,7 @@ namespace vibes
     std::stringstream msg;
     msg<<"{\"action\":\"draw\",\"figure\":\""+figureName+"\",\"shape\":{\"type\":\"box\",\"color\":\""<<color<<"\",\"bounds\":["<<x_lb<<","<<x_ub<<","<<y_lb<<","<<y_ub<<"]}}\n\n";
     fputs(msg.str().c_str(),channel);
+    fflush(channel);
   }
   
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &color)
@@ -83,6 +86,19 @@ namespace vibes
       std::string msg;
       msg="{\"action\":\"export\",\"figure\":\""+figureName+"\",\"file\":\""+fileName+"\"}\n\n";
       fputs(msg.c_str(),channel);
+      fflush(channel);
   }
 
+  void drawEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy, const std::string &figureName)
+  {
+      std::stringstream msg;
+      msg<<"{\"action\":\"draw\",\"figure\":\""+figureName+"\",\"shape\":{\"type\":\"ellipse\",\"center\":["<<cx<<","<<cy<<"],\"covariance\":["<<sxx<<","<<sxy<<","<<sxy<<","<<syy<<"],\"sigma\":5}}\n\n";
+      fputs(msg.str().c_str(),channel);
+      fflush(channel);
+  }
+
+  void drawEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy)
+  {
+      drawEllipse(cx,cy,sxx,sxy,syy,current_fig);
+  }
 }
