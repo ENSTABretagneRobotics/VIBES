@@ -255,6 +255,32 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y, defaultPen, brush);
                     }
                 }
+                else if(type == "boxes")
+                {
+                    QJsonArray boundsX_lb = shape["boundsX_lb"].toArray();
+                    QJsonArray boundsX_ub = shape["boundsX_ub"].toArray();
+                    QJsonArray boundsY_lb = shape["boundsY_lb"].toArray();
+                    QJsonArray boundsY_ub = shape["boundsY_ub"].toArray();
+
+                    if(boundsX_lb.size()==boundsX_ub.size() &&
+                            boundsX_ub.size()==boundsY_lb.size() &&
+                            boundsY_lb.size()==boundsY_ub.size())
+                    {
+                        bool colors=shape.contains("colors");
+                        bool enoughColors=false;
+                        if(colors)
+                            enoughColors=shape["colors"].toArray().size()==boundsX_lb.size();
+                        for(int i=0; i<boundsX_lb.size(); i++)
+                        {
+                            double lb_x = boundsX_lb[i].toDouble();
+                            double ub_x = boundsX_ub[i].toDouble();
+                            double lb_y = boundsY_lb[i].toDouble();
+                            double ub_y = boundsY_ub[i].toDouble();
+
+                            item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y, defaultPen, brush);
+                        }
+                    }
+                }
                 else if (type == "ellipse")
                 {
                     QJsonArray center = shape["center"].toArray();
