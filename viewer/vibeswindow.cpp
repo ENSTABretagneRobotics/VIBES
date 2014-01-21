@@ -15,9 +15,9 @@
 #include "vibestreemodel.h"
 
 VibesWindow::VibesWindow(bool showFileOpenDlg, QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::VibesWindow),
-    defaultPen(Qt::black, 0)
+QMainWindow(parent),
+ui(new Ui::VibesWindow),
+defaultPen(Qt::black, 0)
 {
     ui->setupUi(this);
     ui->treeView->setModel(new VibesTreeModel(figures, this));
@@ -171,16 +171,16 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         // Remove from the list of figures an delete
         figures.remove(fig_name);
         delete fig;
-        static_cast<VibesTreeModel*>(ui->treeView->model())->forceUpdate();
+        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
     }
-    // Create a new figure
+        // Create a new figure
     else if (action == "new")
     {
         // Create a new figure (previous with the same name will be destroyed)
         fig = newFigure(fig_name);
-        static_cast<VibesTreeModel*>(ui->treeView->model())->forceUpdate();
+        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
     }
-    // Clear the contents of a figure
+        // Clear the contents of a figure
     else if (action == "clear")
     {
         // Figure has to exist
@@ -190,7 +190,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         fig->scene()->clear();
         /// \todo Remove named objects references if needed
     }
-    // Sets the view
+        // Sets the view
     else if (action == "view")
     {
         // Figure has to exist
@@ -207,13 +207,13 @@ VibesWindow::processMessage(const QByteArray &msg_data)
             double ub_y = box[3].toDouble();
             fig->fitInView(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
         }
-        // Auto-set the view rectangle
+            // Auto-set the view rectangle
         else if (msg["box"].toString() == "auto")
         {
             fig->fitInView(fig->scene()->sceneRect());
         }
     }
-    // Export to a graphical file
+        // Export to a graphical file
     else if (action == "export")
     {
         // Figure has to exist
@@ -222,7 +222,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         // Exports to given filename (if not defined, shows a save dialog)
         fig->exportGraphics(msg["file"].toString());
     }
-    // Draw a shape
+        // Draw a shape
     else if (action == "draw")
     {
         if (!fig) // Create a new figure if it does not exist
@@ -255,22 +255,22 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y, defaultPen, brush);
                     }
                 }
-                else if(type == "boxes")
+                else if (type == "boxes")
                 {
                     QJsonArray boundsX_lb = shape["boundsX_lb"].toArray();
                     QJsonArray boundsX_ub = shape["boundsX_ub"].toArray();
                     QJsonArray boundsY_lb = shape["boundsY_lb"].toArray();
                     QJsonArray boundsY_ub = shape["boundsY_ub"].toArray();
 
-                    if(boundsX_lb.size()==boundsX_ub.size() &&
-                            boundsX_ub.size()==boundsY_lb.size() &&
-                            boundsY_lb.size()==boundsY_ub.size())
+                    if (boundsX_lb.size() == boundsX_ub.size() &&
+                            boundsX_ub.size() == boundsY_lb.size() &&
+                            boundsY_lb.size() == boundsY_ub.size())
                     {
-                        bool colors=shape.contains("colors");
-                        bool enoughColors=false;
-                        if(colors)
-                            enoughColors=shape["colors"].toArray().size()==boundsX_lb.size();
-                        for(int i=0; i<boundsX_lb.size(); i++)
+                        bool colors = shape.contains("colors");
+                        bool enoughColors = false;
+                        if (colors)
+                            enoughColors = shape["colors"].toArray().size() == boundsX_lb.size();
+                        for (int i = 0; i < boundsX_lb.size(); i++)
                         {
                             double lb_x = boundsX_lb[i].toDouble();
                             double ub_x = boundsX_ub[i].toDouble();
@@ -305,54 +305,53 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                             sxx = covariance[0].toDouble();
                             sxy = covariance[1].toDouble();
                             syy = covariance[3].toDouble();
-                            if(sxy==0)
+                            if (sxy == 0)
                             {
-                                eval1=sxx;
-                                eval2=syy;
-                                evect1[0]=1;evect1[1]=0;
-                                evect2[0]=0;evect2[1]=1;
+                                eval1 = sxx;
+                                eval2 = syy;
+                                evect1[0] = 1;
+                                evect1[1] = 0;
+                                evect2[0] = 0;
+                                evect2[1] = 1;
                             }
                             else
                             {
-                            det = sxx*syy-pow(sxy,2);
-                            trace = sxx + syy;
-                            rightTerm = sqrt(pow(sxx + syy,2)/4 - det);
-                            eval1 = trace/2 + rightTerm;
-                            eval2 = trace/2 - rightTerm;
-                            
-                            evect1[0]=evect2[0]=1; // We set the x-component of the eigenvectors to 1
-                            evect1[1]=(eval1-sxy-sxx)/(sxy+syy-eval1);
-                            evect2[1]=(eval2-sxy-sxx)/(sxy+syy-eval2);
+                                det = sxx * syy - pow(sxy, 2);
+                                trace = sxx + syy;
+                                rightTerm = sqrt(pow(sxx + syy, 2) / 4 - det);
+                                eval1 = trace / 2 + rightTerm;
+                                eval2 = trace / 2 - rightTerm;
+
+                                evect1[0] = evect2[0] = 1; // We set the x-component of the eigenvectors to 1
+                                evect1[1] = (eval1 - sxy - sxx) / (sxy + syy - eval1);
+                                evect2[1] = (eval2 - sxy - sxx) / (sxy + syy - eval2);
                             }
                             // (evect1; evect2) give us the rotation matrix
                             // s*sqrt(eval1) s*sqrt(eval2) give us the main axis-sizes of the ellipse
-                            
-                            angle = (evect1[0]!=evect1[0])||(evect1[1]!=evect1[1])?(atan2(evect2[1],evect2[0])*180*M_1_PI-90):atan2(evect1[1],evect1[0])*180*M_1_PI;
-                            wx = s*sqrt(eval1);
-                            wy = s*sqrt(eval2);
+
+                            angle = (evect1[0] != evect1[0]) || (evect1[1] != evect1[1]) ? (atan2(evect2[1], evect2[0])*180 * M_1_PI - 90) : atan2(evect1[1], evect1[0])*180 * M_1_PI;
+                            wx = s * sqrt(eval1);
+                            wy = s * sqrt(eval2);
                         }
-                        else
-                        {
-                            // should not be here
+                        else // should not be here
                             return false;
-                        }
-                        item = fig->scene()->addEllipse(-wx, -wy, 2*wx, 2*wy, defaultPen, brush);
+                        item = fig->scene()->addEllipse(-wx, -wy, 2 * wx, 2 * wy, defaultPen, brush);
                         item->setRotation(angle);
-                        item->setPos(x,y);
+                        item->setPos(x, y);
                     }
                 }
-                else if(type == "point")
+                else if (type == "point")
                 {
-                    
+
                 }
-                else if(type == "points")
+                else if (type == "points")
                 {
-                    
+
                 }
             }
         }
     }
-    // Unknown action
+        // Unknown action
     else
     {
         return false;
@@ -368,7 +367,7 @@ void VibesWindow::exportCurrentFigureGraphics()
     if (!selectId.isValid())
         return;
     // If the selected item is a figure, export it
-    Figure2D * pfig = static_cast<Figure2D*>(selectId.internalPointer());
+    Figure2D * pfig = static_cast<Figure2D*> (selectId.internalPointer());
     if (figures.values().contains(pfig))
     {
         pfig->exportGraphics();
@@ -391,13 +390,13 @@ VibesWindow::readFile()
         {
             continue;
         }
-        // Empty new line ("\n\n") is message separator
+            // Empty new line ("\n\n") is message separator
         else if (line[0] == '\n' && message.endsWith('\n'))
         {
             processMessage(message);
             message.clear();
         }
-        // Add this line to the current message
+            // Add this line to the current message
         else
         {
             message.append(line);
