@@ -37,6 +37,23 @@
 	"action": "draw",
 	"figure": "Fig1",
 	"shape": {
+		"type": "boxes",
+		"boundsX_lb": [-10,-5,0,5,10],
+		"boundsX_ub": [-9,-4,1,6,11],
+		"boundsY_lb": [-10,-5,0,5,10],
+		"boundsY_ub": [-9,-4,1,6,11]
+	}
+}
+
+{
+	"action": "clear",
+	"figure": "Fig1"
+}
+
+{
+	"action": "draw",
+	"figure": "Fig1",
+	"shape": {
 		"type": "box",
         "bounds": [-5, -3, -10, -2],
 		"color": "darkGreen"
