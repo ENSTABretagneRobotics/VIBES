@@ -101,4 +101,17 @@ namespace vibes
   {
       drawEllipse(cx,cy,sxx,sxy,syy,current_fig);
   }
+  
+  void drawCircle(const double &cx, const double &cy, const double &rad, const std::string &figureName)
+  {
+      std::stringstream msg;
+      msg << "{\"action\":\"draw\",\"figure\":\""+figureName+"\",\"shape\":{\"type\":\"ellipse\",\"center\":["<<cx<<","<<cy<<"],\"axis\":["<<rad<<","<<rad<<"],\"orientation\":["<<0<<"]}}\n\n";
+      fputs(msg.str().c_str(),channel);
+      fflush(channel);
+  }
+  
+  void drawCircle(const double &cx, const double &cy, const double &rad)
+  {
+      drawCircle(cx,cy,rad,current_fig);
+  }
 }

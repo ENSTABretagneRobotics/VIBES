@@ -27,6 +27,9 @@ namespace vibes
 
   void drawEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy, const std::string &figureName);
   void drawEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy);
+  
+  void drawCircle(const double &cx, const double &cy, const double &rad, const std::string &figureName);
+  void drawCircle(const double &cx, const double &cy, const double &rad);
 
   void saveImage(const std::string &fileName = std::string());
   void saveImage(const std::string &fileName, const std::string &figureName);
