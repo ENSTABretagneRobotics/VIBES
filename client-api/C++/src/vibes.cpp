@@ -2,10 +2,65 @@
 #include <sstream>
 #include <cstdlib>
 
+///
+/// Vibes properties key,value system implementation
+///
+
+namespace vibes {
+    std::string Value::toJSONString() const {
+        std::ostringstream ss;
+        switch (type) {
+        case vt_integer:
+            ss<<integer; break;
+        case vt_decimal:
+            ss<<decimal; break;
+        case vt_string:
+            ss<<'"'<<string<<'"'; break;
+        case vt_array:
+            ss << '[';
+            for (std::vector<Value>::const_iterator it = array.begin(); it != array.end(); ++it) {
+                if (it != array.begin()) ss << ',';
+                ss << it->toJSONString();
+            }
+            ss << ']';
+            break;
+        case vt_none:
+        default:
+            break;
+        }
+        return ss.str();
+    }
+
+    std::string Params::toJSON() const {
+        std::ostringstream ss;
+        for(std::map<std::string, Value>::const_iterator it = _values.begin(); it != _values.end(); ++it)
+            ss << ", \"" << it->first << "\" = " << it->second.toJSONString();
+        return ss.str();
+    }
+
+    Params::NameHelper Params::operator, (const std::string &s) { return NameHelper(*this, s); }
+}
+
+///
+/// Vibes messaging implementation
+///
+
 namespace vibes
 {
+///
+/// \section Global variables
+///
+
+  /// Current communication file descriptor
   FILE *channel=0;
+
+  /// Current figure name (client maintained state)
   std::string current_fig="default";
+
+  ///
+  /// \section Management of connection to the Vibes server
+  ///
+
   /**
   * Connects to the named pipe, not implemented yet.
   */
@@ -36,7 +91,11 @@ namespace vibes
   {
     fclose(channel);
   }
-  
+
+  ///
+  /// \section Drawing functions
+  ///
+
   void figure(const std::string &figureName)
   {
     std::string msg;
