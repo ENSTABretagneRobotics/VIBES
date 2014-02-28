@@ -6,25 +6,38 @@
 #include <map>
 #include <sstream>
 
-namespace vibes {
+//#define VIBES_DEBUG_API
+#ifdef VIBES_DEBUG_API
+#include <iostream>
+#define VIBES_DEBUG(i) std::cout << "VibesDebug " << __FILE__ << "(" << __LINE__ << ") : " << i << std::endl;
+#else
+#define VIBES_DEBUG(i)
+#endif
+
+namespace vibes {class Params;
     /// Value class hold any type supported by vibes properties system, an provides JSON serialization
     class Value {
         enum value_type_enum{
-            vt_none, vt_integer, vt_string, vt_decimal, vt_array
-        } type;
+            vt_none, vt_integer, vt_string, vt_decimal, vt_array, vt_object
+        } _type;
 
-        int integer;
-        std::string string;
-        double decimal;
-        std::vector<Value> array;
+        union {
+        int _integer;
+        double _decimal;
+        const Params *_object;
+        };
+        std::string _string;
+        std::vector<Value> _array;
 
     public:
-        Value() : type(vt_none) {}
-        Value(int i) : integer(i), type(vt_integer) {}
-        Value(const double &d) : decimal(d), type(vt_decimal) {}
-        Value(const std::string &s) : string(s), type(vt_string) {}
-        Value(const char *s) : string(s), type(vt_string) {}
-        Value(const std::vector<Value> &a) : array(a), type(vt_array) {}
+        Value() : _type(vt_none) {}
+        Value(int i) : _integer(i), _type(vt_integer) {}
+        Value(const double &d) : _decimal(d), _type(vt_decimal) {}
+        Value(const std::string &s) : _string(s), _type(vt_string) {}
+        Value(const char *s) : _string(s), _type(vt_string) {}
+        Value(const std::vector<Value> &a) : _array(a), _type(vt_array) {}
+        /*explicit */Value(const Params &p) : _object(&p), _type(vt_object) {}
+        bool empty() {return (_type == vt_none);}
         std::string toJSONString() const;
     };
 
@@ -41,18 +54,16 @@ namespace vibes {
     /// Params holds a list of parameters, and provides JSON serialization
     class Params {
         class NameHelper;
-        std::map<std::string, Value> _values;
+        typedef std::map<std::string, Value> KeyValueMap;
+        KeyValueMap _values;
     public:
         Params() {}
         template<typename T> Params(const std::string & name, const T &p) {_values[name] = p;}
-        //template<typename T> Params(NameHelper &incomp, const T &p);
         Value & operator[](const std::string &key) {return _values[key];}
+        Value pop(const std::string &key, const Value &value_not_found = Value());
         NameHelper operator, (const std::string &s);
-        Params& operator, (const Params &p) { for(std::map<std::string, Value>::const_iterator it = p.begin(); it != p.end(); ++it) _values[it->first] = it->second; return *this;}
+        Params& operator& (const Params &p) { for(KeyValueMap::const_iterator it = p._values.begin(); it != p._values.end(); ++it) _values[it->first] = it->second; return *this;}
         std::size_t size() const { return _values.size(); }
-        typedef std::map<std::string, Value>::const_iterator iterator;
-        iterator begin() const {return _values.begin();}
-        iterator end() const {return _values.end();}
         std::string toJSON() const;
     };
 
@@ -65,6 +76,9 @@ namespace vibes {
         Params & operator, (const Value &value) { _params[_name] = value; return _params; }
     };
 
+    inline Params::NameHelper Params::operator, (const std::string &s) { return NameHelper(*this, s); }
+
+
 //#define VIBES_PARAMS_SUBCLASS(Name, type) \
 //    class Name : public Params { public: Name(const type &val) : Params( #Name , val ) {} }
 //    /* \
@@ -75,13 +89,10 @@ namespace vibes {
 //    VIBES_PARAMS_SUBCLASS(Parent, std::string);
 //    VIBES_PARAMS_SUBCLASS(Color, std::string);
 //    VIBES_PARAMS_SUBCLASS(LineWidth, double);
-}
 
+/// Macro to simplify contruction of a Params object
 #define VibesParams(...) (vibes::Params(), __VA_ARGS__)
 
-namespace vibes
-{
-  //extern FILE *channel;  
 
   /**
   * Connects to the named pipe, not implemented yet.
@@ -91,23 +102,20 @@ namespace vibes
   
   void disconnect();
   
-  void figure();
-  void figure(const std::string &figureName);
+  void figure(const std::string &figureName = std::string());
+  void clear(const std::string &figureName = std::string());
+  void saveImage(const std::string &fileName = std::string(), const std::string &figureName = std::string());
   
-  void clear();
-  void clear(const std::string &figureName);
-  
-  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &figureName, const std::string &color);
-  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &color="b");
+  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params);
+  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub,
+               const std::string &color="b", Params params=Params());
+  void drawEllipse(const double &cx, const double &cy, const double &a, const double &b, const double &rot,
+                   const std::string &color="b", Params params=Params());
+  void drawConfidenceEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy,
+                             const double &sigma=3.0, const std::string &color="b", Params params=Params());
+  void drawCircle(const double &cx, const double &cy, const double &rad,
+                  const std::string &color="b", Params params=Params());
 
-  void drawEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy, const std::string &figureName);
-  void drawEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy);
-  
-  void drawCircle(const double &cx, const double &cy, const double &rad, const std::string &figureName);
-  void drawCircle(const double &cx, const double &cy, const double &rad);
-
-  void saveImage(const std::string &fileName = std::string());
-  void saveImage(const std::string &fileName, const std::string &figureName);
 }
 
 #endif //#ifndef VIBES_CPP_API_H
