@@ -184,7 +184,7 @@ namespace vibes
              "\"shape\":{\"type\":\"ellipse\","
                         "\"center\":["<<cx<<","<<cy<<"],"
                         "\"axis\":["<<a<<","<<b<<"],"
-                        "\"orientation\":["<<rot<<"]}}\n\n";
+                        "\"orientation\":"<<rot<<"}}\n\n";
       fputs(msg.str().c_str(),channel);
       fflush(channel);
   }
@@ -211,7 +211,7 @@ namespace vibes
              "\"shape\":{\"type\":\"ellipse\","
                         "\"center\":["<<cx<<","<<cy<<"],"
                         "\"axis\":["<<rad<<","<<rad<<"],"
-                        "\"orientation\":["<<0<<"]}}\n\n";
+                        "\"orientation\":"<<0<<"}}\n\n";
       fputs(msg.str().c_str(),channel);
       fflush(channel);
   }
