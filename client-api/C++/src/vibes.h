@@ -1,18 +1,36 @@
 #ifndef VIBES_CPP_API_H
 #define VIBES_CPP_API_H
 
+///
+/// Vibes API configuration defines (def or undef as needed)
+///
+
+/// Generate "vibesFunctionName(arg1,arg2,argN,...)" macros for each Vibes function,
+/// to allow Matlab style variadic calls with properies.
+/// Also defines the "vibesParams(...)" macro to help specifying parameters.
+/// Undef this if you don't want to define macros
+#define VIBES_GENERATE_vibesXXX_MACROS
+
+/// Verbose debugging functions (logs to standard output), only useful for library devs
+#undef VIBES_DEBUG_API
+
+
+///
+/// Includes
+///
+
 #include <vector>
 #include <string>
 #include <map>
 #include <sstream>
 
-//#define VIBES_DEBUG_API
 #ifdef VIBES_DEBUG_API
 #include <iostream>
 #define VIBES_DEBUG(i) std::cout << "VibesDebug " << __FILE__ << "(" << __LINE__ << ") : " << i << std::endl;
 #else
 #define VIBES_DEBUG(i)
 #endif
+
 
 namespace vibes {class Params;
     /// Value class hold any type supported by vibes properties system, an provides JSON serialization
@@ -74,6 +92,10 @@ namespace vibes {class Params;
         std::string _name;
         NameHelper(Params & list, const std::string & name) : _params(list), _name(name) {}
         Params & operator, (const Value &value) { _params[_name] = value; return _params; }
+        #ifdef VIBES_GENERATE_vibesXXX_MACROS
+        // Conversion of a singleton parameter to a color (for use with macros)
+        operator Params&() {_params["color"] = _name; return _params;}
+        #endif
     };
 
     inline Params::NameHelper Params::operator, (const std::string &s) { return NameHelper(*this, s); }
@@ -90,9 +112,6 @@ namespace vibes {class Params;
 //    VIBES_PARAMS_SUBCLASS(Color, std::string);
 //    VIBES_PARAMS_SUBCLASS(LineWidth, double);
 
-/// Macro to simplify contruction of a Params object
-#define VibesParams(...) (vibes::Params(), __VA_ARGS__)
-
 
   /**
   * Connects to the named pipe, not implemented yet.
@@ -102,20 +121,52 @@ namespace vibes {class Params;
   
   void disconnect();
   
+  // Figure management
   void figure(const std::string &figureName = std::string());
   void clear(const std::string &figureName = std::string());
   void saveImage(const std::string &fileName = std::string(), const std::string &figureName = std::string());
-  
-  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params);
-  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub,
-               const std::string &color="b", Params params=Params());
-  void drawEllipse(const double &cx, const double &cy, const double &a, const double &b, const double &rot,
-                   const std::string &color="b", Params params=Params());
-  void drawConfidenceEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy,
-                             const double &sigma=3.0, const std::string &color="b", Params params=Params());
-  void drawCircle(const double &cx, const double &cy, const double &rad,
-                  const std::string &color="b", Params params=Params());
 
+  // Drawing functions
+  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params);
+  void drawEllipse(const double &cx, const double &cy, const double &a, const double &b, const double &rot, Params params=Params());
+  void drawConfidenceEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy,
+                             const double &sigma=3.0, Params params=Params());
+  inline void drawCircle(const double &cx, const double &cy, const double &r, const Params &params=Params()) { drawEllipse(cx,cy,r,r,0.,params); }
+
+  // Convenience drawing functions with color selection
+#define VIBES_FUNC_COLOR_PARAM_DDDD_IMPL(func_name) \
+  inline void func_name(const double &a, const double &b, const double &c, const double &d, \
+              const std::string &color="b", Params params=Params()) {func_name(a,b,c,d,(params,"color",color));}
+
+
+VIBES_FUNC_COLOR_PARAM_DDDD_IMPL(drawBox)
+
+/*
+  inline void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub,
+               const std::string &color="b", Params params=Params()) {drawBox(x_lb,x_ub,y_lb,y_ub,(params,"color",color));}
+*/
+  inline void drawEllipse(const double &cx, const double &cy, const double &a, const double &b, const double &rot,
+                   const std::string &color="b", Params params=Params()) {drawEllipse(cx,cy,a,b,rot,(params,"color",color));}
+
+  inline void drawConfidenceEllipse(const double &cx, const double &cy, const double &sxx, const double &sxy, const double &syy,
+                             const double &sigma=3.0, const std::string &color="b", Params params=Params()) {
+                             drawConfidenceEllipse(cx,cy,sxx,sxy,syy,sigma,(params,"color",color));}
+
+  inline void drawCircle(const double &cx, const double &cy, const double &r,
+                  const std::string &color="b", const Params &params=Params()) {drawEllipse(cx,cy,r,r,0.,color,params);}
 }
+
+///
+/// Convenience macros
+///
+#ifdef VIBES_GENERATE_vibesXXX_MACROS
+/// Macro to simplify contruction of a Params object
+#define vibesParams(...) (vibes::Params(), __VA_ARGS__)
+/// Convenience macros for "Matlab style" variadic calls
+#define vibesDrawBox(x_lb,x_ub,y_lb,y_ub,...) vibes::drawBox(x_lb,x_ub,y_lb,y_ub,vibesParams(__VA_ARGS__))
+#define vibesDrawEllipse(cx,cy,a,b,rot,...) vibes::drawEllipse(cx,cy,a,b,rot,vibesParams(__VA_ARGS__))
+#define vibesDrawConfidenceEllipse(cx,cy,sxx,sxy,syy,sigma,...) vibes::drawConfidenceEllipse(cx,cy,sxx,sxy,syy,sigma,vibesParams(__VA_ARGS__))
+#define vibesDrawCircle(cx,cy,r,...) vibes::drawCircle(cx,cy,r,vibesParams(__VA_ARGS__))
+#endif
 
 #endif //#ifndef VIBES_CPP_API_H

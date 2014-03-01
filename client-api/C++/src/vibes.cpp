@@ -140,30 +140,11 @@ namespace vibes
       fflush(channel);
   }
 
-
   ///
   /// \section Drawing functions
   ///
-/*
-  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &color)
-  {
-    std::stringstream msg;
-    msg<<"{\"action\":\"draw\","
-         "\"shape\":{\"type\":\"box\", \"color\":\""<<color<<"\","
-                    "\"bounds\":["<<x_lb<<","<<x_ub<<","<<y_lb<<","<<y_ub<<"]}}\n\n";
-    fputs(msg.str().c_str(),channel);
-    fflush(channel);
-  }
-*/
 
-  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub,
-               const std::string &color, Params params)
-  {
-      drawBox(x_lb,x_ub,y_lb,y_ub,(params,"color",color));
-  }
-
-  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub,
-               Params params)
+  void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params)
   {
     Params msg;
     msg["action"] = "draw";
@@ -175,9 +156,7 @@ namespace vibes
   }
 
 
-
-  void drawEllipse(const double &cx, const double &cy, const double &a, const double &b, const double &rot,
-                   const std::string &color, Params params)
+  void drawEllipse(const double &cx, const double &cy, const double &a, const double &b, const double &rot, Params params)
   {
       std::stringstream msg;
       msg << "{\"action\":\"draw\","
@@ -191,8 +170,7 @@ namespace vibes
 
   void drawConfidenceEllipse(const double &cx, const double &cy,
                              const double &sxx, const double &sxy, const double &syy,
-                             const double &sigma,
-                             const std::string &color, Params params)
+                             const double &sigma, Params params)
   {
       std::stringstream msg;
       msg<<"{\"action\":\"draw\","
@@ -200,18 +178,6 @@ namespace vibes
                       "\"center\":["<<cx<<","<<cy<<"],"
                       "\"covariance\":["<<sxx<<","<<sxy<<","<<sxy<<","<<syy<<"],"
                       "\"sigma\":"<<sigma<<"}}\n\n";
-      fputs(msg.str().c_str(),channel);
-      fflush(channel);
-  }
-  
-  void drawCircle(const double &cx, const double &cy, const double &rad, const string &color, Params params)
-  {
-      std::stringstream msg;
-      msg << "{\"action\":\"draw\","
-             "\"shape\":{\"type\":\"ellipse\","
-                        "\"center\":["<<cx<<","<<cy<<"],"
-                        "\"axis\":["<<rad<<","<<rad<<"],"
-                        "\"orientation\":"<<0<<"}}\n\n";
       fputs(msg.str().c_str(),channel);
       fflush(channel);
   }
