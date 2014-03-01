@@ -126,6 +126,10 @@ namespace vibes {class Params;
   void clear(const std::string &figureName = std::string());
   void saveImage(const std::string &fileName = std::string(), const std::string &figureName = std::string());
 
+  // View setting
+  void axisAuto(Params params=Params());
+  void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params=Params());
+
   // Drawing functions
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params);
   void drawEllipse(const double &cx, const double &cy, const double &a, const double &b, const double &rot, Params params=Params());

@@ -141,6 +141,34 @@ namespace vibes
   }
 
   ///
+  /// \section View settings
+  ///
+
+  void axisAuto(Params params)
+  {
+     // { "action": "view", "figure": "Fig2", "box": "auto" }
+
+    if (params["figure"].empty()) params["figure"] = current_fig;
+    params["action"] = "view";
+    params["box"] = "auto";
+
+    fputs(Value(params).toJSONString().append("\n\n").c_str(),channel);
+    fflush(channel);
+  }
+
+  void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params)
+  {
+    //{ "action": "view", "figure": "Fig1", "box": [-6, -2, -3, 1] }
+
+    if (params["figure"].empty()) params["figure"] = current_fig;
+    params["action"] = "view";
+    params["box"] = (Vec<double,4>){x_lb,x_ub,y_lb,y_ub};
+
+    fputs(Value(params).toJSONString().append("\n\n").c_str(),channel);
+    fflush(channel);
+  }
+
+  ///
   /// \section Drawing functions
   ///
 
