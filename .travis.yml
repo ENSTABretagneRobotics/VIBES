@@ -6,14 +6,18 @@ compiler:
 before_install:
  - sudo apt-add-repository --yes ppa:ubuntu-sdk-team/ppa
  - sudo apt-get update -qq > output
+
+install:
  - sudo apt-get install -qq qt5-default libqt5svg5-dev > output
+# - wget http://www.cmake.org/files/v2.8/cmake-2.8.12.1-Linux-i386.tar.gz
+# - tar xzf cmake-2.8.12.1-Linux-i386.tar.gz
+ - wget http://www.cmake.org/files/v2.8/cmake-2.8.12.1-Linux-i386.sh -O - | sh --prefix=/usr/local/ --exclude-subdir --skip-license
 
 before_script:
  - cd viewer
  - mkdir build
  - cd build
- - wget http://www.cmake.org/files/v2.8/cmake-2.8.12.1-Linux-i386.tar.gz
- - tar xzf cmake-2.8.12.1-Linux-i386.tar.gz
- - "`pwd`/cmake-2.8.12.1-Linux-i386/bin/cmake ../"
+# - "`pwd`/cmake-2.8.12.1-Linux-i386/bin/cmake ../"
+ - cmake ../
 
 script: make
