@@ -13,7 +13,7 @@ install:
 # - tar xzf cmake-2.8.12.1-Linux-i386.tar.gz
 # - wget http://www.cmake.org/files/v2.8/cmake-2.8.12.1-Linux-i386.sh -O - | sh --prefix=/usr/local/ --exclude-subdir --skip-license
 # 32 bit compatibility (since CMake is a 32 bit bin)
- - sudo apt-get install -qq ia32-libs
+ - sudo apt-get install libc6:i386
 # Install CMake bin (32 bit)
  - wget -P /tmp http://www.cmake.org/files/v2.8/cmake-2.8.12.1-Linux-i386.sh
  - chmod +rx /tmp/cmake-2.8.12.1-Linux-i386.sh
