@@ -3,15 +3,23 @@ language: cpp
 compiler:
  - gcc
 
-before_script:
+before_install:
  - sudo apt-add-repository --yes ppa:ubuntu-sdk-team/ppa
  - sudo apt-get update -qq > output
+
+install:
  - sudo apt-get install -qq qt5-default libqt5svg5-dev > output
+# 32 bit compatibility (since CMake is a 32 bit bin)
+ - sudo apt-get install -qq libc6:i386
+# Install CMake bin (32 bit)
+ - wget -P /tmp http://www.cmake.org/files/v2.8/cmake-2.8.12.1-Linux-i386.sh
+ - chmod +rx /tmp/cmake-2.8.12.1-Linux-i386.sh
+ - sudo sh /tmp/cmake-2.8.12.1-Linux-i386.sh --prefix=/usr/local/ --exclude-subdir --skip-license
+
+before_script:
  - cd viewer
  - mkdir build
  - cd build
- - wget http://www.cmake.org/files/v2.8/cmake-2.8.12.1-Linux-i386.tar.gz
- - tar xzf cmake-2.8.12.1-Linux-i386.tar.gz
- - `pwd`/cmake-2.8.12.1-Linux-i386/bin/cmake ../
+ - cmake ../
 
 script: make
