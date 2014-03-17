@@ -205,12 +205,14 @@ VibesWindow::processMessage(const QByteArray &msg_data)
             double ub_x = box[1].toDouble();
             double lb_y = box[2].toDouble();
             double ub_y = box[3].toDouble();
-            fig->fitInView(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+            fig->setSceneRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+            fig->fitInView(fig->sceneRect());
         }
             // Auto-set the view rectangle
         else if (msg["box"].toString() == "auto")
         {
-            fig->fitInView(fig->scene()->sceneRect());
+            fig->setSceneRect(QRectF());
+            fig->fitInView(fig->sceneRect());
         }
     }
         // Export to a graphical file
