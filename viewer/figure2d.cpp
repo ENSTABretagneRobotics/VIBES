@@ -3,11 +3,14 @@
 #include <QtCore>
 #include <QFileDialog>
 #include <QSvgGenerator>
+#include <QScrollBar>
 
 
 Figure2D::Figure2D(QWidget *parent) :
     QGraphicsView(parent)
 {
+    setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+
     // Create a new scene
     setScene(new QGraphicsScene(this));
     this->scale(1.0, -1.0);
@@ -18,12 +21,24 @@ Figure2D::Figure2D(QWidget *parent) :
     // Never show the scrollbars
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    // Keep the view centered when resizing window
+    setResizeAnchor(AnchorViewCenter);
 }
 
 void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
 {
+    // Black pen and empty brush for drawing axis
+    painter->setPen(QPen(Qt::black, 0));//, Qt::DashDotLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setBrush(Qt::NoBrush);
 
-    int log_scale_x = floor(log10(rect.height()/3.0)*3.0);
+    // Draw figure border frame (if bounds are specifier)
+    //painter->drawRect(this->sceneRect());
+
+    // Min spacing between ticks (divisor is min spacing in px)
+    double nb_ticks_x = this->width() / 50.0;
+    double nb_ticks_y = this->height() / 35.0;
+
+    int log_scale_x = ceil(log10(rect.width()/nb_ticks_x)*3.0);
     double scale_x = pow(10.0, floor((double)log_scale_x/3));
     switch (log_scale_x%3) {
     case 0: break;
@@ -31,7 +46,7 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
     case 2: case-1: scale_x *= 5.0; break;
     }
 
-    int log_scale_y = floor(log10(rect.height()/3.0)*3.0);
+    int log_scale_y = ceil(log10(rect.height()/nb_ticks_y)*3.0);
     double scale_y = pow(10.0, floor((double)log_scale_y/3));
     switch (log_scale_y%3) {
     case 0: break;
@@ -44,13 +59,16 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
 
     painter->setTransform(QTransform());
 
+    QFont axisTicksFont("Helvetica", 11);
+    axisTicksFont.setStyleHint(QFont::Helvetica);
+    painter->setFont(axisTicksFont);
+
     for (double xtick=x0; xtick<rect.right(); xtick+=scale_x)
     {
         double x_wnd = mapFromScene(xtick,0).x();
 
-        painter->setPen(QColor(0,0,0));
         painter->drawLine(x_wnd,0,x_wnd,5);
-        painter->drawText(x_wnd+4,10, QString("%1").arg(xtick));
+        painter->drawText(x_wnd+4,12, QString("%1").arg(xtick));
     }
 
     for (double ytick=y0; ytick<qMax(rect.top(),rect.bottom()); ytick+=scale_y)
@@ -65,14 +83,23 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
 
 void Figure2D::wheelEvent(QWheelEvent *event)
 {
-    // Scales the view to zoom according to mouse wheel
-    double s = qPow(2.0, 0.04*event->angleDelta().y()/8.0);
-    this->scale(s,s);
-//    double dx = sceneRect().width() * (s - 1.0);
-//    double dy = sceneRect().height() * (s - 1.0);
-//    this->setSceneRect(sceneRect().adjusted(-dx,-dy,dx,dy));
-//    qDebug() << sceneRect();
-//    fitInView(sceneRect());
+    if (event->modifiers().testFlag(Qt::ControlModifier))
+    {
+        QGraphicsView::wheelEvent(event);
+    }
+    else
+    {
+        setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+
+        // Scales the view to zoom according to mouse wheel
+        double s = qPow(2.0, 0.04*event->angleDelta().y()/8.0);
+        this->scale(s,s);
+//        double dx = sceneRect().width() * (s - 1.0);
+//        double dy = sceneRect().height() * (s - 1.0);
+//        this->setSceneRect(sceneRect().adjusted(-dx,-dy,dx,dy));
+//        qDebug() << sceneRect();
+//        fitInView(sceneRect());
+    }
 }
 
 void Figure2D::keyPressEvent(QKeyEvent *event)
