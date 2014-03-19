@@ -135,7 +135,7 @@ void Figure2D::exportGraphics(QString fileName)
 
     // Save as raster
     if (fileName.endsWith(".jpg", Qt::CaseInsensitive)
-            || fileName.endsWith(".jpg", Qt::CaseInsensitive)
+            || fileName.endsWith(".jpeg", Qt::CaseInsensitive)
             || fileName.endsWith(".png", Qt::CaseInsensitive)
             || fileName.endsWith(".bmp", Qt::CaseInsensitive))
     {
