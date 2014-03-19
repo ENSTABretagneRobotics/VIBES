@@ -5,11 +5,24 @@ PROJECT(VIBes_viewer)
 # Viewer executable name
 SET(VIBES_viewer_EXE VIBes-viewer)
 
+# Target architectures for MacOS X build
 SET(CMAKE_OSX_ARCHITECTURES x86_64) #;i386;ppc;ppc64)
 
 # Automatically preprocess Qt classes with MOC
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# We need C++11 (or C++0x)
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+if(COMPILER_SUPPORTS_CXX11)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+elseif(COMPILER_SUPPORTS_CXX0X)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+else()
+    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
 
 # Force -fPIC flag, needed to use Qt5 on Linux.
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -20,6 +33,8 @@ endif()
 FIND_PACKAGE(Qt5Core REQUIRED)
 FIND_PACKAGE(Qt5Widgets REQUIRED)
 FIND_PACKAGE(Qt5Gui REQUIRED)
+FIND_PACKAGE(Qt5Network REQUIRED)
+FIND_PACKAGE(Qt5Svg REQUIRED)
 
 # Source files
 SET(VIBes_viewer_SOURCES main.cpp figure2d.cpp vibestreemodel.cpp vibeswindow.cpp)
@@ -37,7 +52,7 @@ ADD_APP_ICON(VIBes_viewer_SOURCES icons/vibes)
 ADD_EXECUTABLE(${VIBES_viewer_EXE} WIN32 MACOSX_BUNDLE ${VIBes_viewer_SOURCES} ${VIBes_viewer_FORMS_HEADERS})
 
 # Qt5 Modules
-QT5_USE_MODULES(${VIBES_viewer_EXE} Widgets Gui Core Svg)
+QT5_USE_MODULES(${VIBES_viewer_EXE} Widgets Gui Core Network Svg)
 
 # Packaging
 IF(APPLE)

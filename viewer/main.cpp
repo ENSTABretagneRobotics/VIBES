@@ -1,17 +1,36 @@
 #include "vibeswindow.h"
 #include <QApplication>
+#include <QLocalSocket>
+#include <QLocalServer>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    bool showFileOpenDlg = false;
-    for (int i = 1; i < argc; ++i)
-        if (!qstrcmp(argv[i], "--show-open-dlg"))
-            showFileOpenDlg = true;
+    // Identifier for running instance checking
+    const QString serverName("VIBes_running_instance");
+    // Check if another instance is already running
+    {
+        QLocalSocket socket;
+        socket.connectToServer(serverName);
+        if (socket.waitForConnected(500))
+            return 1; // Exit already a process running
+    }
+    // Start a local server to signal the application is running
+    QLocalServer * m_localServer = new QLocalServer();
+    m_localServer->listen(serverName);
 
+    // Process command line arguments
+    bool showFileOpenDlg = a.arguments().contains("--show-open-dlg", Qt::CaseInsensitive);
+
+    // Create application main window
     VibesWindow w(showFileOpenDlg);
     w.show();
 
+    // Trying to launch the app when it is already launched will make it pop
+    QObject::connect(m_localServer, SIGNAL(newConnection()), &w, SLOT(showNormal()));
+    QObject::connect(m_localServer, &QLocalServer::newConnection, &w, &VibesWindow::activateWindow);
+
+    // Enter main event loop
     return a.exec();
 }
