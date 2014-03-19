@@ -35,8 +35,8 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
     //painter->drawRect(this->sceneRect());
 
     // Min spacing between ticks (divisor is min spacing in px)
-    double nb_ticks_x = this->width() / 50.0;
-    double nb_ticks_y = this->height() / 35.0;
+    double nb_ticks_x = this->viewport()->width() / 50.0;
+    double nb_ticks_y = this->viewport()->height() / 35.0;
 
     int log_scale_x = ceil(log10(rect.width()/nb_ticks_x)*3.0);
     double scale_x = pow(10.0, floor((double)log_scale_x/3));
@@ -58,6 +58,7 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
     double y0 = ceil(qMin(rect.bottom(),rect.top()) / scale_y) * scale_y;
 
     painter->setTransform(QTransform());
+    painter->setWindow(this->viewport()->rect());
 
     QFont axisTicksFont("Helvetica", 11);
     axisTicksFont.setStyleHint(QFont::Helvetica);
@@ -140,13 +141,17 @@ void Figure2D::exportGraphics(QString fileName)
     if (fileName.isEmpty())
         return;
 
+    // Append .png if no extension was specified
+    if (fileName.indexOf('.',1) < 0) // Search '.' from the second character (*nix hidden files start with a dot)
+        fileName.append(".png");
+
     // Save as raster
     if (fileName.endsWith(".jpg", Qt::CaseInsensitive)
             || fileName.endsWith(".jpeg", Qt::CaseInsensitive)
             || fileName.endsWith(".png", Qt::CaseInsensitive)
             || fileName.endsWith(".bmp", Qt::CaseInsensitive))
     {
-        QImage image(this->size(), QImage::Format_ARGB32);
+        QImage image(this->size()*2, QImage::Format_ARGB32);
         image.fill(QColor(255,255,255,0));
         QPainter painter;
         painter.begin(&image);
