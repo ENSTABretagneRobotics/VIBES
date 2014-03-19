@@ -26,7 +26,7 @@ endif()
 
 # Force -fPIC flag, needed to use Qt5 on Linux.
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -fPIC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
 
 # Find Qt5 Modules
