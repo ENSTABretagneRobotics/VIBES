@@ -119,6 +119,13 @@ void Figure2D::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void Figure2D::closeEvent(QCloseEvent *event)
+{
+    // Delete on close
+    this->deleteLater();
+}
+
+
 void Figure2D::exportGraphics(QString fileName)
 {
     // Open file save dialog if no filename given
