@@ -29,6 +29,9 @@ public slots:
     bool processMessage(const QByteArray &msg);
     void exportCurrentFigureGraphics();
 
+private slots:
+    void removeFigureFromList(QObject *fig);
+
 private:
     Ui::VibesWindow *ui;
 

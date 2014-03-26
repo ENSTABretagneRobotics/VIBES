@@ -22,6 +22,14 @@ defaultPen(Qt::black, 0)
     ui->setupUi(this);
     ui->treeView->setModel(new VibesTreeModel(figures, this));
 
+    // When its name is double clicked in the list, the corresponding figure is brought to front
+    connect(ui->treeView, &QTreeView::doubleClicked,
+            [](const QModelIndex& mi){Figure2D* fig = static_cast<Figure2D*>( mi.internalPointer() );
+                                      if (fig) { fig->showNormal();
+                                                 fig->activateWindow();
+                                                 fig->raise(); }
+                                     } );
+
     // Init. brushes for default color names
     initDefaultBrushes();
 
@@ -115,18 +123,42 @@ VibesWindow::newFigure(QString name)
             name = QString("Figure %1").arg(i);
         }
     }
+
     // Delete existing figure with the same name
-    delete figures[name];
+    if (figures.contains(name))
+    {
+        // Unname the figure that will be deleted, so that it is not backlinked to the list of figures
+        figures[name]->setObjectName(QString());
+        delete figures[name];
+    }
+
     // Create new figure
-    figures[name] = new Figure2D(this);
+    Figure2D * fig = new Figure2D(this);
+    fig->setObjectName(name);
+
+    // Update figure list
+    figures[name] = fig;
+    static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
+    this->connect(fig, SIGNAL(destroyed(QObject*)), SLOT(removeFigureFromList(QObject*)));
+
     // Set flags to make it a window
-    figures[name]->setWindowFlags(Qt::Window);
-    figures[name]->setWindowTitle(name);
-    figures[name]->show();
-    figures[name]->activateWindow();
-    figures[name]->raise();
+    fig->setWindowFlags(Qt::Window);
+    fig->setWindowTitle(name);
+    fig->show();
+    fig->activateWindow();
+    fig->raise();
     // Return pointer to the new figure
-    return figures[name];
+    return fig;
+}
+
+void VibesWindow::removeFigureFromList(QObject* fig)
+{
+    QHash<QString,Figure2D*>::iterator it = figures.find(fig->objectName());
+    if (it != figures.end() && it.value()==fig)
+    {
+        figures.erase(it);
+        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
+    }
 }
 
 bool
@@ -169,16 +201,13 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         if (!fig)
             return false;
         // Remove from the list of figures an delete
-        figures.remove(fig_name);
         delete fig;
-        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
     }
         // Create a new figure
     else if (action == "new")
     {
         // Create a new figure (previous with the same name will be destroyed)
         fig = newFigure(fig_name);
-        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
     }
         // Clear the contents of a figure
     else if (action == "clear")

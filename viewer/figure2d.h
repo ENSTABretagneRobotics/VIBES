@@ -20,6 +20,7 @@ protected:
     void drawForeground(QPainter *painter, const QRectF &rect);
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void closeEvent(QCloseEvent *event);
     
 signals:
     

@@ -6,11 +6,11 @@ TEMPLATE = app
 TARGET = Vibes-viewer
 INCLUDEPATH += .
 
-QT += widgets svg concurrent
+QT += widgets svg concurrent network
 
 CONFIG += release static
 #QTPLUGIN += svg
-
+QMAKE_CXXFLAGS += -std=c++11
 # Input
 HEADERS += figure2d.h vibestreemodel.h vibeswindow.h
 FORMS += vibeswindow.ui
