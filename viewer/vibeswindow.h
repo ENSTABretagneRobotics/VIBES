@@ -36,12 +36,8 @@ private:
     Ui::VibesWindow *ui;
 
     QHash<QString, Figure2D*> figures;
-    QHash<QString, QBrush> brushes;
 
     QFile file;
-    QPen defaultPen;
-
-    void initDefaultBrushes();
     QByteArray message;
 };
 

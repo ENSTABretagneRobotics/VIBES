@@ -37,7 +37,12 @@ FIND_PACKAGE(Qt5Network REQUIRED)
 FIND_PACKAGE(Qt5Svg REQUIRED)
 
 # Source files
-SET(VIBes_viewer_SOURCES main.cpp figure2d.cpp vibestreemodel.cpp vibeswindow.cpp)
+SET(VIBes_viewer_SOURCES main.cpp
+                         vibesgraphicsitem.cpp
+                         vibesscene2d.cpp
+                         figure2d.cpp
+                         vibestreemodel.cpp
+                         vibeswindow.cpp )
 
 # Qt designer UI files
 SET(VIBes_viewer_FORMS vibeswindow.ui)
