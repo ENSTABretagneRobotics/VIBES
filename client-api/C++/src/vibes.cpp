@@ -2,6 +2,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <cstdio>
+#include <cassert>
 
 ///
 /// Vibes properties key,value system implementation
@@ -152,7 +153,7 @@ namespace vibes
     params["action"] = "view";
     params["box"] = "auto";
 
-    fputs(Value(params).toJSONString().append("\n\n").c_str(),channel);
+    fputs(Value(params).toJSONString().append("\n\n").c_str(), channel);
     fflush(channel);
   }
 
@@ -162,9 +163,9 @@ namespace vibes
 
     if (params["figure"].empty()) params["figure"] = current_fig;
     params["action"] = "view";
-    params["box"] = (Vec<double,4>){x_lb,x_ub,y_lb,y_ub};
+    params["box"] = (Vec4d){x_lb,x_ub,y_lb,y_ub};
 
-    fputs(Value(params).toJSONString().append("\n\n").c_str(),channel);
+    fputs(Value(params).toJSONString().append("\n\n").c_str(), channel);
     fflush(channel);
   }
 
@@ -177,36 +178,69 @@ namespace vibes
     Params msg;
     msg["action"] = "draw";
     msg["figure"] = params.pop("figure",current_fig);
-    msg["shape"] = (params, "type", "box", "bounds", (Vec<double,4>){x_lb,x_ub,y_lb,y_ub});
+    msg["shape"] = (params, "type", "box", "bounds", (Vec4d){x_lb,x_ub,y_lb,y_ub});
 
-    fputs(Value(msg).toJSONString().append("\n\n").c_str(),channel);
+    fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+    fflush(channel);
+  }
+
+  void drawBox(const vector<double> &bounds, Params params)
+  {
+    assert(!bounds.empty());
+    assert(bounds.size()%2 == 0);
+
+    Params msg;
+    msg["action"] = "draw";
+    msg["figure"] = params.pop("figure",current_fig);
+    msg["shape"] = (params, "type", "box", "bounds", vector<Value>(bounds.begin(),bounds.end()));
+
+    fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
     fflush(channel);
   }
 
 
   void drawEllipse(const double &cx, const double &cy, const double &a, const double &b, const double &rot, Params params)
   {
-      std::stringstream msg;
-      msg << "{\"action\":\"draw\","
-             "\"shape\":{\"type\":\"ellipse\","
-                        "\"center\":["<<cx<<","<<cy<<"],"
-                        "\"axis\":["<<a<<","<<b<<"],"
-                        "\"orientation\":"<<rot<<"}}\n\n";
-      fputs(msg.str().c_str(),channel);
+      Params msg;
+      msg["action"] = "draw";
+      msg["figure"] = params.pop("figure",current_fig);
+      msg["shape"] = (params, "type", "ellipse",
+                              "center", (Vec2d){cx,cy},
+                              "axis", (Vec2d){a,b},
+                              "orientation", rot);
+
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
   }
 
   void drawConfidenceEllipse(const double &cx, const double &cy,
                              const double &sxx, const double &sxy, const double &syy,
-                             const double &sigma, Params params)
+                             const double &K, Params params)
   {
-      std::stringstream msg;
-      msg<<"{\"action\":\"draw\","
-           "\"shape\":{\"type\":\"ellipse\","
-                      "\"center\":["<<cx<<","<<cy<<"],"
-                      "\"covariance\":["<<sxx<<","<<sxy<<","<<sxy<<","<<syy<<"],"
-                      "\"sigma\":"<<sigma<<"}}\n\n";
-      fputs(msg.str().c_str(),channel);
+      Params msg;
+      msg["action"] = "draw";
+      msg["figure"] = params.pop("figure",current_fig);
+      msg["shape"] = (params, "type", "ellipse",
+                              "center", (Vec2d){cx,cy},
+                              "covariance", (Vec4d){sxx,sxy,sxy,syy},
+                              "sigma", K);
+
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+      fflush(channel);
+  }
+
+  void drawConfidenceEllipse(const vector<double> &center, const vector<double> &cov,
+                             const double &K, Params params)
+  {
+      Params msg;
+      msg["action"] = "draw";
+      msg["figure"] = params.pop("figure",current_fig);
+      msg["shape"] = (params, "type", "ellipse",
+                              "center", vector<Value>(center.begin(),center.end()),
+                              "covariance", vector<Value>(cov.begin(),cov.end()),
+                              "sigma", K);
+
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
   }
 }
