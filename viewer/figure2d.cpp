@@ -5,14 +5,21 @@
 #include <QSvgGenerator>
 #include <QScrollBar>
 
+#include "vibesscene2d.h"
+#include <QtGui>
+#include <QComboBox>
+#include <QLabel>
+#include <QString>
 
 Figure2D::Figure2D(QWidget *parent) :
-    QGraphicsView(parent)
+    QGraphicsView(parent),
+    lbProjX(new QLabel("xlabelhere",this)),
+    lbProjY(new QLabel("ylabelhere",this))
 {
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
     // Create a new scene
-    setScene(new QGraphicsScene(this));
+    setScene(new VibesScene2D(this));
     this->scale(1.0, -1.0);
     this->show();
     setDragMode(ScrollHandDrag);
@@ -23,7 +30,70 @@ Figure2D::Figure2D(QWidget *parent) :
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     // Keep the view centered when resizing window
     setResizeAnchor(AnchorViewCenter);
+
+    lbProjX->setAlignment(Qt::AlignRight);
+    lbProjX->move(width()-50, 0);
+    lbProjX->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
+    lbProjX->resize(100, 20);
+    lbProjX->installEventFilter(this);
+    lbProjX->show();
+
+    lbProjY->move(5, 15);
+    lbProjY->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
+    lbProjY->resize(100, 20);
+    lbProjY->installEventFilter(this);
+    lbProjY->show();
+
+    cbProjX = new QComboBox(lbProjX);
+    cbProjX->setMaximumSize(lbProjX->size());
+    connect(cbProjX, SIGNAL(currentTextChanged(QString)), lbProjX, SLOT(setText(QString)));
+    for (int i=0; i<3; ++i)
+        cbProjX->addItem(QString("x: dim %1").arg(i), i);
+    cbProjX->setCurrentIndex(scene()->dimX());
+    //cbProjX->installEventFilter(this);
+    connect(cbProjX, SIGNAL(currentIndexChanged(int)), scene(), SLOT(setDimX(int)));
+    connect(scene(), SIGNAL(changedDimX(int)), cbProjX, SLOT(setCurrentIndex(int)));
+
+    cbProjY = new QComboBox(lbProjY);
+    cbProjY->setMaximumSize(lbProjY->size());
+    connect(cbProjY, SIGNAL(currentTextChanged(QString)), lbProjY, SLOT(setText(QString)));
+    for (int i=0; i<3; ++i)
+        cbProjY->addItem(QString("y: dim %1").arg(i), i);
+    cbProjY->setCurrentIndex(scene()->dimY());
+    //cbProjY->installEventFilter(this);
+    connect(cbProjY, SIGNAL(currentIndexChanged(int)), scene(), SLOT(setDimY(int)));
+    connect(scene(), SIGNAL(changedDimY(int)), cbProjY, SLOT(setCurrentIndex(int)));
 }
+
+bool Figure2D::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == lbProjX) {
+        if (event->type() == QEvent::Enter) {
+            cbProjX->show();
+            return true;
+        } else {
+            return false;
+        }
+    } else if (obj == lbProjY) {
+        if (event->type() == QEvent::Enter) {
+            cbProjY->show();
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        // pass the event on to the parent class
+        return QGraphicsView::eventFilter(obj, event);
+    }
+}
+
+void Figure2D::mouseMoveEvent(QMouseEvent * event)
+{
+    cbProjX->hide();
+    cbProjY->hide();
+    QGraphicsView::mouseMoveEvent(event);
+}
+
 
 void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
 {
@@ -126,6 +196,12 @@ void Figure2D::closeEvent(QCloseEvent *event)
     this->deleteLater();
 }
 
+void Figure2D::resizeEvent(QResizeEvent *event)
+{
+    lbProjX->move(width()-lbProjX->width()-5, 10);
+    lbProjY->move(10, height()-lbProjX->height()-5);
+    QGraphicsView::resizeEvent(event);
+}
 
 void Figure2D::exportGraphics(QString fileName)
 {

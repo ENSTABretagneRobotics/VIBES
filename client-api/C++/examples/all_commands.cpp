@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <ctime>
+#include <vector>
 
 // Utility macro to log executed instructions on terminal
 #define VIBES_TEST(instruction) std::cout << "[l." << __LINE__ << "] " << #instruction << "..."; instruction; std::cout << " OK" << std::endl;
@@ -25,6 +26,20 @@ int main()
 
     cout << "Figure creation function" << endl;
     VIBES_TEST( vibes::figure() );
+    // Megatest Wayne!!!
+    for (int i=0; i<10000; ++i)
+    {
+        std::vector<double> bounds(4*2);
+        for (int j=0; j<bounds.size(); j++)
+        {
+            if (! (j%2))
+                bounds[j] = 25.0 * rand() / RAND_MAX;
+            else
+                bounds[j] = bounds[j-1] + 5.0 * rand() / RAND_MAX;
+        }
+        vibes::drawBox(bounds,"lightGray");
+    }
+
     VIBES_TEST( vibes::figure("figureTest") );
 
     cout << "drawBox" << std::endl;
@@ -38,6 +53,21 @@ int main()
 
     cout << "drawBox with macro (2 optional args)" << std::endl;
     VIBES_TEST( vibesDrawBox(-1,0,0,1,"color","green") );
+
+    cout << "drawBox with vector of bounds" << std::endl;
+    std::vector<double> bounds;
+    bounds.push_back(-4); bounds.push_back(4);
+    bounds.push_back(-5); bounds.push_back(-4.5);
+    bounds.push_back(0); bounds.push_back(1);
+    VIBES_TEST( vibes::drawBox(bounds,"lightGray") );
+
+
+    VIBES_TEST( vibes::drawEllipse(-1,-1,2,3,30.0) );
+    VIBES_TEST( vibesDrawEllipse(-1,-1,1.5,2,30.0, "parent",0.1, "g") );
+
+    VIBES_TEST( vibes::drawEllipse(0,-4.75,4,0.25,0.0, "darkGray") );
+
+
 
     VIBES_TEST( vibes::axisAuto() );
     //  VIBES_TEST( vibes::axisLimits(-1,1, -3,2) );
