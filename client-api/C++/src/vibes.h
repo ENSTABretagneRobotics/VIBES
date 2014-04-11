@@ -62,6 +62,7 @@ namespace vibes {class Params;
         Value(const std::string &s) : _string(s), _type(vt_string) {}
         Value(const char *s) : _string(s), _type(vt_string) {}
         Value(const std::vector<Value> &a) : _array(a), _type(vt_array) {}
+        template <typename T> Value(const std::vector<T> &v) : _array(v.begin(),v.end()), _type(vt_array) {}
         /*explicit */Value(const Params &p) : _object(&p), _type(vt_object) {}
         bool empty() {return (_type == vt_none);}
         std::string toJSONString() const;
@@ -180,6 +181,12 @@ namespace vibes {class Params;
                                                  const double &,K/*=3.0*/)
   VIBES_FUNC_COLOR_PARAM_3(drawCircle,const double &,cx, const double &,cy, const double &,r)
 
+  VIBES_FUNC_COLOR_PARAM_1(drawBoxes,const std::vector< std::vector<double> > &,bounds)
+  VIBES_FUNC_COLOR_PARAM_1(drawBoxesUnion,const std::vector< std::vector<double> > &,bounds)
+
+  VIBES_FUNC_COLOR_PARAM_1(drawLine,const std::vector< std::vector<double> > &,points)
+  VIBES_FUNC_COLOR_PARAM_2(drawLine,const std::vector<double> &,x, const std::vector<double> &,y)
+
   // Ibex enabled functions
   #ifdef _IBEX_INTERVAL_H_
     VIBES_FUNC_COLOR_PARAM_2(drawBox,const ibex::Interval &,x, const ibex::Interval &,y)
@@ -203,6 +210,7 @@ namespace vibes {class Params;
     }
   #endif //#ifdef _IBEX_INTERVAL_H_
   #ifdef __IBEX_INTERVAL_VECTOR_H__
+  /// \todo N-dimensionanl Ibex Inteval vector support
     inline void drawBox(const ibex::IntervalVector &box, Params params) {
         drawBox(box[0], box[1], params);
     }

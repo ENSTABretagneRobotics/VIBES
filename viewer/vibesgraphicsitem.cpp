@@ -1,10 +1,14 @@
 #include "vibesgraphicsitem.h"
 
 #include <QtCore>
+#include <QVector>
 
 #include <QGraphicsRectItem>
 #include <QGraphicsEllipseItem>
 #include <QGraphicsItemGroup>
+#include <QGraphicsPathItem>
+#include <QPainterPath>
+
 
 #include <QJsonObject>
 #include <QJsonArray>
@@ -57,8 +61,8 @@ void VibesDefaults::initDefaultBrushes()
 
 
 
-VibesGraphicsItem::VibesGraphicsItem()
- : _nbDim(0)
+VibesGraphicsItem::VibesGraphicsItem(QGraphicsItem *qGraphicsItem)
+ : _qGraphicsItem(qGraphicsItem), _nbDim(0)
 {
 }
 
@@ -83,6 +87,55 @@ bool VibesGraphicsItem::setProj(int dimX, int dimY)
         return false;
     }
 }
+
+VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
+{
+    if (type == "box") {
+        return new VibesGraphicsBox();
+    }
+    else if (type == "boxes") {
+        return new VibesGraphicsBoxes();
+    }
+    else if (type == "boxes union") {
+        return new VibesGraphicsBoxesUnion();
+    }
+    else if (type == "ellipse") {
+        return new VibesGraphicsEllipse();
+    }
+    else if (type == "point") {
+        //! \todo Implement "point" type
+    }
+    else if (type == "points") {
+        //! \todo Implement "points" type
+    }
+    else if (type == "line") {
+        return new VibesGraphicsLine();
+    }
+    return 0;
+}
+
+
+bool VibesGraphicsItem::isJsonMatrix(const QJsonValue value, int &nbRows, int &nbCols)
+{
+    nbRows = 0; nbCols = 0;
+    // Check number of rows
+    if (!value.isArray()) return false;
+    QJsonArray lines = value.toArray();
+    nbRows = lines.size();
+    if (nbRows == 0) return false;
+    // Check number of columns and consistency among rows
+    QJsonArray::const_iterator line = lines.begin();
+    if (!(*line).isArray()) return false;
+    nbCols = (*line).toArray().size();
+    if (nbCols == 0) return false;
+    while (++line != lines.end())
+    {
+        if (!(*line).isArray()) return false;
+        if ((*line).toArray().size() != nbCols) return false;
+    }
+    return true;
+}
+
 
 bool VibesGraphicsBox::parseJson(const QJsonObject &json)
 {
@@ -145,8 +198,130 @@ bool VibesGraphicsBox::computeProjection(int dimX, int dimY)
     // Update successful
     return true;
 }
+
+//
+// VibesGraphicsBoxes
+//
+
+bool VibesGraphicsBoxes::parseJson(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsBoxes has JSON type "boxes"
+        if (type == "boxes")
+        {
+            // Check that the "bounds" fields is a matrix
+            int nbCols, nbRows;
+            if (!isJsonMatrix(json["bounds"], nbRows, nbCols))
+                return false;
+            // Number of bounds has to be even
+            if (nbCols%2 != 0)
+                return false;
+            // Number of bounds has to be at least 4 (to draw boxes)
+            if (nbCols < 4)
+                return 0;
+
+//            bool colors = json.contains("colors");
+//            bool enoughColors = false;
+//            if (colors)
+//                enoughColors = json["colors"].toArray().size() == nbRows;
+
+            // Compute dimension
+            this->_nbDim = nbCols / 2;
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsBoxes::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( json.value("color").toString() );
+    const QPen & pen = vibesDefaults.pen();
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT (json.contains("type"));
+    // VibesGraphicsBoxes has JSON type "boxes"
+    Q_ASSERT ( json["type"].toString() == "boxes" );
+
+    // VibesGraphicsBoxes is basically a QGraphicsItemGroup containing QGraphicsRectItems
+    // Before update, we first remove all existing rectangles
+    {
+        QList<QGraphicsItem*> rects = this->childItems();
+        foreach(QGraphicsItem* rect, rects) delete rect;
+    }
+    // "bounds" is a matrix
+    Q_ASSERT ( isJsonMatrix(json["bounds"]) );
+
+    // Fill group with projected boxes
+    foreach (const QJsonValue value, json["bounds"].toArray()) {
+        const QJsonArray box = value.toArray();
+        // Read bounds
+        double lb_x = box[2*dimX].toDouble();
+        double ub_x = box[2*dimX+1].toDouble();
+        double lb_y = box[2*dimY].toDouble();
+        double ub_y = box[2*dimY+1].toDouble();
+        // Create a new rect
+        QGraphicsRectItem * rect = new QGraphicsRectItem(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+        rect->setPen(pen);
+        rect->setBrush(brush);
+        // Add it to the group
+        this->addToGroup( rect );
+    }
+
 /*
-bool VibesGraphicsBoxes::updateFromJson(const QJsonObject &json, int dimX, int dimY)
+    QJsonArray boundsX_lb = json["boundsX_lb"].toArray();
+    QJsonArray boundsX_ub = json["boundsX_ub"].toArray();
+    QJsonArray boundsY_lb = json["boundsY_lb"].toArray();
+    QJsonArray boundsY_ub = json["boundsY_ub"].toArray();
+
+    if (boundsX_lb.size() == boundsX_ub.size() &&
+            boundsX_ub.size() == boundsY_lb.size() &&
+            boundsY_lb.size() == boundsY_ub.size())
+    {
+        bool colors = json.contains("colors");
+        bool enoughColors = false;
+        if (colors)
+            enoughColors = json["colors"].toArray().size() == boundsX_lb.size();
+        for (int i = 0; i < boundsX_lb.size(); i++)
+        {
+            // Read bounds
+            double lb_x = boundsX_lb[i].toDouble();
+            double ub_x = boundsX_ub[i].toDouble();
+            double lb_y = boundsY_lb[i].toDouble();
+            double ub_y = boundsY_ub[i].toDouble();
+            // Create a new rect
+            QGraphicsRectItem * rect = new QGraphicsRectItem(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+            rect->setPen(pen);
+            rect->setBrush(brush);
+            // Add it to the group
+            this->addToGroup( rect );
+        }
+*/
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsBoxesUnion
+//
+
+bool VibesGraphicsBoxesUnion::parseJson(const QJsonObject &json)
 {
     // Get shape color (or default if not specified)
     const QBrush & brush = vibesDefaults.brush( json.value("color").toString() );
@@ -159,54 +334,79 @@ bool VibesGraphicsBoxes::updateFromJson(const QJsonObject &json, int dimX, int d
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsBoxes has JSON type "boxes"
-        if (type == "boxes")
+        // VibesGraphicsBoxesUnion has JSON type "boxes union"
+        if (type == "boxes union")
         {
-            // VibesGraphicsBoxes is basically a QGraphicsItemGroup containing QGraphicsRectItems
-            // Before update, we first remove all children of the group
-            {
-                QList<QGraphicsItem*> rects = this->childItems();
-                foreach(QGraphicsItem* rect, rects) delete rect;
-            }
+            // Check that the "bounds" fields is a matrix
+            int nbCols, nbRows;
+            if (!isJsonMatrix(json["bounds"], nbRows, nbCols))
+                return false;
+            // Number of bounds has to be even
+            if (nbCols%2 != 0)
+                return false;
+            // Number of bounds has to be at least 4 (to draw boxes)
+            if (nbCols < 4)
+                return 0;
 
-            QJsonArray boundsX_lb = json["boundsX_lb"].toArray();
-            QJsonArray boundsX_ub = json["boundsX_ub"].toArray();
-            QJsonArray boundsY_lb = json["boundsY_lb"].toArray();
-            QJsonArray boundsY_ub = json["boundsY_ub"].toArray();
+//            bool colors = json.contains("colors");
+//            bool enoughColors = false;
+//            if (colors)
+//                enoughColors = json["colors"].toArray().size() == nbRows;
 
-            if (boundsX_lb.size() == boundsX_ub.size() &&
-                    boundsX_ub.size() == boundsY_lb.size() &&
-                    boundsY_lb.size() == boundsY_ub.size())
-            {
-                bool colors = json.contains("colors");
-                bool enoughColors = false;
-                if (colors)
-                    enoughColors = json["colors"].toArray().size() == boundsX_lb.size();
-                for (int i = 0; i < boundsX_lb.size(); i++)
-                {
-                    // Read bounds
-                    double lb_x = boundsX_lb[i].toDouble();
-                    double ub_x = boundsX_ub[i].toDouble();
-                    double lb_y = boundsY_lb[i].toDouble();
-                    double ub_y = boundsY_ub[i].toDouble();
-                    // Create a new rect
-                    QGraphicsRectItem * rect = new QGraphicsRectItem(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
-                    rect->setPen(pen);
-                    rect->setBrush(brush);
-                    // Add it to the group
-                    this->addToGroup( rect );
-                }
+            // Compute dimension
+            this->_nbDim = nbCols / 2;
+            // Set graphics properties
+            this->setPen(pen);
+            this->setBrush(brush);
 
-                // Update successful
-                return true;
-            }
+            // Update successful
+            return true;
         }
     }
 
     // Unknown or empty JSON, update failed
     return false;
 }
-*/
+
+
+bool VibesGraphicsBoxesUnion::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT (json.contains("type"));
+    // VibesGraphicsBoxes has JSON type "boxes union"
+    Q_ASSERT ( json["type"].toString() == "boxes union" );
+    // "bounds" is a matrix
+    Q_ASSERT ( isJsonMatrix(json["bounds"]) );
+
+    // Update path with projected boxes
+    QPainterPath path;
+    path.setFillRule(Qt::WindingFill);
+    foreach (const QJsonValue value, json["bounds"].toArray()) {
+        const QJsonArray box = value.toArray();
+        // Read bounds
+        double lb_x = box[2*dimX].toDouble();
+        double ub_x = box[2*dimX+1].toDouble();
+        double lb_y = box[2*dimY].toDouble();
+        double ub_y = box[2*dimY+1].toDouble();
+        // Create a new rect path
+        QPainterPath rect_path;
+        rect_path.addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+        // Unite with current path
+        path |= rect_path;
+    }
+    this->setPath(path);
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsEllipse
+//
 
 bool VibesGraphicsEllipse::parseJson(const QJsonObject &json)
 {
@@ -358,4 +558,76 @@ void VibesGraphicsEllipse::axisAngleFromCovarianceK(const double &sxx, const dou
     angle = (evect1[0] != evect1[0]) || (evect1[1] != evect1[1]) ? (atan2(evect2[1], evect2[0])*180 * M_1_PI - 90) : atan2(evect1[1], evect1[0])*180 * M_1_PI;
     wx = k * sqrt(eval1);
     wy = k * sqrt(eval2);
+}
+
+//
+// VibesGraphicsBoxesUnion
+//
+
+bool VibesGraphicsLine::parseJson(const QJsonObject &json)
+{
+    // Get shape color (or default if not specified)
+   // const QBrush & brush = vibesDefaults.brush( json.value("color").toString() );
+    const QPen & pen = vibesDefaults.pen( json.value("color").toString() );
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsLine has JSON type "line"
+        if (type == "line")
+        {
+            // Check that the "points" field is a matrix
+            int nbCols, nbRows;
+            if (!isJsonMatrix(json["points"], nbRows, nbCols))
+                return false;
+            // Number of coordinates has to be at least 2 (to draw in the plane)
+            if (nbCols < 2)
+                return 0;
+
+            // Compute dimension
+            this->_nbDim = nbCols;
+            // Set graphics properties
+            this->setPen(pen);
+            //this->setBrush(brush);
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+
+bool VibesGraphicsLine::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT (json.contains("type"));
+    // VibesGraphicsLine has JSON type "line"
+    Q_ASSERT ( json["type"].toString() == "line" );
+    // "bounds" is a matrix
+    Q_ASSERT ( isJsonMatrix(json["points"]) );
+
+    // Update line with projected points
+    QPainterPath path;
+    QPolygonF polygon;
+    foreach (const QJsonValue value, json["points"].toArray()) {
+        // Read coordinates and append them to the list of points
+        const QJsonArray coords = value.toArray();
+        polygon << QPointF(coords[dimX].toDouble(), coords[dimY].toDouble());
+    }
+    // Update polygon with the list of vertices
+    path.addPolygon(polygon);
+    this->setPath(path);
+
+    // Update successful
+    return true;
 }

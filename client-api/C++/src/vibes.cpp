@@ -243,4 +243,60 @@ namespace vibes
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
   }
+
+  void drawBoxes(const std::vector<std::vector<double> > &bounds, Params params)
+  {
+     Params msg;
+     msg["action"] = "draw";
+     msg["figure"] = params.pop("figure",current_fig);
+     msg["shape"] = (params, "type", "boxes",
+                             "bounds", bounds);
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void drawBoxesUnion(const std::vector<std::vector<double> > &bounds, Params params)
+  {
+     Params msg;
+     msg["action"] = "draw";
+     msg["figure"] = params.pop("figure",current_fig);
+     msg["shape"] = (params, "type", "boxes union",
+                             "bounds", bounds);
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void drawLine(const std::vector<std::vector<double> > &points, Params params)
+  {
+     Params msg;
+     msg["action"] = "draw";
+     msg["figure"] = params.pop("figure",current_fig);
+     msg["shape"] = (params, "type", "line",
+                             "points", points);
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void drawLine(const std::vector<double> &x, const std::vector<double> &y, Params params)
+  {
+     // Reshape x and y into a vector of points
+     std::vector<Value> points;
+     std::vector<double>::const_iterator itx = x.begin();
+     std::vector<double>::const_iterator ity = y.begin();
+     while (itx != x.end() && ity != y.end()) {
+        points.push_back( (Vec2d){*itx++,*ity++} );
+     }
+     // Send message
+     Params msg;
+     msg["action"] = "draw";
+     msg["figure"] = params.pop("figure",current_fig);
+     msg["shape"] = (params, "type", "line",
+                             "points", points);
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
 }

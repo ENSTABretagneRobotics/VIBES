@@ -21,53 +21,46 @@ VibesScene2D::VibesScene2D(QObject *parent) :
 /// \param[in] shape The JSON object containing properties
 /// \returns The item created and initialized from JSON objet. Null pointer if creation or initialization failed.
 
-QGraphicsItem * VibesScene2D::addJsonShapeItem(const QJsonObject &shape)
+VibesGraphicsItem * VibesScene2D::addJsonShapeItem(const QJsonObject &shape)
 {
     // The graphics item that will be created (will be null if creation fails)
-    QGraphicsItem * item = 0;
+    VibesGraphicsItem * item = 0;
 
     if (shape.contains("type"))
     {
         QString type = shape["type"].toString();
-
-        if (type == "box") {
-            item = new VibesGraphicsBox();
-        }
-//        else if (type == "boxes") {
-//            item = new VibesGraphicsBoxes();
-//        }
-        else if (type == "ellipse") {
-            item = new VibesGraphicsEllipse();
-        }
-        else if (type == "point") {
-            //! \todo Implement "point" type
-        }
-        else if (type == "points") {
-            //! \todo Implement "points" type
-        }
+        item = VibesGraphicsItem::newWithType(type);
     }
 
     // Try to initialize item with JSON
-    if (VibesGraphicsItem * vibesItem = vibesgraphicsitem_cast(item))
+    if (!item->setJson(shape, dimX(), dimY()))
     {
-        if (!vibesItem->setJson(shape, dimX(), dimY()))
-        {
-            delete item;
-            item = 0;
-        }
-        else
-        {
-            _nbDim = qMax(_nbDim, vibesItem->dimension());
-        }
+        // Cannot set item wth the provided Json, delete item
+        delete item;
+        item = 0;
     }
-
+/*    else
+    {
+        // Item successufully initialized, update dimension
+        _nbDim = qMax(_nbDim, vibesItem->dimension());
+    }
+*/
     // If the item has successfully been created and initialized, put it on the scene
     if (item)
     {
-        this->addItem(item);
+        this->addVibesItem(item);
     }
 
     return item;
+}
+
+void VibesScene2D::addVibesItem(VibesGraphicsItem *item)
+{
+    if (!item) return;
+    // Update scene dimension
+    _nbDim = qMax(_nbDim, item->dimension());
+    // Add item to the scene
+    this->addItem(vibesgraphicsitem_cast<QGraphicsItem*>(item));
 }
 
 bool VibesScene2D::setDimX(int dimX)
@@ -127,7 +120,7 @@ void VibesScene2D::updateDims()
     QList<QGraphicsItem*> children = this->items();
     foreach(QGraphicsItem *item, children)
     {
-        if (VibesGraphicsItem * vibesItem = vibesgraphicsitem_cast(item))
+        if (VibesGraphicsItem * vibesItem = qgraphicsitem_cast<VibesGraphicsItem*>(item))
         {
             if ( vibesItem->setProj(dimX(),dimY()) )
                 item->setVisible(true);

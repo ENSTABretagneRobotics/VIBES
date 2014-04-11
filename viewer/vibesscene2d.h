@@ -2,7 +2,8 @@
 #define VIBESSCENE2D_H
 
 #include <QGraphicsScene>
-#include <QJsonObject>
+class QJsonObject;
+class VibesGraphicsItem;
 
 class VibesScene2D : public QGraphicsScene
 {
@@ -12,7 +13,9 @@ class VibesScene2D : public QGraphicsScene
     int _nbDim;
 public:
     explicit VibesScene2D(QObject *parent = 0);
-    QGraphicsItem * addJsonShapeItem(const QJsonObject &shape);
+    VibesGraphicsItem *addJsonShapeItem(const QJsonObject &shape);
+
+    void addVibesItem(VibesGraphicsItem *item);
 
     const int nbDim() const { return _nbDim; }
     const int dimX() const { return _dimX; }
