@@ -11,6 +11,7 @@
 #include <iostream>
 #include <ctime>
 #include <vector>
+#include <cmath>
 
 // Utility macro to log executed instructions on terminal
 #define VIBES_TEST(instruction) std::cout << "[l." << __LINE__ << "] " << #instruction << "..."; instruction; std::cout << " OK" << std::endl;
@@ -26,19 +27,58 @@ int main()
 
     cout << "Figure creation function" << endl;
     VIBES_TEST( vibes::figure() );
-    // Megatest Wayne!!!
-    for (int i=0; i<10000; ++i)
+
+    cout << "Megatest Wayne!" << std::endl;
     {
-        std::vector<double> bounds(4*2);
-        for (int j=0; j<bounds.size(); j++)
+        const int nbBoxesMegaTest = 10000;
+        const int dimBoxesMegaTest = 4;
+
+        std::vector< std::vector<double> > boxes_bounds;
+        std::vector<double> box_bounds(dimBoxesMegaTest*2);
+        for (int i=0; i<nbBoxesMegaTest; ++i)
         {
-            if (! (j%2))
-                bounds[j] = 25.0 * rand() / RAND_MAX;
-            else
-                bounds[j] = bounds[j-1] + 5.0 * rand() / RAND_MAX;
+            for (int j=0; j<box_bounds.size(); j++)
+            {
+                if (! (j%2))
+                    box_bounds[j] = 25.0 * rand() / RAND_MAX;
+                else
+                    box_bounds[j] = box_bounds[j-1] + 5.0 * rand() / RAND_MAX;
+            }
+            boxes_bounds.push_back(box_bounds);
         }
-        vibes::drawBox(bounds,"lightGray");
+        VIBES_TEST( vibes::figure("Megatest with boxes") );
+        VIBES_TEST( vibes::drawBoxes(boxes_bounds,"darkYellow") );
+
+        VIBES_TEST( vibes::figure("Megatest with boxes union") );
+        VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"darkGreen") );
     }
+
+    cout << "Plotting y=sin(x) and y=cos(x)" << std::endl;
+    {
+        const int nbPts = 1000;
+        const double xStep = 0.01;
+
+        std::vector< double > vect_x;
+        std::vector< double > vect_y;
+        std::vector< std::vector<double> > points;
+        std::vector<double> point(3);
+        for (int i=0; i<nbPts; ++i)
+        {
+            const double x = xStep * i;
+            point[0] = x;
+            point[1] = sin(x);
+            point[2] = cos(x);
+            points.push_back(point);
+            vect_x.push_back(x);
+            vect_y.push_back(cos(x));
+        }
+        VIBES_TEST( vibes::figure("sin and cos") );
+        VIBES_TEST( vibes::drawLine(points,"red") );
+        VIBES_TEST( vibes::drawLine(vect_x,vect_y,"blue") );
+
+        VIBES_TEST( vibes::axisAuto() );
+    }
+
 
     VIBES_TEST( vibes::figure("figureTest") );
 
@@ -67,7 +107,23 @@ int main()
 
     VIBES_TEST( vibes::drawEllipse(0,-4.75,4,0.25,0.0, "darkGray") );
 
-
+    cout << "drawBoxes with vector of vector of bounds" << std::endl;
+    {
+        std::vector< std::vector<double> > boxes_bounds;
+        std::vector<double> box_bounds(4*2);
+        for (int i=0; i<10; ++i)
+        {
+            for (int j=0; j<box_bounds.size(); j++)
+            {
+                if (! (j%2))
+                    box_bounds[j] = pow(i, 1.0 / ((j/2)+1));
+                else
+                    box_bounds[j] = pow(i+1.0, 1.0 / ((j/2)+1));;
+            }
+            boxes_bounds.push_back(box_bounds);
+        }
+        VIBES_TEST( vibes::drawBoxes(boxes_bounds,"yellow") );
+    }
 
     VIBES_TEST( vibes::axisAuto() );
     //  VIBES_TEST( vibes::axisLimits(-1,1, -3,2) );
