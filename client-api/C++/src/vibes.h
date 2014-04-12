@@ -1,7 +1,7 @@
 ///
 /// \file vibes.hpp
 /// \brief Vibes C++ API Header
-/// \author Vincent Drevelle, Jeremy Nicolas
+/// \author Vincent Drevelle, Jeremy Nicola
 /// \date 2013-2014
 /// \version 0.0.3alpha
 ///
