@@ -25,11 +25,21 @@ VibesGraphicsItem * VibesScene2D::addJsonShapeItem(const QJsonObject &shape)
 {
     // The graphics item that will be created (will be null if creation fails)
     VibesGraphicsItem * item = 0;
+    // The group to which the item will belong (will be null if no group specified, or if group does not exist)
+    VibesGraphicsGroup * group = 0;
 
+    // Contruct a new object from given type string
     if (shape.contains("type"))
     {
         QString type = shape["type"].toString();
         item = VibesGraphicsItem::newWithType(type);
+    }
+
+    // Find the object parent group if specified
+    if (shape.contains("group"))
+    {
+        QString groupName = shape["group"].toString();
+        group = vibesgraphicsitem_cast<VibesGraphicsGroup*>( itemByName(groupName) );
     }
 
     // Try to initialize item with JSON
@@ -49,6 +59,11 @@ VibesGraphicsItem * VibesScene2D::addJsonShapeItem(const QJsonObject &shape)
     if (item)
     {
         this->addVibesItem(item);
+        // If the item belongs to a group, add it tho the group
+        if (group)
+        {
+            group->addToGroup(item);
+        }
     }
 
     return item;
@@ -61,6 +76,31 @@ void VibesScene2D::addVibesItem(VibesGraphicsItem *item)
     _nbDim = qMax(_nbDim, item->dimension());
     // Add item to the scene
     this->addItem(vibesgraphicsitem_cast<QGraphicsItem*>(item));
+    // Update list of named objects
+    this->setItemName(item, item->name());
+}
+
+void VibesScene2D::setItemName(VibesGraphicsItem *item, QString name)
+{
+    // Unname previous item with the same name
+    if (VibesGraphicsItem *old_item = itemByName(name))
+    {
+        // Nothing to do if the name already points to the good item
+        if (old_item != item)
+            return;
+        // Unname previous item
+        old_item->setName(QString());
+    }
+    // Update named items list
+    if (!name.isEmpty())
+    {
+        _namedItems[name] = item;
+    }
+    // Update new item if needed
+    if (item && item->name() != name)
+    {
+        item->setName(name);
+    }
 }
 
 bool VibesScene2D::setDimX(int dimX)

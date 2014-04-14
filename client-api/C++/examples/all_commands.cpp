@@ -47,10 +47,10 @@ int main()
             boxes_bounds.push_back(box_bounds);
         }
         VIBES_TEST( vibes::figure("Megatest with boxes") );
-        VIBES_TEST( vibes::drawBoxes(boxes_bounds,"darkYellow") );
+        VIBES_TEST( vibes::drawBoxes(boxes_bounds,"[darkYellow]") );
 
         VIBES_TEST( vibes::figure("Megatest with boxes union") );
-        VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"darkGreen") );
+        VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"[darkGreen]") );
     }
 
     cout << "Plotting y=sin(x) and y=cos(x)" << std::endl;
@@ -86,20 +86,20 @@ int main()
     VIBES_TEST( vibes::drawBox(0,1.245,0,1) );
 
     cout << "drawBox with color" << std::endl;
-    VIBES_TEST( vibes::drawBox(0,1,0,1.879,"r") );
+    VIBES_TEST( vibes::drawBox(0,1,0,1.879,"[r]blue") );
 
     cout << "drawBox with macro (single optional args)" << std::endl;
-    VIBES_TEST( vibesDrawBox(-2,-1,0,1, "gray") );
+    VIBES_TEST( vibesDrawBox(-2,-1,0,1, "red[gray]") );
 
     cout << "drawBox with macro (2 optional args)" << std::endl;
-    VIBES_TEST( vibesDrawBox(-1,0,0,1,"color","green") );
+    VIBES_TEST( vibesDrawBox(-1,0,0,1,"FaceColor","green") );
 
     cout << "drawBox with vector of bounds" << std::endl;
     std::vector<double> bounds;
     bounds.push_back(-4); bounds.push_back(4);
     bounds.push_back(-5); bounds.push_back(-4.5);
     bounds.push_back(0); bounds.push_back(1);
-    VIBES_TEST( vibes::drawBox(bounds,"lightGray") );
+    VIBES_TEST( vibes::drawBox(bounds,"[lightGray]") );
 
 
     VIBES_TEST( vibes::drawEllipse(-1,-1,2,3,30.0) );
@@ -122,7 +122,7 @@ int main()
             }
             boxes_bounds.push_back(box_bounds);
         }
-        VIBES_TEST( vibes::drawBoxes(boxes_bounds,"yellow") );
+        VIBES_TEST( vibes::drawBoxes(boxes_bounds,"red[y]") );
     }
 
     VIBES_TEST( vibes::axisAuto() );
