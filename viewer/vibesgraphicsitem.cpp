@@ -18,14 +18,13 @@
 VibesDefaults VibesDefaults::_instance;
 
 VibesDefaults::VibesDefaults()
- : _pen(Qt::black, 0)
 {
-    initDefaultBrushes();
+    initDefaultBrushesAndPens();
 }
 
-/// Initializes brushes for default color names
+/// Initializes brushes and pens for default color names
 
-void VibesDefaults::initDefaultBrushes()
+void VibesDefaults::initDefaultBrushesAndPens()
 {
 #define ADD_DEFAULT_BRUSH(full_name) \
     _brushes[ #full_name ]  = QBrush(Qt::full_name);
@@ -34,29 +33,45 @@ void VibesDefaults::initDefaultBrushes()
     _brushes[ #full_name ]  = QBrush(Qt::full_name); \
     _brushes[ #short_name ] = QBrush(Qt::full_name);
 
-    // Default brush
+#define ADD_DEFAULT_PEN(full_name) \
+    _pens[ #full_name ]  = QPen(Qt::full_name, 0);
+
+#define ADD_DEFAULT_PEN2(full_name, short_name) \
+    _pens[ #full_name ]  = QPen(Qt::full_name, 0); \
+    _pens[ #short_name ] = QPen(Qt::full_name, 0);
+
+#define ADD_DEFAULT_BRUSH_AND_PEN(full_name) \
+    ADD_DEFAULT_BRUSH(full_name) \
+    ADD_DEFAULT_PEN(full_name)
+
+#define ADD_DEFAULT_BRUSH_AND_PEN2(full_name, short_name) \
+    ADD_DEFAULT_BRUSH2(full_name, short_name) \
+    ADD_DEFAULT_PEN2(full_name, short_name)
+
+    // Default brush and pen
     _brushes[QString()] = QBrush();
+    _pens[QString()] = QPen(Qt::black, 0);
 
-    // Named brushes
-    ADD_DEFAULT_BRUSH2(transparent, none);
+    // Named brushes and pens
+    ADD_DEFAULT_BRUSH_AND_PEN2(transparent, none);
 
-    ADD_DEFAULT_BRUSH2(cyan, c);
-    ADD_DEFAULT_BRUSH2(yellow, y);
-    ADD_DEFAULT_BRUSH2(magenta, m);
-    ADD_DEFAULT_BRUSH2(red, r);
-    ADD_DEFAULT_BRUSH2(green, g);
-    ADD_DEFAULT_BRUSH2(blue, b);
-    ADD_DEFAULT_BRUSH2(black, k);
-    ADD_DEFAULT_BRUSH2(white, w);
-    ADD_DEFAULT_BRUSH(darkGray);
-    ADD_DEFAULT_BRUSH(gray);
-    ADD_DEFAULT_BRUSH(lightGray);
-    ADD_DEFAULT_BRUSH(darkCyan);
-    ADD_DEFAULT_BRUSH(darkYellow);
-    ADD_DEFAULT_BRUSH(darkMagenta);
-    ADD_DEFAULT_BRUSH(darkRed);
-    ADD_DEFAULT_BRUSH(darkGreen);
-    ADD_DEFAULT_BRUSH(darkBlue);
+    ADD_DEFAULT_BRUSH_AND_PEN2(cyan, c);
+    ADD_DEFAULT_BRUSH_AND_PEN2(yellow, y);
+    ADD_DEFAULT_BRUSH_AND_PEN2(magenta, m);
+    ADD_DEFAULT_BRUSH_AND_PEN2(red, r);
+    ADD_DEFAULT_BRUSH_AND_PEN2(green, g);
+    ADD_DEFAULT_BRUSH_AND_PEN2(blue, b);
+    ADD_DEFAULT_BRUSH_AND_PEN2(black, k);
+    ADD_DEFAULT_BRUSH_AND_PEN2(white, w);
+    ADD_DEFAULT_BRUSH_AND_PEN(darkGray);
+    ADD_DEFAULT_BRUSH_AND_PEN(gray);
+    ADD_DEFAULT_BRUSH_AND_PEN(lightGray);
+    ADD_DEFAULT_BRUSH_AND_PEN(darkCyan);
+    ADD_DEFAULT_BRUSH_AND_PEN(darkYellow);
+    ADD_DEFAULT_BRUSH_AND_PEN(darkMagenta);
+    ADD_DEFAULT_BRUSH_AND_PEN(darkRed);
+    ADD_DEFAULT_BRUSH_AND_PEN(darkGreen);
+    ADD_DEFAULT_BRUSH_AND_PEN(darkBlue);
 }
 
 

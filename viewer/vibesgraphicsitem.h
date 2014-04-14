@@ -14,15 +14,15 @@
 // Singleton class to hold Vibes defaults and constants
 class VibesDefaults {
     QHash<QString, QBrush> _brushes;
-    QPen _pen;
+    QHash<QString, QPen> _pens;
 public:
     static const VibesDefaults & instance() { return _instance; }
     const QBrush brush(const QString & name = QString()) const { return _brushes[name]; }
-    const QPen pen(const QString & name = QString()) const { return _pen; }
+    const QPen pen(const QString & name = QString()) const { return _pens[name]; }
 private:
     VibesDefaults();
     static VibesDefaults _instance;
-    void initDefaultBrushes();
+    void initDefaultBrushesAndPens();
 };
 // Helper macro to access the VibesDefaults instance
 #define vibesDefaults VibesDefaults::instance()
@@ -111,7 +111,6 @@ template <class T> inline const T vibesgraphicsitem_cast(const VibesGraphicsItem
 public: \
     VIBES_GRAPHICS_ITEM_TYPE_DECL(class_name) \
     VIBES_GRAPHICS_ITEM_CTOR_DECL(class_name, base_class)
-
 
 /// A box
 
