@@ -81,13 +81,39 @@ VibesGraphicsItem::VibesGraphicsItem(QGraphicsItem *qGraphicsItem)
 {
 }
 
-bool VibesGraphicsItem::setJson(const QJsonObject &json, int dimX, int dimY)
+bool VibesGraphicsItem::setJson(QJsonObject json, int dimX, int dimY)
 {
     if (!parseJson(json)) return false;
     _json = json;
 
     setProj(dimX, dimY);
     return true;
+}
+
+QJsonValue VibesGraphicsItem::jsonValue(const QString& key) const
+{
+    // If object has the requested property, return it
+    if (json().contains(key))
+    {
+        return json()[key];
+    }
+    // Else, return the property from its parent group
+    else
+    {
+        const VibesGraphicsGroup* group = 0;
+        if (_qGraphicsItem)
+             group = qgraphicsitem_cast<const VibesGraphicsGroup*>(_qGraphicsItem->group());
+        // Item is member of a group, ask the group for the requested property
+        if (group)
+        {
+            return group->jsonValue(key);
+        }
+        // Item has no parent group, then return an empty value
+        else
+        {
+            return QJsonValue();
+        }
+    }
 }
 
 bool VibesGraphicsItem::setProj(int dimX, int dimY)
@@ -105,7 +131,10 @@ bool VibesGraphicsItem::setProj(int dimX, int dimY)
 
 VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
 {
-    if (type == "box") {
+    if (type == "group") {
+        return new VibesGraphicsGroup();
+    }
+    else if (type == "box") {
         return new VibesGraphicsBox();
     }
     else if (type == "boxes") {
@@ -127,6 +156,49 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
         return new VibesGraphicsLine();
     }
     return 0;
+}
+
+bool VibesGraphicsItem::parseJson(QJsonObject &json)
+{
+    // Process format string
+    if (json.contains("format") && json["format"].isString())
+    {
+        QString format = json["format"].toString();
+        format = format.trimmed();
+        // Extract FaceColor
+        int fcStart = format.indexOf('[');
+        int fcEnd = format.lastIndexOf(']');
+        if (fcStart < fcEnd)
+        {
+            json["FaceColor"] = QJsonValue(format.mid(fcStart+1, fcEnd-fcStart-1).trimmed());
+            format.remove(fcStart, fcEnd-fcStart+1);
+        }
+        // Extract LineStyle
+        const QStringList lineStyles = {"--","-.","-",":"};
+        foreach (const QString ls, lineStyles) {
+            fcStart = format.indexOf(ls);
+            if (fcStart >= 0)
+            {
+                json["LineStyle"] = QJsonValue(ls);
+                format.remove(fcStart, ls.size());
+            }
+        }
+        // Extract EdgeColor
+        format = format.trimmed();
+        if (!format.isEmpty())
+        {
+            json["EdgeColor"] = QJsonValue(format);
+        }
+        // Remove "format" from Json
+        json.remove("format");
+    }
+    // Process object name
+    if (json.contains("name") && json["name"].isString())
+    {
+        this->setName(json["name"].toString());
+    }
+    // Process object specific JSON
+    return parseJsonGraphics(json);
 }
 
 
@@ -152,12 +224,8 @@ bool VibesGraphicsItem::isJsonMatrix(const QJsonValue value, int &nbRows, int &n
 }
 
 
-bool VibesGraphicsBox::parseJson(const QJsonObject &json)
+bool VibesGraphicsBox::parseJsonGraphics(const QJsonObject &json)
 {
-    // Get shape color (or default if not specified)
-    const QBrush & brush = vibesDefaults.brush( json.value("color").toString() );
-    const QPen & pen = vibesDefaults.pen();
-
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
     if (json.contains("type"))
@@ -176,10 +244,6 @@ bool VibesGraphicsBox::parseJson(const QJsonObject &json)
             // Compute dimension
             this->_nbDim = bounds.size() / 2;
 
-            // Update rectangle color
-            this->setPen(pen);
-            this->setBrush(brush);
-
             // Update successful
             return true;
         }
@@ -192,6 +256,10 @@ bool VibesGraphicsBox::parseJson(const QJsonObject &json)
 bool VibesGraphicsBox::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
 
     Q_ASSERT(json.contains("type"));
     Q_ASSERT(json["type"].toString() == "box");
@@ -210,6 +278,10 @@ bool VibesGraphicsBox::computeProjection(int dimX, int dimY)
     // Update rectangle
     this->setRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
 
+    // Update rectangle color
+    this->setPen(pen);
+    this->setBrush(brush);
+
     // Update successful
     return true;
 }
@@ -218,7 +290,7 @@ bool VibesGraphicsBox::computeProjection(int dimX, int dimY)
 // VibesGraphicsBoxes
 //
 
-bool VibesGraphicsBoxes::parseJson(const QJsonObject &json)
+bool VibesGraphicsBoxes::parseJsonGraphics(const QJsonObject &json)
 {
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
@@ -263,8 +335,8 @@ bool VibesGraphicsBoxes::computeProjection(int dimX, int dimY)
     const QJsonObject & json = this->_json;
 
     // Get shape color (or default if not specified)
-    const QBrush & brush = vibesDefaults.brush( json.value("color").toString() );
-    const QPen & pen = vibesDefaults.pen();
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
 
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
@@ -336,12 +408,8 @@ bool VibesGraphicsBoxes::computeProjection(int dimX, int dimY)
 // VibesGraphicsBoxesUnion
 //
 
-bool VibesGraphicsBoxesUnion::parseJson(const QJsonObject &json)
+bool VibesGraphicsBoxesUnion::parseJsonGraphics(const QJsonObject &json)
 {
-    // Get shape color (or default if not specified)
-    const QBrush & brush = vibesDefaults.brush( json.value("color").toString() );
-    const QPen & pen = vibesDefaults.pen();
-
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
     if (json.contains("type"))
@@ -370,9 +438,6 @@ bool VibesGraphicsBoxesUnion::parseJson(const QJsonObject &json)
 
             // Compute dimension
             this->_nbDim = nbCols / 2;
-            // Set graphics properties
-            this->setPen(pen);
-            this->setBrush(brush);
 
             // Update successful
             return true;
@@ -387,6 +452,10 @@ bool VibesGraphicsBoxesUnion::parseJson(const QJsonObject &json)
 bool VibesGraphicsBoxesUnion::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
 
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
@@ -413,6 +482,9 @@ bool VibesGraphicsBoxesUnion::computeProjection(int dimX, int dimY)
         path |= rect_path;
     }
     this->setPath(path);
+    // Set graphics properties
+    this->setPen(pen);
+    this->setBrush(brush);
 
     // Update successful
     return true;
@@ -423,12 +495,8 @@ bool VibesGraphicsBoxesUnion::computeProjection(int dimX, int dimY)
 // VibesGraphicsEllipse
 //
 
-bool VibesGraphicsEllipse::parseJson(const QJsonObject &json)
+bool VibesGraphicsEllipse::parseJsonGraphics(const QJsonObject &json)
 {
-    // Get shape color (or default if not specified)
-    const QBrush & brush = vibesDefaults.brush( json.value("color").toString() );
-    const QPen & pen = vibesDefaults.pen();
-
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
     if (json.contains("type"))
@@ -463,9 +531,6 @@ bool VibesGraphicsEllipse::parseJson(const QJsonObject &json)
                 }
                 // Set dimension
                 this->_nbDim = center.size();
-                // Update ellipse properties
-                this->setPen(pen);
-                this->setBrush(brush);
                 // Update successful
                 return true;
             }
@@ -479,6 +544,10 @@ bool VibesGraphicsEllipse::parseJson(const QJsonObject &json)
 bool VibesGraphicsEllipse::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
 
     Q_ASSERT (json.contains("type"));
     Q_ASSERT(json["type"].toString() == "ellipse");
@@ -533,6 +602,9 @@ bool VibesGraphicsEllipse::computeProjection(int dimX, int dimY)
     this->setRect(-wx, -wy, 2 * wx, 2 * wy);
     this->setRotation(angle);
     this->setPos(x, y);
+    // Update ellipse properties
+    this->setPen(pen);
+    this->setBrush(brush);
     // Update successful
     return true;
 }
@@ -579,12 +651,8 @@ void VibesGraphicsEllipse::axisAngleFromCovarianceK(const double &sxx, const dou
 // VibesGraphicsBoxesUnion
 //
 
-bool VibesGraphicsLine::parseJson(const QJsonObject &json)
+bool VibesGraphicsLine::parseJsonGraphics(const QJsonObject &json)
 {
-    // Get shape color (or default if not specified)
-   // const QBrush & brush = vibesDefaults.brush( json.value("color").toString() );
-    const QPen & pen = vibesDefaults.pen( json.value("color").toString() );
-
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
     if (json.contains("type"))
@@ -605,9 +673,6 @@ bool VibesGraphicsLine::parseJson(const QJsonObject &json)
 
             // Compute dimension
             this->_nbDim = nbCols;
-            // Set graphics properties
-            this->setPen(pen);
-            //this->setBrush(brush);
 
             // Update successful
             return true;
@@ -622,6 +687,10 @@ bool VibesGraphicsLine::parseJson(const QJsonObject &json)
 bool VibesGraphicsLine::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
+
+    // Get line color (or default if not specified)
+    //const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
 
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
@@ -642,6 +711,9 @@ bool VibesGraphicsLine::computeProjection(int dimX, int dimY)
     // Update polygon with the list of vertices
     path.addPolygon(polygon);
     this->setPath(path);
+    // Set graphics properties
+    this->setPen(pen);
+    //this->setBrush(brush);
 
     // Update successful
     return true;

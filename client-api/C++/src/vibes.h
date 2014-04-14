@@ -106,7 +106,7 @@ namespace vibes {class Params;
         Params & operator, (const Value &value) { _params[_name] = value; return _params; }
         #ifdef VIBES_GENERATE_vibesXXX_MACROS
         // Conversion of a singleton parameter to a color (for use with macros)
-        operator Params&() {_params["color"] = _name; return _params;}
+        operator Params&() {_params["format"] = _name; return _params;}
         #endif
     };
 
@@ -125,7 +125,7 @@ namespace vibes {class Params;
 //    VIBES_PARAMS_SUBCLASS(LineWidth, double);
 
   // Convenience drawing functions with color selection
-#define VIBES_COLOR_PARAM_NAME "color"
+#define VIBES_COLOR_PARAM_NAME "format"
 #define VIBES_FUNC_COLOR_PARAM_1(func_name, T1, a) \
   void func_name(T1 a, Params params); \
   inline void func_name(T1 a, \
