@@ -299,4 +299,17 @@ namespace vibes
      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
      fflush(channel);
   }
+
+  void newGroup(const std::string &name, Params params)
+  {
+     // Send message
+     Params msg;
+     msg["action"] = "draw";
+     msg["figure"] = params.pop("figure",current_fig);
+     msg["shape"] = (params, "type", "group",
+                             "name", name);
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
 }

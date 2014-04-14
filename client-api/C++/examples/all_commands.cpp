@@ -53,6 +53,38 @@ int main()
         VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"[darkGreen]") );
     }
 
+    cout << "Test of groups" << std::endl;
+    {
+        const int nbBoxesMegaTest = 10;
+        const int dimBoxesMegaTest = 3;
+
+        VIBES_TEST( vibes::figure("Groups: red and blue") );
+
+        VIBES_TEST( vibes::newGroup("red group","[red]darkRed") );
+        VIBES_TEST( vibes::newGroup("blue group","darkBlue[blue]") );
+
+        std::vector<double> box_bounds(dimBoxesMegaTest*2);
+        for (int i=0; i<nbBoxesMegaTest; ++i)
+        {
+            for (int j=0; j<box_bounds.size(); j++)
+            {
+                if (! (j%2))
+                    box_bounds[j] = 25.0 * rand() / RAND_MAX;
+                else
+                    box_bounds[j] = box_bounds[j-1] + 5.0 * rand() / RAND_MAX;
+            }
+            VIBES_TEST( vibes::drawBox(box_bounds,vibesParams("group","red group")) );
+            for (int j=0; j<box_bounds.size(); j++)
+            {
+                if (! (j%2))
+                    box_bounds[j] = 25.0 * rand() / RAND_MAX;
+                else
+                    box_bounds[j] = box_bounds[j-1] + 5.0 * rand() / RAND_MAX;
+            }
+            VIBES_TEST( vibes::drawBox(box_bounds,vibesParams("group","blue group")) );
+        }
+    }
+
     cout << "Plotting y=sin(x) and y=cos(x)" << std::endl;
     {
         const int nbPts = 1000;

@@ -15,6 +15,7 @@ class VibesScene2D : public QGraphicsScene
     QHash<QString,VibesGraphicsItem *> _namedItems;
 public:
     explicit VibesScene2D(QObject *parent = 0);
+    ~VibesScene2D();
     VibesGraphicsItem *addJsonShapeItem(const QJsonObject &shape);
 
     void addVibesItem(VibesGraphicsItem *item);

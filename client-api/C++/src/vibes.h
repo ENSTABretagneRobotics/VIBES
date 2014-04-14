@@ -129,27 +129,27 @@ namespace vibes {class Params;
 #define VIBES_FUNC_COLOR_PARAM_1(func_name, T1, a) \
   void func_name(T1 a, Params params); \
   inline void func_name(T1 a, \
-              const std::string &color="b", Params params=Params()) {func_name(a,(params,VIBES_COLOR_PARAM_NAME,color));}
+              const std::string &color=std::string(), Params params=Params()) {func_name(a,(params,VIBES_COLOR_PARAM_NAME,color));}
 #define VIBES_FUNC_COLOR_PARAM_2(func_name, T1, a, T2, b) \
   void func_name(T1 a, T2 b, Params params); \
   inline void func_name(T1 a, T2 b, \
-              const std::string &color="b", Params params=Params()) {func_name(a,b,(params,VIBES_COLOR_PARAM_NAME,color));}
+              const std::string &color=std::string(), Params params=Params()) {func_name(a,b,(params,VIBES_COLOR_PARAM_NAME,color));}
 #define VIBES_FUNC_COLOR_PARAM_3(func_name, T1, a, T2, b, T3, c) \
   void func_name(T1 a, T2 b, T3 c, Params params); \
   inline void func_name(T1 a, T2 b, T3 c, \
-              const std::string &color="b", Params params=Params()) {func_name(a,b,c,(params,VIBES_COLOR_PARAM_NAME,color));}
+              const std::string &color=std::string(), Params params=Params()) {func_name(a,b,c,(params,VIBES_COLOR_PARAM_NAME,color));}
 #define VIBES_FUNC_COLOR_PARAM_4(func_name, T1, a, T2, b, T3, c, T4, d) \
   void func_name(T1 a, T2 b, T3 c, T4 d, Params params); \
   inline void func_name(T1 a, T2 b, T3 c, T4 d, \
-              const std::string &color="b", Params params=Params()) {func_name(a,b,c,d,(params,VIBES_COLOR_PARAM_NAME,color));}
+              const std::string &color=std::string(), Params params=Params()) {func_name(a,b,c,d,(params,VIBES_COLOR_PARAM_NAME,color));}
 #define VIBES_FUNC_COLOR_PARAM_5(func_name, T1, a, T2, b, T3, c, T4, d, T5, e) \
   void func_name(T1 a, T2 b, T3 c, T4 d, T5 e, Params params); \
   inline void func_name(T1 a, T2 b, T3 c, T4 d, T5 e, \
-              const std::string &color="b", Params params=Params()) {func_name(a,b,c,d,e,(params,VIBES_COLOR_PARAM_NAME,color));}
+              const std::string &color=std::string(), Params params=Params()) {func_name(a,b,c,d,e,(params,VIBES_COLOR_PARAM_NAME,color));}
 #define VIBES_FUNC_COLOR_PARAM_6(func_name, T1, a, T2, b, T3, c, T4, d, T5, e, T6, f) \
   void func_name(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, Params params); \
   inline void func_name(T1 a, T2 b, T3 c, T4 d, T5 e, T6 f, \
-              const std::string &color="b", Params params=Params()) {func_name(a,b,c,d,e,f,(params,VIBES_COLOR_PARAM_NAME,color));}
+              const std::string &color=std::string(), Params params=Params()) {func_name(a,b,c,d,e,f,(params,VIBES_COLOR_PARAM_NAME,color));}
 
   /**
   * Connects to the named pipe, not implemented yet.
@@ -186,6 +186,9 @@ namespace vibes {class Params;
 
   VIBES_FUNC_COLOR_PARAM_1(drawLine,const std::vector< std::vector<double> > &,points)
   VIBES_FUNC_COLOR_PARAM_2(drawLine,const std::vector<double> &,x, const std::vector<double> &,y)
+
+  // Group creation
+  VIBES_FUNC_COLOR_PARAM_1(newGroup,const std::string &,name)
 
   // Ibex enabled functions
   #ifdef _IBEX_INTERVAL_H_

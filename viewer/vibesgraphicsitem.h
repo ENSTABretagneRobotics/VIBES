@@ -130,10 +130,10 @@ class VibesGraphicsGroup : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsGroup, QGraphicsItemGroup)
 public:
-    void addToGroup(VibesGraphicsItem *item) { QGraphicsItemGroup::addToGroup(vibesgraphicsitem_cast<QGraphicsItem*>(item)); }
+    void addToGroup(VibesGraphicsItem *item);
 protected:
-    bool parseJsonGraphics(const QJsonObject &json) {Q_ASSERT_X(false,"VibesGraphicsGroup::parseJson","not implemented");}
-    bool computeProjection(int dimX, int dimY) {Q_ASSERT_X(false,"VibesGraphicsGroup::computeProjection","not implemented");}
+    bool parseJsonGraphics(const QJsonObject &json) { return true; }
+    bool computeProjection(int dimX, int dimY) { return true; }
 };
 
 /// A box

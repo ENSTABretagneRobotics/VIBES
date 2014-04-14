@@ -102,7 +102,7 @@ QJsonValue VibesGraphicsItem::jsonValue(const QString& key) const
     {
         const VibesGraphicsGroup* group = 0;
         if (_qGraphicsItem)
-             group = qgraphicsitem_cast<const VibesGraphicsGroup*>(_qGraphicsItem->group());
+             group = qgraphicsitem_cast<const VibesGraphicsGroup*>(_qGraphicsItem->parentItem());
         // Item is member of a group, ask the group for the requested property
         if (group)
         {
@@ -221,6 +221,21 @@ bool VibesGraphicsItem::isJsonMatrix(const QJsonValue value, int &nbRows, int &n
         if ((*line).toArray().size() != nbCols) return false;
     }
     return true;
+}
+
+void VibesGraphicsGroup::addToGroup(VibesGraphicsItem *item)
+{
+    // Cannot add nullptr to the group
+    if (!item) return;
+    // Add to the group
+    QGraphicsItemGroup::addToGroup(vibesgraphicsitem_cast<QGraphicsItem*>(item));
+    // Update dimension
+    this->_nbDim = qMax(_nbDim, item->dimension());
+    // Update item with group properties
+    if (VibesGraphicsItem::scene())
+    {
+        item->setProj(VibesGraphicsItem::scene()->dimX(),VibesGraphicsItem::scene()->dimY());
+    }
 }
 
 
