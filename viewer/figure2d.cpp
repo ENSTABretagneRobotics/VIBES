@@ -208,6 +208,11 @@ void Figure2D::resizeEvent(QResizeEvent *event)
 {
     lbProjX->move(width()-lbProjX->width()-5, 10);
     lbProjY->move(10, height()-lbProjX->height()-5);
+
+    if (event->oldSize().width() > 0 && event->oldSize().height())
+        this->scale((double)event->size().width() / event->oldSize().width(),
+                    (double)event->size().height() / event->oldSize().height());
+
     QGraphicsView::resizeEvent(event);
 }
 
