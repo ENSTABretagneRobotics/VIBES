@@ -164,7 +164,15 @@ void Figure2D::wheelEvent(QWheelEvent *event)
 
         // Scales the view to zoom according to mouse wheel
         double s = qPow(2.0, 0.04*event->angleDelta().y()/8.0);
-        this->scale(s,s);
+
+        double sx = s;
+        double sy = s;
+
+        if (event->modifiers().testFlag(Qt::AltModifier))
+            sx = 1.0;
+        if (event->modifiers().testFlag(Qt::ShiftModifier))
+            sy = 1.0;
+        this->scale(sx,sy);
 //        double dx = sceneRect().width() * (s - 1.0);
 //        double dy = sceneRect().height() * (s - 1.0);
 //        this->setSceneRect(sceneRect().adjusted(-dx,-dy,dx,dy));
