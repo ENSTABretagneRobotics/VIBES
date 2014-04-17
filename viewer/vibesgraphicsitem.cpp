@@ -116,6 +116,21 @@ QJsonValue VibesGraphicsItem::jsonValue(const QString& key) const
     }
 }
 
+
+void VibesGraphicsItem::setJsonValue(const QString &key, const QJsonValue &value)
+{
+    // Cannot update read-only properties
+    if (propertyIsReadOnly(key))
+        return;
+    // Set or update property value
+    _json[key] = value;
+    /// \todo Update graphics with new Json
+    if (propertyChangesGeometry(key))
+        computeProjection();
+    parseJson()
+}
+
+
 bool VibesGraphicsItem::setProj(int dimX, int dimY)
 {
     if (existsInProj(dimX,dimY))
@@ -192,11 +207,13 @@ bool VibesGraphicsItem::parseJson(QJsonObject &json)
         // Remove "format" from Json
         json.remove("format");
     }
+
     // Process object name
     if (json.contains("name") && json["name"].isString())
     {
         this->setName(json["name"].toString());
     }
+
     // Process object specific JSON
     return parseJsonGraphics(json);
 }

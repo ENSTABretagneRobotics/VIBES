@@ -56,6 +56,7 @@ public:
     bool setJson(QJsonObject json, int dimX=0, int dimY=1);
     const QJsonObject & json() const { return _json; }
     QJsonValue jsonValue(const QString &key) const;
+    void setJsonValue(const QString &key, const QJsonValue &value);
 
     bool existsInProj(int dimX, int dimY) const { return hasDim(dimX) && hasDim(dimY); }
     bool setProj(int dimX, int dimY);
@@ -79,6 +80,10 @@ protected:
     // Utility
     static bool isJsonMatrix(const QJsonValue json, int &nbRows, int &nbCols);
     static bool isJsonMatrix(const QJsonValue json) { int r,c; return isJsonMatrix(json, r, c); }
+    // Json Properties categories
+    virtual bool propertyIsReadOnly(const QString & key) { if (key=="type") return true; else return false; }
+    virtual bool propertyChangesGeometry(const QString & key) { return false; }
+
 protected:
     QJsonObject _json;
     int _nbDim;
@@ -123,6 +128,16 @@ public: \
     VIBES_GRAPHICS_ITEM_TYPE_DECL(class_name) \
     VIBES_GRAPHICS_ITEM_CTOR_DECL(class_name, base_class)
 
+#define VIBES_READ_ONLY_PROPERTIES(...) \
+protected: \
+inline bool propertyIsReadOnly(const QString& key) { \
+    if (QStringList({__VA_ARGS__}).contains(key)) return true; \
+    else return VibesGraphicsItem::propertyIsReadOnly(key); }
+#define VIBES_GEOMETRY_CHANGING_PROPERTIES(...) \
+protected: \
+inline bool propertyChangesGeometry(const QString& key) { \
+    if (QStringList({__VA_ARGS__}).contains(key)) return true; \
+    else return VibesGraphicsItem::propertyChangesGeometry(key); }
 
 /// A group of objects (a layer)
 
