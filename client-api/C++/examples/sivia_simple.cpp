@@ -1,22 +1,25 @@
-#include "vibes.h"                                                     // <== Includes the VIBES C++ API
+#include "vibes.h"              // <== Includes the VIBES C++ API
 #include "interval.h"
 #include "box.h"
 #include <list>
-#define EPSILON 0.1
+const double EPSILON = 0.1;
 
 using namespace std;
 
-interval dist(box robot, box landmark){return Sqrt(Sqr(robot[1]-landmark[1])+Sqr(robot[2]-landmark[2]));}
+interval dist(box robot, box landmark)
+{
+    return Sqrt(Sqr(robot[1]-landmark[1])+Sqr(robot[2]-landmark[2]));
+}
 
 int main()
 {
-  vibes::connect();                                                    // <== Initializes the VIBES "connection"
-  vibes::figure("SIVIA");                                                     // <== Create a new VIBes figure
+  vibes::connect();             // <== Initializes the VIBES "connection"
+  vibes::figure("SIVIA");       // <== Create a new VIBes figure
 
   box robot(interval(-10,10),interval(-10,10));
   box landmark(interval(0),interval(0));
   
-  interval range(7.8,8.1);
+  interval range(6.0,8.5);
   
   list<box> l;l.push_back(robot);
   
@@ -25,11 +28,14 @@ int main()
     box top = l.front();l.pop_front();
     
     if(Inter(range,dist(top,landmark)).IsEmpty())
-      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,"lightGray"); // <== draws outter boxes
+      // draw outter boxes
+      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,"blue");
     else if(Subset(dist(top,landmark),range))
-      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,"darkGray"); // <== draws inner boxes
+      // draw inner boxes
+      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,"red");
     else if(Width(top)<EPSILON)
-      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,"w"); // <== draws undeterminated boxes
+      // draw undeterminated boxes
+      vibes::drawBox(top[1].inf,top[1].sup,top[2].inf,top[2].sup,"yellow");
     else
     {
       box b1,b2;
@@ -38,6 +44,6 @@ int main()
     }
   }
   
-  vibes::disconnect();                                                 // <== closes the VIBES "connection"
+  vibes::disconnect();      // <== closes the VIBES "connection"
   return 0;
 }

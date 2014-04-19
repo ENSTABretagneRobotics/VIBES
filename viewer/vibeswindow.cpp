@@ -6,7 +6,8 @@
 #include <QJsonValue>
 #include "figure2d.h"
 
-#include <QGraphicsRectItem>
+#include "vibesscene2d.h"
+
 #include <QFileDialog>
 
 #include <QTimer>
@@ -16,14 +17,18 @@
 
 VibesWindow::VibesWindow(bool showFileOpenDlg, QWidget *parent) :
 QMainWindow(parent),
-ui(new Ui::VibesWindow),
-defaultPen(Qt::black, 0)
+ui(new Ui::VibesWindow)
 {
     ui->setupUi(this);
     ui->treeView->setModel(new VibesTreeModel(figures, this));
 
-    // Init. brushes for default color names
-    initDefaultBrushes();
+    // When its name is double clicked in the list, the corresponding figure is brought to front
+    connect(ui->treeView, &QTreeView::doubleClicked,
+            [](const QModelIndex& mi){Figure2D* fig = static_cast<Figure2D*>( mi.internalPointer() );
+                                      if (fig) { fig->showNormal();
+                                                 fig->activateWindow();
+                                                 fig->raise(); }
+                                     } );
 
     /// \todo Put platform dependent code here for named pipe creation and opening
     if (showFileOpenDlg)
@@ -69,39 +74,6 @@ VibesWindow::~VibesWindow()
     delete ui;
 }
 
-/// Initializes brushes for default color names
-
-void VibesWindow::initDefaultBrushes()
-{
-#define ADD_DEFAULT_BRUSH(full_name) \
-    brushes[ #full_name ]  = QBrush(Qt::full_name);
-
-#define ADD_DEFAULT_BRUSH2(full_name, short_name) \
-    brushes[ #full_name ]  = QBrush(Qt::full_name); \
-    brushes[ #short_name ] = QBrush(Qt::full_name);
-
-    // Default brush
-    brushes[QString()] = QBrush();
-
-    // Named brushes
-    ADD_DEFAULT_BRUSH2(cyan, c);
-    ADD_DEFAULT_BRUSH2(yellow, y);
-    ADD_DEFAULT_BRUSH2(magenta, m);
-    ADD_DEFAULT_BRUSH2(red, r);
-    ADD_DEFAULT_BRUSH2(green, g);
-    ADD_DEFAULT_BRUSH2(blue, b);
-    ADD_DEFAULT_BRUSH2(black, k);
-    ADD_DEFAULT_BRUSH2(white, w);
-    ADD_DEFAULT_BRUSH(darkGray);
-    ADD_DEFAULT_BRUSH(gray);
-    ADD_DEFAULT_BRUSH(lightGray);
-    ADD_DEFAULT_BRUSH(darkCyan);
-    ADD_DEFAULT_BRUSH(darkYellow);
-    ADD_DEFAULT_BRUSH(darkMagenta);
-    ADD_DEFAULT_BRUSH(darkRed);
-    ADD_DEFAULT_BRUSH(darkGreen);
-    ADD_DEFAULT_BRUSH(darkBlue);
-}
 
 Figure2D *
 VibesWindow::newFigure(QString name)
@@ -115,18 +87,42 @@ VibesWindow::newFigure(QString name)
             name = QString("Figure %1").arg(i);
         }
     }
+
     // Delete existing figure with the same name
-    delete figures[name];
+    if (figures.contains(name))
+    {
+        // Unname the figure that will be deleted, so that it is not backlinked to the list of figures
+        figures[name]->setObjectName(QString());
+        delete figures[name];
+    }
+
     // Create new figure
-    figures[name] = new Figure2D(this);
+    Figure2D * fig = new Figure2D(this);
+    fig->setObjectName(name);
+
+    // Update figure list
+    figures[name] = fig;
+    static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
+    this->connect(fig, SIGNAL(destroyed(QObject*)), SLOT(removeFigureFromList(QObject*)));
+
     // Set flags to make it a window
-    figures[name]->setWindowFlags(Qt::Window);
-    figures[name]->setWindowTitle(name);
-    figures[name]->show();
-    figures[name]->activateWindow();
-    figures[name]->raise();
+    fig->setWindowFlags(Qt::Window);
+    fig->setWindowTitle(name);
+    fig->show();
+    fig->activateWindow();
+    fig->raise();
     // Return pointer to the new figure
-    return figures[name];
+    return fig;
+}
+
+void VibesWindow::removeFigureFromList(QObject* fig)
+{
+    QHash<QString,Figure2D*>::iterator it = figures.find(fig->objectName());
+    if (it != figures.end() && it.value()==fig)
+    {
+        figures.erase(it);
+        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
+    }
 }
 
 bool
@@ -169,16 +165,13 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         if (!fig)
             return false;
         // Remove from the list of figures an delete
-        figures.remove(fig_name);
         delete fig;
-        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
     }
         // Create a new figure
     else if (action == "new")
     {
         // Create a new figure (previous with the same name will be destroyed)
         fig = newFigure(fig_name);
-        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
     }
         // Clear the contents of a figure
     else if (action == "clear")
@@ -205,12 +198,14 @@ VibesWindow::processMessage(const QByteArray &msg_data)
             double ub_x = box[1].toDouble();
             double lb_y = box[2].toDouble();
             double ub_y = box[3].toDouble();
-            fig->fitInView(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+            fig->setSceneRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+            fig->fitInView(fig->sceneRect());
         }
             // Auto-set the view rectangle
         else if (msg["box"].toString() == "auto")
         {
-            fig->fitInView(fig->scene()->sceneRect());
+            fig->setSceneRect(QRectF());
+            fig->fitInView(fig->sceneRect());
         }
     }
         // Export to a graphical file
@@ -236,119 +231,8 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         if (msg.contains("shape"))
         {
             QJsonObject shape = msg.value("shape").toObject();
-            // Get shape color (or default if not specified)
-            const QBrush & brush = brushes[shape.value("color").toString()];
-            if (shape.contains("type"))
-            {
-                QString type = shape["type"].toString();
-
-                if (type == "box")
-                {
-                    QJsonArray bounds = shape["bounds"].toArray();
-                    if (bounds.size() >= 4)
-                    {
-                        double lb_x = bounds[0].toDouble();
-                        double ub_x = bounds[1].toDouble();
-                        double lb_y = bounds[2].toDouble();
-                        double ub_y = bounds[3].toDouble();
-
-                        item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y, defaultPen, brush);
-                    }
-                }
-                else if (type == "boxes")
-                {
-                    QJsonArray boundsX_lb = shape["boundsX_lb"].toArray();
-                    QJsonArray boundsX_ub = shape["boundsX_ub"].toArray();
-                    QJsonArray boundsY_lb = shape["boundsY_lb"].toArray();
-                    QJsonArray boundsY_ub = shape["boundsY_ub"].toArray();
-
-                    if (boundsX_lb.size() == boundsX_ub.size() &&
-                            boundsX_ub.size() == boundsY_lb.size() &&
-                            boundsY_lb.size() == boundsY_ub.size())
-                    {
-                        bool colors = shape.contains("colors");
-                        bool enoughColors = false;
-                        if (colors)
-                            enoughColors = shape["colors"].toArray().size() == boundsX_lb.size();
-                        for (int i = 0; i < boundsX_lb.size(); i++)
-                        {
-                            double lb_x = boundsX_lb[i].toDouble();
-                            double ub_x = boundsX_ub[i].toDouble();
-                            double lb_y = boundsY_lb[i].toDouble();
-                            double ub_y = boundsY_ub[i].toDouble();
-
-                            item = fig->scene()->addRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y, defaultPen, brush);
-                        }
-                    }
-                }
-                else if (type == "ellipse")
-                {
-                    QJsonArray center = shape["center"].toArray();
-                    if (center.size() >= 2)
-                    {
-                        double x = center[0].toDouble();
-                        double y = center[1].toDouble();
-                        double wx, wy, angle;
-                        if (shape.contains("axis") && shape.contains("orientation"))
-                        {
-                            QJsonArray axis = shape["axis"].toArray();
-                            wx = axis[0].toDouble();
-                            wy = axis[1].toDouble();
-                            angle = shape.value("orientation").toDouble();
-                        }
-                        else if (shape.contains("covariance"))
-                        {
-                            double sxx, sxy, syy, s, eval1, eval2, det, trace, rightTerm;
-                            double evect1[2], evect2[2];
-                            s = shape.contains("sigma") ? shape["sigma"].toDouble() : 5;
-                            QJsonArray covariance = shape["covariance"].toArray();
-                            sxx = covariance[0].toDouble();
-                            sxy = covariance[1].toDouble();
-                            syy = covariance[3].toDouble();
-                            if (sxy == 0)
-                            {
-                                eval1 = sxx;
-                                eval2 = syy;
-                                evect1[0] = 1;
-                                evect1[1] = 0;
-                                evect2[0] = 0;
-                                evect2[1] = 1;
-                            }
-                            else
-                            {
-                                det = sxx * syy - pow(sxy, 2);
-                                trace = sxx + syy;
-                                rightTerm = sqrt(pow(sxx + syy, 2) / 4 - det);
-                                eval1 = trace / 2 + rightTerm;
-                                eval2 = trace / 2 - rightTerm;
-
-                                evect1[0] = evect2[0] = 1; // We set the x-component of the eigenvectors to 1
-                                evect1[1] = (eval1 - sxy - sxx) / (sxy + syy - eval1);
-                                evect2[1] = (eval2 - sxy - sxx) / (sxy + syy - eval2);
-                            }
-                            // (evect1; evect2) give us the rotation matrix
-                            // s*sqrt(eval1) s*sqrt(eval2) give us the main axis-sizes of the ellipse
-
-                            angle = (evect1[0] != evect1[0]) || (evect1[1] != evect1[1]) ? (atan2(evect2[1], evect2[0])*180 * M_1_PI - 90) : atan2(evect1[1], evect1[0])*180 * M_1_PI;
-                            wx = s * sqrt(eval1);
-                            wy = s * sqrt(eval2);
-                        }
-                        else // should not be here
-                            return false;
-                        item = fig->scene()->addEllipse(-wx, -wy, 2 * wx, 2 * wy, defaultPen, brush);
-                        item->setRotation(angle);
-                        item->setPos(x, y);
-                    }
-                }
-                else if (type == "point")
-                {
-
-                }
-                else if (type == "points")
-                {
-
-                }
-            }
+            // Let the scene parse JSON to create the appropriate object
+            fig->scene()->addJsonShapeItem(shape);
         }
     }
         // Unknown action

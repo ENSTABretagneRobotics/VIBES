@@ -29,16 +29,15 @@ public slots:
     bool processMessage(const QByteArray &msg);
     void exportCurrentFigureGraphics();
 
+private slots:
+    void removeFigureFromList(QObject *fig);
+
 private:
     Ui::VibesWindow *ui;
 
     QHash<QString, Figure2D*> figures;
-    QHash<QString, QBrush> brushes;
 
     QFile file;
-    QPen defaultPen;
-
-    void initDefaultBrushes();
     QByteArray message;
 };
 
