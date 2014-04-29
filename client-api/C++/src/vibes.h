@@ -163,6 +163,7 @@ namespace vibes {class Params;
   void figure(const std::string &figureName = std::string());
   void clear(const std::string &figureName = std::string());
   void saveImage(const std::string &fileName = std::string(), const std::string &figureName = std::string());
+  void selectFigure(const std::string &figureName);
 
   // View setting
   void axisAuto(Params params=Params());

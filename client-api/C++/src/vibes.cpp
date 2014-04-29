@@ -141,6 +141,12 @@ namespace vibes
       fflush(channel);
   }
 
+  void selectFigure(const std::string &figureName)
+  {
+     current_fig = figureName;
+  }
+
+
   ///
   /// \section View settings
   ///
