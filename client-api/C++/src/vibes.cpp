@@ -352,6 +352,6 @@ namespace vibes
 
   void setObjectProperties(const std::string &objectName, const Params &properties)
   {
-     setObjectProperty(current_fig, objectName, properties);
+     setObjectProperties(current_fig, objectName, properties);
   }
 }
