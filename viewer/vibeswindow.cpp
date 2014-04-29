@@ -7,6 +7,7 @@
 #include "figure2d.h"
 
 #include "vibesscene2d.h"
+#include "vibesgraphicsitem.h"
 
 #include <QFileDialog>
 
@@ -223,16 +224,57 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         if (!fig) // Create a new figure if it does not exist
             fig = newFigure(fig_name);
 
-        QColor fill_color;
-        QColor edge_color;
-
-        QGraphicsItem * item = 0;
-
         if (msg.contains("shape"))
         {
             QJsonObject shape = msg.value("shape").toObject();
             // Let the scene parse JSON to create the appropriate object
             fig->scene()->addJsonShapeItem(shape);
+        }
+    }
+        // Set properties
+    else if (action == "set")
+    {
+        // Figure has to exist
+        if (!fig)
+            return false;
+        // Set object properties
+        if (msg.contains("object"))
+        {
+            // Find named object
+            VibesGraphicsItem * object = fig->scene()->itemByName(msg.value("object").toString());
+            if (!object)
+                return false;
+            // Update properties
+            QJsonObject properties = msg.value("properties").toObject();
+            for (QJsonObject::const_iterator it = properties.constBegin(); it != properties.constEnd(); it++)
+            {
+                object->setJsonValue(it.key(), it.value());
+            }
+        }
+        // else set figure properties
+        else
+        {
+            // Update properties
+            QJsonObject properties = msg.value("properties").toObject();
+            for (QJsonObject::const_iterator it = properties.constBegin(); it != properties.constEnd(); it++)
+            {
+                if (it.key() == "width" && it.value().toDouble()>40.0)
+                {
+                    fig->resize( it.value().toDouble(), fig->height() );
+                }
+                else if (it.key() == "height" && it.value().toDouble()>40.0)
+                {
+                    fig->resize( fig->width(), it.value().toDouble() );
+                }
+                else if (it.key() == "x")
+                {
+                    fig->move( it.value().toDouble(), fig->y() );
+                }
+                else if (it.key() == "y")
+                {
+                    fig->move( fig->x(), it.value().toDouble() );
+                }
+            }
         }
     }
         // Unknown action

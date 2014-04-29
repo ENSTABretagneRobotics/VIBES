@@ -48,9 +48,45 @@ int main()
         }
         VIBES_TEST( vibes::figure("Megatest with boxes") );
         VIBES_TEST( vibes::drawBoxes(boxes_bounds,"[darkYellow]") );
+        VIBES_TEST( vibes::setFigureProperties(vibesParams("x",0,"y",40,"width",150,"height",150)) );
 
         VIBES_TEST( vibes::figure("Megatest with boxes union") );
         VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"[darkGreen]") );
+        VIBES_TEST( vibes::setFigureProperties(vibesParams("x",150,"y",40,"width",150,"height",150)) );
+    }
+
+    cout << "Test of groups" << std::endl;
+    {
+        const int nbBoxesMegaTest = 10;
+        const int dimBoxesMegaTest = 3;
+
+        VIBES_TEST( vibes::figure("Groups: red and blue") );
+        VIBES_TEST( vibes::setFigureProperties(vibesParams("x",300,"y",40,"width",150,"height",150)) );
+
+        VIBES_TEST( vibes::newGroup("red group","[red]darkRed") );
+        VIBES_TEST( vibes::newGroup("blue group","darkBlue[blue]") );
+
+        std::vector<double> box_bounds(dimBoxesMegaTest*2);
+        for (int i=0; i<nbBoxesMegaTest; ++i)
+        {
+            for (int j=0; j<box_bounds.size(); j++)
+            {
+                if (! (j%2))
+                    box_bounds[j] = 25.0 * rand() / RAND_MAX;
+                else
+                    box_bounds[j] = box_bounds[j-1] + 5.0 * rand() / RAND_MAX;
+            }
+            VIBES_TEST( vibes::drawBox(box_bounds,vibesParams("group","red group")) );
+            for (int j=0; j<box_bounds.size(); j++)
+            {
+                if (! (j%2))
+                    box_bounds[j] = 25.0 * rand() / RAND_MAX;
+                else
+                    box_bounds[j] = box_bounds[j-1] + 5.0 * rand() / RAND_MAX;
+            }
+            VIBES_TEST( vibes::drawBox(box_bounds,vibesParams("group","blue group")) );
+        }
+        VIBES_TEST( vibes::setObjectProperty("blue group","format","cyan[blue]") );
     }
 
     cout << "Plotting y=sin(x) and y=cos(x)" << std::endl;
@@ -77,6 +113,9 @@ int main()
         VIBES_TEST( vibes::drawLine(vect_x,vect_y,"blue") );
 
         VIBES_TEST( vibes::axisAuto() );
+
+        VIBES_TEST( vibes::setFigureProperties("sin and cos",
+                                                vibesParams("x",0,"y",220,"width",450,"height",100)) );
     }
 
 
