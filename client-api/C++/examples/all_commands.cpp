@@ -48,9 +48,11 @@ int main()
         }
         VIBES_TEST( vibes::figure("Megatest with boxes") );
         VIBES_TEST( vibes::drawBoxes(boxes_bounds,"[darkYellow]") );
+        VIBES_TEST( vibes::setFigureProperties(vibesParams("x",0,"y",40,"width",150,"height",150)) );
 
         VIBES_TEST( vibes::figure("Megatest with boxes union") );
         VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"[darkGreen]") );
+        VIBES_TEST( vibes::setFigureProperties(vibesParams("x",150,"y",40,"width",150,"height",150)) );
     }
 
     cout << "Test of groups" << std::endl;
@@ -59,6 +61,7 @@ int main()
         const int dimBoxesMegaTest = 3;
 
         VIBES_TEST( vibes::figure("Groups: red and blue") );
+        VIBES_TEST( vibes::setFigureProperties(vibesParams("x",300,"y",40,"width",150,"height",150)) );
 
         VIBES_TEST( vibes::newGroup("red group","[red]darkRed") );
         VIBES_TEST( vibes::newGroup("blue group","darkBlue[blue]") );
@@ -82,7 +85,7 @@ int main()
                     box_bounds[j] = box_bounds[j-1] + 5.0 * rand() / RAND_MAX;
             }
             VIBES_TEST( vibes::drawBox(box_bounds,vibesParams("group","blue group")) );
-        }
+        }        
     }
 
     cout << "Plotting y=sin(x) and y=cos(x)" << std::endl;
@@ -111,7 +114,7 @@ int main()
         VIBES_TEST( vibes::axisAuto() );
 
         VIBES_TEST( vibes::setFigureProperties("sin and cos",
-                                                vibesParams("x",0,"y",30,"width",400,"height",100)) );
+                                                vibesParams("x",0,"y",220,"width",450,"height",100)) );
     }
 
 
