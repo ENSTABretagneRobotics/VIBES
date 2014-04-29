@@ -109,6 +109,9 @@ int main()
         VIBES_TEST( vibes::drawLine(vect_x,vect_y,"blue") );
 
         VIBES_TEST( vibes::axisAuto() );
+
+        VIBES_TEST( vibes::setFigureProperties("sin and cos",
+                                                vibesParams("x",0,"y",30,"width",400,"height",100)) );
     }
 
 

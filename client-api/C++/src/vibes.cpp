@@ -318,4 +318,40 @@ namespace vibes
      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
      fflush(channel);
   }
+
+  // Property modification
+  void setFigureProperties(const std::string &figureName, const Params &properties)
+  {
+     // Send message
+     Params msg;
+     msg["action"] = "set";
+     msg["figure"] = figureName;
+     msg["properties"] = properties;
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void setFigureProperties(const Params &properties)
+  {
+     setFigureProperties(current_fig, properties);
+  }
+
+  void setObjectProperties(const std::string &figureName, const std::string &objectName, const Params &properties)
+  {
+     // Send message
+     Params msg;
+     msg["action"] = "set";
+     msg["figure"] = figureName;
+     msg["object"] = objectName;
+     msg["properties"] = properties;
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void setObjectProperties(const std::string &objectName, const Params &properties)
+  {
+     setObjectProperty(current_fig, objectName, properties);
+  }
 }

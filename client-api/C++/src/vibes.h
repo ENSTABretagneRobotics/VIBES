@@ -191,6 +191,20 @@ namespace vibes {class Params;
   // Group creation
   VIBES_FUNC_COLOR_PARAM_1(newGroup,const std::string &,name)
 
+  // Figure properties modification
+  void setFigureProperty(const std::string &figureName, const std::string &key, const Value &value);
+  void setFigureProperty(const std::string &key, const Value &value);
+
+  void setFigureProperties(const std::string &figureName, const Params &properties);
+  void setFigureProperties(const Params &properties);
+
+  // Object properties modification
+  void setObjectProperty(const std::string &figureName, const std::string &objectName, const std::string &key, const Value &value);
+  void setObjectProperty(const std::string &objectName, const std::string &key, const Value &value);
+
+  void setObjectProperties(const std::string &figureName, const std::string &objectName, const Params &properties);
+  void setObjectProperties(const std::string &objectName, const Params &properties);
+
   // Ibex enabled functions
   #ifdef _IBEX_INTERVAL_H_
     VIBES_FUNC_COLOR_PARAM_2(drawBox,const ibex::Interval &,x, const ibex::Interval &,y)
@@ -204,9 +218,31 @@ namespace vibes {class Params;
   // Inline Implementations
   //
 
-  inline void drawCircle(const double &cx, const double &cy, const double &r, const Params &params) {
-    drawEllipse(cx,cy,r,r,0.,params);
+  inline void drawCircle(const double &cx, const double &cy, const double &r, const Params &params)
+  {
+     drawEllipse(cx,cy,r,r,0.,params);
   }
+
+  inline void setFigureProperty(const std::string &figureName, const std::string &key, const Value &value)
+  {
+     setFigureProperties(figureName, Params(key, value));
+  }
+
+  inline void setFigureProperty(const std::string &key, const Value &value)
+  {
+     setFigureProperties(Params(key, value));
+  }
+
+  inline void setObjectProperty(const std::string &figureName, const std::string &objectName, const std::string &key, const Value &value)
+  {
+     setObjectProperties(figureName, objectName, Params(key, value));
+  }
+
+  inline void setObjectProperty(const std::string &objectName, const std::string &key, const Value &value)
+  {
+     setObjectProperties(objectName, Params(key, value));
+  }
+
   // Ibex enabled functions
   #ifdef _IBEX_INTERVAL_H_
     inline void drawBox(const ibex::Interval &x, const ibex::Interval &y, Params params) {
