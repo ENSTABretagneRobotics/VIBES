@@ -85,7 +85,8 @@ int main()
                     box_bounds[j] = box_bounds[j-1] + 5.0 * rand() / RAND_MAX;
             }
             VIBES_TEST( vibes::drawBox(box_bounds,vibesParams("group","blue group")) );
-        }        
+        }
+        VIBES_TEST( vibes::setObjectProperty("blue group","format","cyan[blue]") );
     }
 
     cout << "Plotting y=sin(x) and y=cos(x)" << std::endl;

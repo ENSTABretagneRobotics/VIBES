@@ -77,7 +77,7 @@ void VibesDefaults::initDefaultBrushesAndPens()
 
 
 VibesGraphicsItem::VibesGraphicsItem(QGraphicsItem *qGraphicsItem)
- : _qGraphicsItem(qGraphicsItem), _nbDim(0)
+ : _qGraphicsItem(qGraphicsItem), _nbDim(0), _dimX(-1), _dimY(-1)
 {
 }
 
@@ -119,23 +119,45 @@ QJsonValue VibesGraphicsItem::jsonValue(const QString& key) const
 
 void VibesGraphicsItem::setJsonValue(const QString &key, const QJsonValue &value)
 {
-    // Cannot update read-only properties
-    if (propertyIsReadOnly(key))
-        return;
-    // Set or update property value
-    _json[key] = value;
-    /// \todo Update graphics with new Json
-    if (propertyChangesGeometry(key))
-        computeProjection();
-    parseJson()
+    // Wrap key-value pair in a QJsonObject...
+    QJsonObject jsonObject;
+    jsonObject[key] = value;
+    // ...and call setJsonValues
+    setJsonValues(jsonObject);
+}
+
+void VibesGraphicsItem::setJsonValues(const QJsonObject &values)
+{
+    bool bNeedProjection = false;
+
+    for (QJsonObject::const_iterator prop = values.constBegin(); prop != values.constEnd(); prop++)
+    {
+        // Cannot update read-only properties
+        if (propertyIsReadOnly(prop.key()))
+            continue;
+        // Set or update property value
+        _json[prop.key()] = prop.value();
+
+        // Check if we need to update projection
+        if (propertyChangesGeometry(prop.key()))
+            bNeedProjection = true;
+    }
+
+    // Update graphics with new Json
+    parseJson(_json);
+
+    if (bNeedProjection)
+        computeProjection(_dimX, _dimY);
 }
 
 
 bool VibesGraphicsItem::setProj(int dimX, int dimY)
 {
-    if (existsInProj(dimX,dimY))
+    _dimX = dimX;
+    _dimY = dimY;
+    if (existsInProj(_dimX,_dimY))
     {
-        return computeProjection(dimX, dimY);
+        return computeProjection(_dimX, _dimY);
     }
     else
     {
@@ -255,6 +277,18 @@ void VibesGraphicsGroup::addToGroup(VibesGraphicsItem *item)
     }
 }
 
+bool VibesGraphicsGroup::parseJsonGraphics(const QJsonObject &json)
+{
+    // Set graphical properties
+    QList<QGraphicsItem*> children = this->childItems();
+    foreach(QGraphicsItem* child, children)
+    {
+        VibesGraphicsItem * item = qgraphicsitem_cast<VibesGraphicsItem *>(child);
+        if (item)
+            item->updateProj();
+    }
+    return true;
+}
 
 bool VibesGraphicsBox::parseJsonGraphics(const QJsonObject &json)
 {
@@ -275,6 +309,10 @@ bool VibesGraphicsBox::parseJsonGraphics(const QJsonObject &json)
 
             // Compute dimension
             this->_nbDim = bounds.size() / 2;
+
+            // Set graphical properties
+            this->setPen( vibesDefaults.pen( jsonValue("EdgeColor").toString() ) );
+            this->setBrush( vibesDefaults.brush( jsonValue("FaceColor").toString() ) );
 
             // Update successful
             return true;
@@ -352,6 +390,16 @@ bool VibesGraphicsBoxes::parseJsonGraphics(const QJsonObject &json)
 
             // Compute dimension
             this->_nbDim = nbCols / 2;
+
+            // Set graphical properties
+            QList<QGraphicsItem*> rects = this->childItems();
+            foreach(QGraphicsItem* item, rects)
+            {
+                QGraphicsRectItem * rect = qgraphicsitem_cast<QGraphicsRectItem *>(item);
+                if (!rect) continue;
+                rect->setPen( vibesDefaults.pen( jsonValue("EdgeColor").toString() ) );
+                rect->setBrush( vibesDefaults.brush( jsonValue("FaceColor").toString() ) );
+            }
 
             // Update successful
             return true;
@@ -471,6 +519,10 @@ bool VibesGraphicsBoxesUnion::parseJsonGraphics(const QJsonObject &json)
             // Compute dimension
             this->_nbDim = nbCols / 2;
 
+            // Set graphical properties
+            this->setPen( vibesDefaults.pen( jsonValue("EdgeColor").toString() ) );
+            this->setBrush( vibesDefaults.brush( jsonValue("FaceColor").toString() ) );
+
             // Update successful
             return true;
         }
@@ -563,6 +615,11 @@ bool VibesGraphicsEllipse::parseJsonGraphics(const QJsonObject &json)
                 }
                 // Set dimension
                 this->_nbDim = center.size();
+
+                // Set graphical properties
+                this->setPen( vibesDefaults.pen( jsonValue("EdgeColor").toString() ) );
+                this->setBrush( vibesDefaults.brush( jsonValue("FaceColor").toString() ) );
+
                 // Update successful
                 return true;
             }
@@ -705,6 +762,9 @@ bool VibesGraphicsLine::parseJsonGraphics(const QJsonObject &json)
 
             // Compute dimension
             this->_nbDim = nbCols;
+
+            // Set pen
+            this->setPen( vibesDefaults.pen( jsonValue("EdgeColor").toString() ) );
 
             // Update successful
             return true;
