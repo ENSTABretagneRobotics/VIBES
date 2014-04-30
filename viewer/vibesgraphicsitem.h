@@ -150,6 +150,7 @@ class VibesGraphicsGroup : public QGraphicsItemGroup, public VibesGraphicsItem
     VIBES_GRAPHICS_ITEM(VibesGraphicsGroup, QGraphicsItemGroup)
 public:
     void addToGroup(VibesGraphicsItem *item);
+    void clear();
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY) { return true; }
