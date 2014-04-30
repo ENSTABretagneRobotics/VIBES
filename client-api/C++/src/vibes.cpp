@@ -73,13 +73,10 @@ namespace vibes
   /// Current figure name (client maintained state)
   string current_fig="default";
 
-  ///
-  /// \section Management of connection to the Vibes server
-  ///
+  //
+  // Management of connection to the Vibes server
+  //
 
-  /**
-  * Connects to the named pipe, not implemented yet.
-  */
   void beginDrawing()
   {
       // Retrieve user-profile directory from envirnment variable
@@ -108,9 +105,9 @@ namespace vibes
     fclose(channel);
   }
 
-  ///
-  /// \section Figure management
-  ///
+  //
+  // Figure management
+  //
 
   void newFigure(const std::string &figureName)
   {
@@ -147,9 +144,9 @@ namespace vibes
   }
 
 
-  ///
-  /// \section View settings
-  ///
+  //
+  // View settings
+  //
 
   void axisAuto(Params params)
   {
@@ -175,9 +172,9 @@ namespace vibes
     fflush(channel);
   }
 
-  ///
-  /// \section Drawing functions
-  ///
+  //
+  // Drawing functions
+  //
 
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params)
   {
@@ -305,6 +302,7 @@ namespace vibes
      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
      fflush(channel);
   }
+
 
   void newGroup(const std::string &name, Params params)
   {
