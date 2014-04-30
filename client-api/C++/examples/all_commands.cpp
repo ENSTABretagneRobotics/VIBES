@@ -23,7 +23,7 @@ int main()
             "| VIBES C++ API commands test |" "\n"
             "-------------------------------" << endl;
 
-    VIBES_TEST( vibes::connect() );
+    VIBES_TEST( vibes::beginDrawing() );
 
     cout << "Figure creation function" << endl;
     VIBES_TEST( vibes::newFigure() );
@@ -172,8 +172,8 @@ int main()
     VIBES_TEST( vibes::saveImage("vibes_test.bmp") );
     VIBES_TEST( vibes::saveImage("vibes_test.svg") );
 
-    std::cout << "disconnect" << std::endl;
-    VIBES_TEST( vibes::disconnect() );
+    std::cout << "end drawing" << std::endl;
+    VIBES_TEST( vibes::endDrawing() );
 
     // Testing Vibes params system
     cout << "Testing Vibes params system" << endl;

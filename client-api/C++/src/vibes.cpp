@@ -80,7 +80,7 @@ namespace vibes
   /**
   * Connects to the named pipe, not implemented yet.
   */
-  void connect()
+  void beginDrawing()
   {
       // Retrieve user-profile directory from envirnment variable
       char * user_dir = getenv("USERPROFILE"); // Windows
@@ -90,20 +90,20 @@ namespace vibes
       { // Environment variable found, connect to a file in user's profile directory
           std::string file_name(user_dir);
           file_name.append("/.vibes.json");
-          connect(file_name);
+          beginDrawing(file_name);
       }
       else
       { // Connect to a file in working directory
-          connect("vibes.json");
+          beginDrawing("vibes.json");
       }
   }
   
-  void connect(const std::string &fileName)
+  void beginDrawing(const std::string &fileName)
   {
     channel=fopen(fileName.c_str(),"a");
   }
   
-  void disconnect()
+  void endDrawing()
   {
     fclose(channel);
   }

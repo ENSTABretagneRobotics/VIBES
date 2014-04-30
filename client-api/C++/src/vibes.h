@@ -154,10 +154,10 @@ namespace vibes {class Params;
   /**
   * Connects to the named pipe, not implemented yet.
   */
-  void connect();
-  void connect(const std::string &fileName);
+  void beginDrawing();
+  void beginDrawing(const std::string &fileName);
   
-  void disconnect();
+  void endDrawing();
   
   // Figure management
   void newFigure(const std::string &figureName = std::string());

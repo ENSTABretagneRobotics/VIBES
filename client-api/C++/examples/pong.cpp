@@ -23,7 +23,7 @@ float angle;
 
 int main()
 {
-  vibes::connect();
+  vibes::beginDrawing();
   initScene();
   while(true)
     updateScene();
