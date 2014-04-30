@@ -174,15 +174,43 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         // Create a new figure (previous with the same name will be destroyed)
         fig = newFigure(fig_name);
     }
-        // Clear the contents of a figure
+        // Clear the contents of a figure or a group
     else if (action == "clear")
     {
         // Figure has to exist
         if (!fig)
             return false;
-        // Clears the scene
-        fig->scene()->clear();
+        if (msg.contains("group"))
+        {
+            // Clears the group
+            VibesGraphicsGroup *group = 0;
+            group = vibesgraphicsitem_cast<VibesGraphicsGroup *>(fig->scene()->itemByName(msg["group"].toString()));
+            if (!group)
+                return false;
+            group->clear();
+        }
+        else
+        {
+            // Clears the scene
+            fig->scene()->clear();
+        }
         /// \todo Remove named objects references if needed
+    }
+        // Deletes a graphics item
+    else if (action == "delete")
+    {
+        // Figure has to exist
+        if (!fig)
+            return false;
+        if (!msg.contains("object"))
+            return false;
+        // retrieve item by name
+        VibesGraphicsItem * item = fig->scene()->itemByName(msg["object"].toString());
+        // if named item exists...
+        if (!item)
+            return false;
+        // ...delete it
+        delete item;
     }
         // Sets the view
     else if (action == "view")

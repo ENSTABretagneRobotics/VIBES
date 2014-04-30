@@ -191,6 +191,12 @@ namespace vibes {class Params;
   // Group creation
   VIBES_FUNC_COLOR_PARAM_1(newGroup,const std::string &,name)
 
+  void clearGroup(const std::string &figureName, const std::string &groupName);
+  void clearGroup(const std::string &groupName);
+
+  void removeObject(const std::string &figureName, const std::string &objectName);
+  void removeObject(const std::string &objectName);
+
   // Figure properties modification
   void setFigureProperty(const std::string &figureName, const std::string &key, const Value &value);
   void setFigureProperty(const std::string &key, const Value &value);

@@ -319,6 +319,39 @@ namespace vibes
      fflush(channel);
   }
 
+  void clearGroup(const std::string &figureName, const std::string &groupName)
+  {
+     Params msg;
+     msg["action"] = "clear";
+     msg["figure"] = figureName;
+     msg["group"] = groupName;
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void clearGroup(const std::string &groupName)
+  {
+     clearGroup(current_fig, groupName);
+  }
+
+
+  void removeObject(const std::string &figureName, const std::string &objectName)
+  {
+     Params msg;
+     msg["action"] = "delete";
+     msg["figure"] = figureName;
+     msg["object"] = objectName;
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void removeObject(const std::string &objectName)
+  {
+     removeObject(current_fig, objectName);
+  }
+
   // Property modification
   void setFigureProperties(const std::string &figureName, const Params &properties)
   {

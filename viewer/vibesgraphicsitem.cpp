@@ -277,6 +277,17 @@ void VibesGraphicsGroup::addToGroup(VibesGraphicsItem *item)
     }
 }
 
+void VibesGraphicsGroup::clear()
+{
+    // Remove all children
+    QList<QGraphicsItem*> children = this->childItems();
+    foreach(QGraphicsItem* child, children)
+    {
+        VibesGraphicsItem * item = qgraphicsitem_cast<VibesGraphicsItem *>(child);
+        if (item) delete item;
+    }
+}
+
 bool VibesGraphicsGroup::parseJsonGraphics(const QJsonObject &json)
 {
     // Set graphical properties
