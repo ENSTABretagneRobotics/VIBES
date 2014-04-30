@@ -112,7 +112,7 @@ namespace vibes
   /// \section Figure management
   ///
 
-  void figure(const std::string &figureName)
+  void newFigure(const std::string &figureName)
   {
     std::string msg;
     if (!figureName.empty()) current_fig = figureName;
@@ -122,7 +122,7 @@ namespace vibes
     fflush(channel);
   }
   
-  void clear(const std::string &figureName)
+  void clearFigure(const std::string &figureName)
   {
     std::string msg;
     msg="{\"action\":\"clear\","

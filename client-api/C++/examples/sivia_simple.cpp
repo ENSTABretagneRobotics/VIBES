@@ -14,7 +14,7 @@ interval dist(box robot, box landmark)
 int main()
 {
   vibes::connect();             // <== Initializes the VIBES "connection"
-  vibes::figure("SIVIA");       // <== Create a new VIBes figure
+  vibes::newFigure("SIVIA");       // <== Create a new VIBes figure
 
   box robot(interval(-10,10),interval(-10,10));
   box landmark(interval(0),interval(0));

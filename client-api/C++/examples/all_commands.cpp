@@ -26,7 +26,7 @@ int main()
     VIBES_TEST( vibes::connect() );
 
     cout << "Figure creation function" << endl;
-    VIBES_TEST( vibes::figure() );
+    VIBES_TEST( vibes::newFigure() );
 
     cout << "Megatest Wayne!" << std::endl;
     {
@@ -46,11 +46,11 @@ int main()
             }
             boxes_bounds.push_back(box_bounds);
         }
-        VIBES_TEST( vibes::figure("Megatest with boxes") );
+        VIBES_TEST( vibes::newFigure("Megatest with boxes") );
         VIBES_TEST( vibes::drawBoxes(boxes_bounds,"[darkYellow]") );
         VIBES_TEST( vibes::setFigureProperties(vibesParams("x",0,"y",40,"width",150,"height",150)) );
 
-        VIBES_TEST( vibes::figure("Megatest with boxes union") );
+        VIBES_TEST( vibes::newFigure("Megatest with boxes union") );
         VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"[darkGreen]") );
         VIBES_TEST( vibes::setFigureProperties(vibesParams("x",150,"y",40,"width",150,"height",150)) );
     }
@@ -60,7 +60,7 @@ int main()
         const int nbBoxesMegaTest = 10;
         const int dimBoxesMegaTest = 3;
 
-        VIBES_TEST( vibes::figure("Groups: red and blue") );
+        VIBES_TEST( vibes::newFigure("Groups: red and blue") );
         VIBES_TEST( vibes::setFigureProperties(vibesParams("x",300,"y",40,"width",150,"height",150)) );
 
         VIBES_TEST( vibes::newGroup("red group","[red]darkRed") );
@@ -108,7 +108,7 @@ int main()
             vect_x.push_back(x);
             vect_y.push_back(cos(x));
         }
-        VIBES_TEST( vibes::figure("sin and cos") );
+        VIBES_TEST( vibes::newFigure("sin and cos") );
         VIBES_TEST( vibes::drawLine(points,"red") );
         VIBES_TEST( vibes::drawLine(vect_x,vect_y,"blue") );
 
@@ -119,7 +119,7 @@ int main()
     }
 
 
-    VIBES_TEST( vibes::figure("figureTest") );
+    VIBES_TEST( vibes::newFigure("figureTest") );
 
     cout << "drawBox" << std::endl;
     VIBES_TEST( vibes::drawBox(0,1.245,0,1) );

@@ -32,7 +32,7 @@ int main()
 
 void initScene()
 {
-  vibes::figure("Interval Pong");
+  vibes::newFigure("Interval Pong");
   angleInit=angle=9.0f;
   timer=0;
   iterations=0;
@@ -48,7 +48,7 @@ void drawScene()
   iterations++;
   if(iterations%25==0)
   {
-    vibes::clear("Interval Pong");
+    vibes::clearFigure("Interval Pong");
     vibes::drawBox(background[1].inf,background[1].sup,background[2].inf,background[2].sup,"b");
   }
   vibes::drawBox(leftPlayer[1].inf,leftPlayer[1].sup,leftPlayer[2].inf,leftPlayer[2].sup,"y");

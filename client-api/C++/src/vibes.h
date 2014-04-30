@@ -160,8 +160,8 @@ namespace vibes {class Params;
   void disconnect();
   
   // Figure management
-  void figure(const std::string &figureName = std::string());
-  void clear(const std::string &figureName = std::string());
+  void newFigure(const std::string &figureName = std::string());
+  void clearFigure(const std::string &figureName = std::string());
   void saveImage(const std::string &fileName = std::string(), const std::string &figureName = std::string());
   void selectFigure(const std::string &figureName);
 
