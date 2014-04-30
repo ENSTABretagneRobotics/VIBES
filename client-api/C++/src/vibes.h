@@ -3,11 +3,18 @@
 /// \brief Vibes C++ API Header
 /// \author Vincent Drevelle, Jeremy Nicolas
 /// \date 2013-2014
-/// \version 0.0.3alpha
+/// \version 0.2.0beta
 ///
 
 #ifndef VIBES_CPP_API_H
 #define VIBES_CPP_API_H
+
+/*! \mainpage
+ *
+ * This is VIBes C++ API documentation. It is generated from source code.
+ * The "Modules" section of this documentation lists the VIBes commands thematically.
+ *
+ */
 
 ///
 /// Vibes API configuration defines (def or undef as needed)

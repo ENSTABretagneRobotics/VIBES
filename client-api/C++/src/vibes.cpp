@@ -4,9 +4,9 @@
 #include <cstdio>
 #include <cassert>
 
-///
-/// Vibes properties key,value system implementation
-///
+//
+// Vibes properties key,value system implementation
+//
 
 namespace vibes {
     std::string Value::toJSONString() const {
@@ -55,22 +55,22 @@ namespace vibes {
     }
 }
 
-///
-/// Vibes messaging implementation
-///
+//
+// Vibes messaging implementation
+//
 
 using namespace std;
 
 namespace vibes
 {
-///
-/// \section Global variables and utility functions
-///
+  //
+  // Global variables and utility functions
+  //
 
   /// Current communication file descriptor
   FILE *channel=0;
 
-  /// Current figure name (client maintained state)
+  /// Current figure name (client-maintained state)
   string current_fig="default";
 
   //
