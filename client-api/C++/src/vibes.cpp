@@ -128,6 +128,15 @@ namespace vibes
     fflush(channel);
   }
 
+  void closeFigure(const std::string &figureName)
+  {
+    std::string msg;
+    msg="{\"action\":\"close\","
+         "\"figure\":\""+(figureName.empty()?current_fig:figureName)+"\"}\n\n";
+    fputs(msg.c_str(),channel);
+    fflush(channel);
+  }
+
   void saveImage(const std::string &fileName, const std::string &figureName)
   {
       std::string msg;

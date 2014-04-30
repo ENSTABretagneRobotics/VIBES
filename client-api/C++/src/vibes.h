@@ -211,8 +211,11 @@ namespace vibes {
   /// Create a new figure named \a figureName
   void newFigure(const std::string &figureName = std::string());
 
-  /// Clears the contents of the current figure, or of the figure \a figureName if argument is given.
+  /// Clears the contents of the figure \a figureName, or the current figure if argument is given.
   void clearFigure(const std::string &figureName = std::string());
+
+  /// Close the figure named \a figureName, or the current figure if no argument is given.
+  void closeFigure(const std::string &figureName = std::string());
 
   /// Export to \a fileName the contents of the figure \a figureName. If \a figureName is omitted,
   /// operation applies to current figure. If \a fileName is omitted, a "Save As" window will be displayed.
