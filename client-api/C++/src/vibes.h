@@ -236,10 +236,15 @@ namespace vibes {
   /// @{
 
   /// Set axes limits to the bounding box of the drawing
-  void axisAuto(Params params=Params());
+  void axisAuto(const std::string &figureName = std::string());
 
   /// Specify the rectangle to be displayed: Lower-left corner (\a x_lb, \a y_lb) and a upper-right corner (\a x_ub, \a y_ub).
-  void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params=Params());
+  void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &figureName = std::string());
+
+  /// Set x-axis and y-axis labels to respectively \a x_label and \a y_label
+  void axisLabels(const std::string &x_label, const std::string &y_label, const std::string &figureName = std::string());
+  /// Set axis labels according to the list provided in \a labels
+  void axisLabels(const std::vector<std::string> &labels, const std::string &figureName = std::string());
 
   /// @}
   ///

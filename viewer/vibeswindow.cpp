@@ -212,31 +212,6 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         // ...delete it
         delete item;
     }
-        // Sets the view
-    else if (action == "view")
-    {
-        // Figure has to exist
-        if (!fig)
-            return false;
-        // Set the view rectangle to a box
-        if (msg["box"].isArray())
-        {
-            const QJsonArray box = msg["box"].toArray();
-            if (box.size() < 4) return false;
-            double lb_x = box[0].toDouble();
-            double ub_x = box[1].toDouble();
-            double lb_y = box[2].toDouble();
-            double ub_y = box[3].toDouble();
-            fig->setSceneRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
-            fig->fitInView(fig->sceneRect());
-        }
-            // Auto-set the view rectangle
-        else if (msg["box"].toString() == "auto")
-        {
-            fig->setSceneRect(QRectF());
-            fig->fitInView(fig->sceneRect());
-        }
-    }
         // Export to a graphical file
     else if (action == "export")
     {
@@ -301,6 +276,33 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                 else if (it.key() == "y")
                 {
                     fig->move( fig->x(), it.value().toDouble() );
+                }
+                else if (it.key() == "viewbox")
+                {
+                    // Set the view rectangle to a box
+                    if (it.value().isArray())
+                    {
+                        const QJsonArray box = it.value().toArray();
+                        if (box.size() < 4) return false;
+                        double lb_x = box[0].toDouble();
+                        double ub_x = box[1].toDouble();
+                        double lb_y = box[2].toDouble();
+                        double ub_y = box[3].toDouble();
+                        fig->setSceneRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+                        fig->fitInView(fig->sceneRect());
+                    }
+                    // Auto-set the view rectangle
+                    else if (it.value().toString() == "auto")
+                    {
+                        fig->setSceneRect(QRectF());
+                        fig->fitInView(fig->sceneRect());
+                    }
+                }
+                else if (it.key() == "axislabels")
+                {
+                    const QJsonArray labels = it.value().toArray();
+                    for (int i=0; i<labels.size(); i++)
+                        fig->scene()->setDimName(i, labels[i].toString());
                 }
             }
         }
