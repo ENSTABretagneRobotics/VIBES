@@ -35,6 +35,9 @@ signals:
     
 public slots:
     void exportGraphics(QString fileName = QString());
+
+protected slots:
+    void refreshProjectionSelectors();
     
 };
 

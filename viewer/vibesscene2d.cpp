@@ -124,11 +124,12 @@ bool VibesScene2D::setDimX(int dimX)
     {
         _dimX = dimX;
         emit changedDimX(dimX);
+        emit dimensionsChanged();
         updateDims();
         return true;
     } else {
         // Notify that invalid change has been refused
-        if (dimX != this->dimX()) emit changedDimX(this->dimX());
+        if (dimX != this->dimX()) { emit changedDimX(this->dimX()); emit dimensionsChanged(); }
         return false;
     }
 }
@@ -139,11 +140,12 @@ bool VibesScene2D::setDimY(int dimY)
     {
         _dimY = dimY;
         emit changedDimY(dimY);
+        emit dimensionsChanged();
         updateDims();
         return true;
     } else {
         // Notify that invalid change has been refused
-        if (dimY != this->dimY()) emit changedDimY(this->dimY());
+        if (dimY != this->dimY()) { emit changedDimY(this->dimY()); emit dimensionsChanged(); }
         return false;
     }
 }
@@ -160,12 +162,13 @@ bool VibesScene2D::setDims(int dimX, int dimY)
         _dimY = dimY;
         emit changedDimX(dimX);
         emit changedDimY(dimY);
+        emit dimensionsChanged();
         updateDims();
         return true;
     } else {
         // Notify that invalid change has been refused
-        if (dimX != this->dimX()) emit changedDimX(this->dimX());
-        if (dimY != this->dimY()) emit changedDimY(this->dimY());
+        if (dimX != this->dimX()) { emit changedDimX(this->dimX()); emit dimensionsChanged(); }
+        if (dimY != this->dimY()) { emit changedDimY(this->dimY()); emit dimensionsChanged(); }
         return false;
     }
 }
