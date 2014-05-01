@@ -12,9 +12,9 @@ CONFIG += release static
 #QTPLUGIN += svg
 QMAKE_CXXFLAGS += -std=c++11
 # Input
-HEADERS += figure2d.h vibestreemodel.h vibeswindow.h
+HEADERS +=  vibestreemodel.h vibeswindow.h figure2d.h vibesscene2d.h vibesgraphicsitem.h
 FORMS += vibeswindow.ui
-SOURCES += figure2d.cpp main.cpp vibestreemodel.cpp vibeswindow.cpp
+SOURCES += main.cpp vibestreemodel.cpp vibeswindow.cpp figure2d.cpp vibesscene2d.cpp vibesgraphicsitem.cpp
 
 # Application icon
 win32:RC_FILE += icons/vibes.rc
