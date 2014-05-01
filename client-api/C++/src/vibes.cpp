@@ -4,9 +4,9 @@
 #include <cstdio>
 #include <cassert>
 
-///
-/// Vibes properties key,value system implementation
-///
+//
+// Vibes properties key,value system implementation
+//
 
 namespace vibes {
     std::string Value::toJSONString() const {
@@ -55,22 +55,22 @@ namespace vibes {
     }
 }
 
-///
-/// Vibes messaging implementation
-///
+//
+// Vibes messaging implementation
+//
 
 using namespace std;
 
 namespace vibes
 {
-///
-/// \section Global variables and utility functions
-///
+  //
+  // Global variables and utility functions
+  //
 
   /// Current communication file descriptor
   FILE *channel=0;
 
-  /// Current figure name (client maintained state)
+  /// Current figure name (client-maintained state)
   string current_fig="default";
 
   //
@@ -157,29 +157,29 @@ namespace vibes
   // View settings
   //
 
-  void axisAuto(Params params)
+  void axisAuto(const std::string &figureName)
   {
-     // { "action": "view", "figure": "Fig2", "box": "auto" }
-
-    if (params["figure"].empty()) params["figure"] = current_fig;
-    params["action"] = "view";
-    params["box"] = "auto";
-
-    fputs(Value(params).toJSONString().append("\n\n").c_str(), channel);
-    fflush(channel);
+    setFigureProperty(figureName.empty()?current_fig:figureName, "viewbox", "auto");
   }
 
-  void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params)
+  void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &figureName)
   {
-    //{ "action": "view", "figure": "Fig1", "box": [-6, -2, -3, 1] }
-
-    if (params["figure"].empty()) params["figure"] = current_fig;
-    params["action"] = "view";
-    params["box"] = (Vec4d){x_lb,x_ub,y_lb,y_ub};
-
-    fputs(Value(params).toJSONString().append("\n\n").c_str(), channel);
-    fflush(channel);
+    setFigureProperty(figureName.empty()?current_fig:figureName, "viewbox", (Vec4d){x_lb,x_ub,y_lb,y_ub});
   }
+
+  void axisLabels(const std::string &x_label, const std::string &y_label, const std::string &figureName)
+  {
+    vector<string> labels;
+    labels.push_back(x_label);
+    labels.push_back(y_label);
+    axisLabels(labels, figureName);
+  }
+
+  void axisLabels(const std::vector<std::string> &labels, const std::string &figureName)
+  {
+    setFigureProperty( figureName.empty()?current_fig:figureName, "axislabels", labels);
+  }
+
 
   //
   // Drawing functions

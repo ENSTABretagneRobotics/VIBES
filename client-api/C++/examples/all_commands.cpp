@@ -109,13 +109,16 @@ int main()
             vect_y.push_back(cos(x));
         }
         VIBES_TEST( vibes::newFigure("sin and cos") );
-        VIBES_TEST( vibes::drawLine(points,"red") );
-        VIBES_TEST( vibes::drawLine(vect_x,vect_y,"blue") );
+        VIBES_TEST( vibes::drawLine(points,"blue") );
+        VIBES_TEST( vibes::drawLine(vect_x,vect_y,"red") );
 
         VIBES_TEST( vibes::axisAuto() );
 
         VIBES_TEST( vibes::setFigureProperties("sin and cos",
                                                 vibesParams("x",0,"y",220,"width",450,"height",100)) );
+        std::vector<std::string> labels;
+        labels.push_back("x"); labels.push_back("sin x"); labels.push_back("cos x");
+        VIBES_TEST( vibes::axisLabels(labels) );
     }
 
 
@@ -141,7 +144,9 @@ int main()
     VIBES_TEST( vibes::drawBox(bounds,"[lightGray]") );
 
 
-    VIBES_TEST( vibes::drawEllipse(-1,-1,2,3,30.0) );
+    VIBES_TEST( vibes::drawEllipse(-1,-1,2,3,30.0, vibesParams("name","ellipse")) );
+    VIBES_TEST( vibes::removeObject("ellipse") );
+
     VIBES_TEST( vibesDrawEllipse(-1,-1,1.5,2,30.0, "parent",0.1, "g") );
 
     VIBES_TEST( vibes::drawEllipse(0,-4.75,4,0.25,0.0, "darkGray") );
