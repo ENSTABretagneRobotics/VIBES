@@ -4,9 +4,9 @@
 #include <cstdio>
 #include <cassert>
 
-///
-/// Vibes properties key,value system implementation
-///
+//
+// Vibes properties key,value system implementation
+//
 
 namespace vibes {
     std::string Value::toJSONString() const {
@@ -55,32 +55,29 @@ namespace vibes {
     }
 }
 
-///
-/// Vibes messaging implementation
-///
+//
+// Vibes messaging implementation
+//
 
 using namespace std;
 
 namespace vibes
 {
-///
-/// \section Global variables and utility functions
-///
+  //
+  // Global variables and utility functions
+  //
 
   /// Current communication file descriptor
   FILE *channel=0;
 
-  /// Current figure name (client maintained state)
+  /// Current figure name (client-maintained state)
   string current_fig="default";
 
-  ///
-  /// \section Management of connection to the Vibes server
-  ///
+  //
+  // Management of connection to the Vibes server
+  //
 
-  /**
-  * Connects to the named pipe, not implemented yet.
-  */
-  void connect()
+  void beginDrawing()
   {
       // Retrieve user-profile directory from envirnment variable
       char * user_dir = getenv("USERPROFILE"); // Windows
@@ -90,29 +87,29 @@ namespace vibes
       { // Environment variable found, connect to a file in user's profile directory
           std::string file_name(user_dir);
           file_name.append("/.vibes.json");
-          connect(file_name);
+          beginDrawing(file_name);
       }
       else
       { // Connect to a file in working directory
-          connect("vibes.json");
+          beginDrawing("vibes.json");
       }
   }
   
-  void connect(const std::string &fileName)
+  void beginDrawing(const std::string &fileName)
   {
     channel=fopen(fileName.c_str(),"a");
   }
   
-  void disconnect()
+  void endDrawing()
   {
     fclose(channel);
   }
 
-  ///
-  /// \section Figure management
-  ///
+  //
+  // Figure management
+  //
 
-  void figure(const std::string &figureName)
+  void newFigure(const std::string &figureName)
   {
     std::string msg;
     if (!figureName.empty()) current_fig = figureName;
@@ -122,10 +119,19 @@ namespace vibes
     fflush(channel);
   }
   
-  void clear(const std::string &figureName)
+  void clearFigure(const std::string &figureName)
   {
     std::string msg;
     msg="{\"action\":\"clear\","
+         "\"figure\":\""+(figureName.empty()?current_fig:figureName)+"\"}\n\n";
+    fputs(msg.c_str(),channel);
+    fflush(channel);
+  }
+
+  void closeFigure(const std::string &figureName)
+  {
+    std::string msg;
+    msg="{\"action\":\"close\","
          "\"figure\":\""+(figureName.empty()?current_fig:figureName)+"\"}\n\n";
     fputs(msg.c_str(),channel);
     fflush(channel);
@@ -141,37 +147,43 @@ namespace vibes
       fflush(channel);
   }
 
-  ///
-  /// \section View settings
-  ///
-
-  void axisAuto(Params params)
+  void selectFigure(const std::string &figureName)
   {
-     // { "action": "view", "figure": "Fig2", "box": "auto" }
-
-    if (params["figure"].empty()) params["figure"] = current_fig;
-    params["action"] = "view";
-    params["box"] = "auto";
-
-    fputs(Value(params).toJSONString().append("\n\n").c_str(), channel);
-    fflush(channel);
+     current_fig = figureName;
   }
 
-  void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params)
+
+  //
+  // View settings
+  //
+
+  void axisAuto(const std::string &figureName)
   {
-    //{ "action": "view", "figure": "Fig1", "box": [-6, -2, -3, 1] }
-
-    if (params["figure"].empty()) params["figure"] = current_fig;
-    params["action"] = "view";
-    params["box"] = (Vec4d){x_lb,x_ub,y_lb,y_ub};
-
-    fputs(Value(params).toJSONString().append("\n\n").c_str(), channel);
-    fflush(channel);
+    setFigureProperty(figureName.empty()?current_fig:figureName, "viewbox", "auto");
   }
 
-  ///
-  /// \section Drawing functions
-  ///
+  void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &figureName)
+  {
+    setFigureProperty(figureName.empty()?current_fig:figureName, "viewbox", (Vec4d){x_lb,x_ub,y_lb,y_ub});
+  }
+
+  void axisLabels(const std::string &x_label, const std::string &y_label, const std::string &figureName)
+  {
+    vector<string> labels;
+    labels.push_back(x_label);
+    labels.push_back(y_label);
+    axisLabels(labels, figureName);
+  }
+
+  void axisLabels(const std::vector<std::string> &labels, const std::string &figureName)
+  {
+    setFigureProperty( figureName.empty()?current_fig:figureName, "axislabels", labels);
+  }
+
+
+  //
+  // Drawing functions
+  //
 
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params)
   {
@@ -298,5 +310,88 @@ namespace vibes
 
      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
      fflush(channel);
+  }
+
+
+  void newGroup(const std::string &name, Params params)
+  {
+     // Send message
+     Params msg;
+     msg["action"] = "draw";
+     msg["figure"] = params.pop("figure",current_fig);
+     msg["shape"] = (params, "type", "group",
+                             "name", name);
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void clearGroup(const std::string &figureName, const std::string &groupName)
+  {
+     Params msg;
+     msg["action"] = "clear";
+     msg["figure"] = figureName;
+     msg["group"] = groupName;
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void clearGroup(const std::string &groupName)
+  {
+     clearGroup(current_fig, groupName);
+  }
+
+
+  void removeObject(const std::string &figureName, const std::string &objectName)
+  {
+     Params msg;
+     msg["action"] = "delete";
+     msg["figure"] = figureName;
+     msg["object"] = objectName;
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void removeObject(const std::string &objectName)
+  {
+     removeObject(current_fig, objectName);
+  }
+
+  // Property modification
+  void setFigureProperties(const std::string &figureName, const Params &properties)
+  {
+     // Send message
+     Params msg;
+     msg["action"] = "set";
+     msg["figure"] = figureName;
+     msg["properties"] = properties;
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void setFigureProperties(const Params &properties)
+  {
+     setFigureProperties(current_fig, properties);
+  }
+
+  void setObjectProperties(const std::string &figureName, const std::string &objectName, const Params &properties)
+  {
+     // Send message
+     Params msg;
+     msg["action"] = "set";
+     msg["figure"] = figureName;
+     msg["object"] = objectName;
+     msg["properties"] = properties;
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void setObjectProperties(const std::string &objectName, const Params &properties)
+  {
+     setObjectProperties(current_fig, objectName, properties);
   }
 }

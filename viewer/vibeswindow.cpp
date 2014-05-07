@@ -7,6 +7,7 @@
 #include "figure2d.h"
 
 #include "vibesscene2d.h"
+#include "vibesgraphicsitem.h"
 
 #include <QFileDialog>
 
@@ -173,40 +174,43 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         // Create a new figure (previous with the same name will be destroyed)
         fig = newFigure(fig_name);
     }
-        // Clear the contents of a figure
+        // Clear the contents of a figure or a group
     else if (action == "clear")
     {
         // Figure has to exist
         if (!fig)
             return false;
-        // Clears the scene
-        fig->scene()->clear();
+        if (msg.contains("group"))
+        {
+            // Clears the group
+            VibesGraphicsGroup *group = 0;
+            group = vibesgraphicsitem_cast<VibesGraphicsGroup *>(fig->scene()->itemByName(msg["group"].toString()));
+            if (!group)
+                return false;
+            group->clear();
+        }
+        else
+        {
+            // Clears the scene
+            fig->scene()->clear();
+        }
         /// \todo Remove named objects references if needed
     }
-        // Sets the view
-    else if (action == "view")
+        // Deletes a graphics item
+    else if (action == "delete")
     {
         // Figure has to exist
         if (!fig)
             return false;
-        // Set the view rectangle to a box
-        if (msg["box"].isArray())
-        {
-            const QJsonArray box = msg["box"].toArray();
-            if (box.size() < 4) return false;
-            double lb_x = box[0].toDouble();
-            double ub_x = box[1].toDouble();
-            double lb_y = box[2].toDouble();
-            double ub_y = box[3].toDouble();
-            fig->setSceneRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
-            fig->fitInView(fig->sceneRect());
-        }
-            // Auto-set the view rectangle
-        else if (msg["box"].toString() == "auto")
-        {
-            fig->setSceneRect(QRectF());
-            fig->fitInView(fig->sceneRect());
-        }
+        if (!msg.contains("object"))
+            return false;
+        // retrieve item by name
+        VibesGraphicsItem * item = fig->scene()->itemByName(msg["object"].toString());
+        // if named item exists...
+        if (!item)
+            return false;
+        // ...delete it
+        delete item;
     }
         // Export to a graphical file
     else if (action == "export")
@@ -223,16 +227,84 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         if (!fig) // Create a new figure if it does not exist
             fig = newFigure(fig_name);
 
-        QColor fill_color;
-        QColor edge_color;
-
-        QGraphicsItem * item = 0;
-
         if (msg.contains("shape"))
         {
             QJsonObject shape = msg.value("shape").toObject();
             // Let the scene parse JSON to create the appropriate object
             fig->scene()->addJsonShapeItem(shape);
+        }
+    }
+        // Set properties
+    else if (action == "set")
+    {
+        // Figure has to exist
+        if (!fig)
+            return false;
+        // Set object properties
+        if (msg.contains("object"))
+        {
+            // Find named object
+            VibesGraphicsItem * object = fig->scene()->itemByName(msg.value("object").toString());
+            if (!object)
+                return false;
+            // Update properties
+            QJsonObject properties = msg.value("properties").toObject();
+            for (QJsonObject::const_iterator it = properties.constBegin(); it != properties.constEnd(); it++)
+            {
+                object->setJsonValue(it.key(), it.value());
+            }
+        }
+        // else set figure properties
+        else
+        {
+            // Update properties
+            QJsonObject properties = msg.value("properties").toObject();
+            for (QJsonObject::const_iterator it = properties.constBegin(); it != properties.constEnd(); it++)
+            {
+                if (it.key() == "width" && it.value().toDouble()>40.0)
+                {
+                    fig->resize( it.value().toDouble(), fig->height() );
+                }
+                else if (it.key() == "height" && it.value().toDouble()>40.0)
+                {
+                    fig->resize( fig->width(), it.value().toDouble() );
+                }
+                else if (it.key() == "x")
+                {
+                    fig->move( it.value().toDouble(), fig->y() );
+                }
+                else if (it.key() == "y")
+                {
+                    fig->move( fig->x(), it.value().toDouble() );
+                }
+                else if (it.key() == "viewbox")
+                {
+                    // Set the view rectangle to a box
+                    if (it.value().isArray())
+                    {
+                        const QJsonArray box = it.value().toArray();
+                        if (box.size() < 4) return false;
+                        double lb_x = box[0].toDouble();
+                        double ub_x = box[1].toDouble();
+                        double lb_y = box[2].toDouble();
+                        double ub_y = box[3].toDouble();
+                        fig->setSceneRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+                        fig->fitInView(fig->sceneRect());
+                    }
+                    // Auto-set the view rectangle
+                    else if (it.value().toString() == "auto")
+                    {
+                        fig->setSceneRect(QRectF());
+                        fig->fitInView(fig->sceneRect());
+                    }
+                }
+                else if (it.key() == "axislabels")
+                {
+                    const QJsonArray labels = it.value().toArray();
+                    for (int i=0; i<labels.size(); i++)
+                        fig->scene()->setDimName(i, labels[i].toString());
+                }
+            }
         }
     }
         // Unknown action

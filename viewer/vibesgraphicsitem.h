@@ -33,6 +33,7 @@ class VibesGraphicsItem
     // Pointer to the QGraphicsItem object. Used for casting.
     QGraphicsItem * _qGraphicsItem;
     QString _name;
+    int _dimX, _dimY;
 public:
     enum { VibesGraphicsItemType = QGraphicsItem::UserType,
            // Group of item
@@ -53,12 +54,16 @@ public:
     // Destructor (virtual)
     virtual ~VibesGraphicsItem() { setName(QString()); }
 
-    bool setJson(QJsonObject json, int dimX=0, int dimY=1);
+    bool setJson(QJsonObject json, int dimX, int dimY);
+    bool setJson(QJsonObject json) { return setJson(json, _dimX, _dimY); }
     const QJsonObject & json() const { return _json; }
     QJsonValue jsonValue(const QString &key) const;
+    void setJsonValue(const QString &key, const QJsonValue &value);
+    void setJsonValues(const QJsonObject &values);
 
     bool existsInProj(int dimX, int dimY) const { return hasDim(dimX) && hasDim(dimY); }
     bool setProj(int dimX, int dimY);
+    bool updateProj() { return setProj(_dimX,_dimY); }
     int dimension() const { return maxDim(); }
 
     QString name() const { return _name; }
@@ -73,12 +78,16 @@ public:
 protected:
     bool parseJson(QJsonObject &json);
     virtual bool parseJsonGraphics(const QJsonObject &json) = 0;
-    virtual bool computeProjection(int dimX=0, int dimY=1) = 0;
+    virtual bool computeProjection(int dimX, int dimY) = 0;
     virtual bool hasDim(int n) const { return n>=0 && n<_nbDim; }
     virtual int maxDim() const { return _nbDim; }
     // Utility
     static bool isJsonMatrix(const QJsonValue json, int &nbRows, int &nbCols);
     static bool isJsonMatrix(const QJsonValue json) { int r,c; return isJsonMatrix(json, r, c); }
+    // Json Properties categories
+    virtual bool propertyIsReadOnly(const QString & key) { if (key=="type") return true; else return false; }
+    virtual bool propertyChangesGeometry(const QString & key) { return false; }
+
 protected:
     QJsonObject _json;
     int _nbDim;
@@ -123,6 +132,16 @@ public: \
     VIBES_GRAPHICS_ITEM_TYPE_DECL(class_name) \
     VIBES_GRAPHICS_ITEM_CTOR_DECL(class_name, base_class)
 
+#define VIBES_READ_ONLY_PROPERTIES(...) \
+protected: \
+inline bool propertyIsReadOnly(const QString& key) { \
+    if (QStringList({__VA_ARGS__}).contains(key)) return true; \
+    else return VibesGraphicsItem::propertyIsReadOnly(key); }
+#define VIBES_GEOMETRY_CHANGING_PROPERTIES(...) \
+protected: \
+inline bool propertyChangesGeometry(const QString& key) { \
+    if (QStringList({__VA_ARGS__}).contains(key)) return true; \
+    else return VibesGraphicsItem::propertyChangesGeometry(key); }
 
 /// A group of objects (a layer)
 
@@ -130,10 +149,11 @@ class VibesGraphicsGroup : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsGroup, QGraphicsItemGroup)
 public:
-    void addToGroup(VibesGraphicsItem *item) { QGraphicsItemGroup::addToGroup(vibesgraphicsitem_cast<QGraphicsItem*>(item)); }
+    void addToGroup(VibesGraphicsItem *item);
+    void clear();
 protected:
-    bool parseJsonGraphics(const QJsonObject &json) {Q_ASSERT_X(false,"VibesGraphicsGroup::parseJson","not implemented");}
-    bool computeProjection(int dimX, int dimY) {Q_ASSERT_X(false,"VibesGraphicsGroup::computeProjection","not implemented");}
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY) { return true; }
 };
 
 /// A box
@@ -141,6 +161,7 @@ protected:
 class VibesGraphicsBox : public QGraphicsRectItem, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsBox, QGraphicsRectItem)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("bounds")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
@@ -151,6 +172,7 @@ protected:
 class VibesGraphicsBoxes : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsBoxes, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("bounds")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
@@ -161,6 +183,7 @@ protected:
 class VibesGraphicsBoxesUnion : public QGraphicsPathItem, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsBoxesUnion, QGraphicsPathItem)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("bounds")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
@@ -172,6 +195,7 @@ protected:
 class VibesGraphicsEllipse : public QGraphicsEllipseItem, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsEllipse, QGraphicsEllipseItem)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("center","axis","orientation","covariance","sigma")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
@@ -185,6 +209,7 @@ protected:
 class VibesGraphicsLine : public QGraphicsPathItem, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsLine, QGraphicsPathItem)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("points")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);

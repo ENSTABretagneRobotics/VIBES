@@ -23,10 +23,10 @@ int main()
             "| VIBES C++ API commands test |" "\n"
             "-------------------------------" << endl;
 
-    VIBES_TEST( vibes::connect() );
+    VIBES_TEST( vibes::beginDrawing() );
 
     cout << "Figure creation function" << endl;
-    VIBES_TEST( vibes::figure() );
+    VIBES_TEST( vibes::newFigure() );
 
     cout << "Megatest Wayne!" << std::endl;
     {
@@ -46,11 +46,47 @@ int main()
             }
             boxes_bounds.push_back(box_bounds);
         }
-        VIBES_TEST( vibes::figure("Megatest with boxes") );
+        VIBES_TEST( vibes::newFigure("Megatest with boxes") );
         VIBES_TEST( vibes::drawBoxes(boxes_bounds,"[darkYellow]") );
+        VIBES_TEST( vibes::setFigureProperties(vibesParams("x",0,"y",40,"width",150,"height",150)) );
 
-        VIBES_TEST( vibes::figure("Megatest with boxes union") );
+        VIBES_TEST( vibes::newFigure("Megatest with boxes union") );
         VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"[darkGreen]") );
+        VIBES_TEST( vibes::setFigureProperties(vibesParams("x",150,"y",40,"width",150,"height",150)) );
+    }
+
+    cout << "Test of groups" << std::endl;
+    {
+        const int nbBoxesMegaTest = 10;
+        const int dimBoxesMegaTest = 3;
+
+        VIBES_TEST( vibes::newFigure("Groups: red and blue") );
+        VIBES_TEST( vibes::setFigureProperties(vibesParams("x",300,"y",40,"width",150,"height",150)) );
+
+        VIBES_TEST( vibes::newGroup("red group","[red]darkRed") );
+        VIBES_TEST( vibes::newGroup("blue group","darkBlue[blue]") );
+
+        std::vector<double> box_bounds(dimBoxesMegaTest*2);
+        for (int i=0; i<nbBoxesMegaTest; ++i)
+        {
+            for (int j=0; j<box_bounds.size(); j++)
+            {
+                if (! (j%2))
+                    box_bounds[j] = 25.0 * rand() / RAND_MAX;
+                else
+                    box_bounds[j] = box_bounds[j-1] + 5.0 * rand() / RAND_MAX;
+            }
+            VIBES_TEST( vibes::drawBox(box_bounds,vibesParams("group","red group")) );
+            for (int j=0; j<box_bounds.size(); j++)
+            {
+                if (! (j%2))
+                    box_bounds[j] = 25.0 * rand() / RAND_MAX;
+                else
+                    box_bounds[j] = box_bounds[j-1] + 5.0 * rand() / RAND_MAX;
+            }
+            VIBES_TEST( vibes::drawBox(box_bounds,vibesParams("group","blue group")) );
+        }
+        VIBES_TEST( vibes::setObjectProperty("blue group","format","cyan[blue]") );
     }
 
     cout << "Plotting y=sin(x) and y=cos(x)" << std::endl;
@@ -72,15 +108,21 @@ int main()
             vect_x.push_back(x);
             vect_y.push_back(cos(x));
         }
-        VIBES_TEST( vibes::figure("sin and cos") );
-        VIBES_TEST( vibes::drawLine(points,"red") );
-        VIBES_TEST( vibes::drawLine(vect_x,vect_y,"blue") );
+        VIBES_TEST( vibes::newFigure("sin and cos") );
+        VIBES_TEST( vibes::drawLine(points,"blue") );
+        VIBES_TEST( vibes::drawLine(vect_x,vect_y,"red") );
 
         VIBES_TEST( vibes::axisAuto() );
+
+        VIBES_TEST( vibes::setFigureProperties("sin and cos",
+                                                vibesParams("x",0,"y",220,"width",450,"height",100)) );
+        std::vector<std::string> labels;
+        labels.push_back("x"); labels.push_back("sin x"); labels.push_back("cos x");
+        VIBES_TEST( vibes::axisLabels(labels) );
     }
 
 
-    VIBES_TEST( vibes::figure("figureTest") );
+    VIBES_TEST( vibes::newFigure("figureTest") );
 
     cout << "drawBox" << std::endl;
     VIBES_TEST( vibes::drawBox(0,1.245,0,1) );
@@ -102,7 +144,9 @@ int main()
     VIBES_TEST( vibes::drawBox(bounds,"[lightGray]") );
 
 
-    VIBES_TEST( vibes::drawEllipse(-1,-1,2,3,30.0) );
+    VIBES_TEST( vibes::drawEllipse(-1,-1,2,3,30.0, vibesParams("name","ellipse")) );
+    VIBES_TEST( vibes::removeObject("ellipse") );
+
     VIBES_TEST( vibesDrawEllipse(-1,-1,1.5,2,30.0, "parent",0.1, "g") );
 
     VIBES_TEST( vibes::drawEllipse(0,-4.75,4,0.25,0.0, "darkGray") );
@@ -133,8 +177,8 @@ int main()
     VIBES_TEST( vibes::saveImage("vibes_test.bmp") );
     VIBES_TEST( vibes::saveImage("vibes_test.svg") );
 
-    std::cout << "disconnect" << std::endl;
-    VIBES_TEST( vibes::disconnect() );
+    std::cout << "end drawing" << std::endl;
+    VIBES_TEST( vibes::endDrawing() );
 
     // Testing Vibes params system
     cout << "Testing Vibes params system" << endl;

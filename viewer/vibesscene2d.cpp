@@ -16,6 +16,21 @@ VibesScene2D::VibesScene2D(QObject *parent) :
 {
 }
 
+/// Destructor
+
+VibesScene2D::~VibesScene2D()
+{
+    // All objects are removed from the scene in VibesScene2D destructor.
+    // This is necessary in ordrer to avoid BAD_ACCESS, since named objects call
+    // setItemName of the scene to unregister their name when they die. Otherwise,
+    // since VibesScene2D is destructed before QGraphicsScene, the hash _namedItems
+    // would not exist anymore when QGraphicsScene destructor would destroy the items
+
+    foreach (QGraphicsItem* item, this->items())
+        delete item;
+}
+
+
 
 /// Add a graphics item to the scene from its JSON "shape" object description
 /// \param[in] shape The JSON object containing properties
@@ -59,7 +74,7 @@ VibesGraphicsItem * VibesScene2D::addJsonShapeItem(const QJsonObject &shape)
     if (item)
     {
         this->addVibesItem(item);
-        // If the item belongs to a group, add it tho the group
+        // If the item belongs to a group, add it to the group
         if (group)
         {
             group->addToGroup(item);
@@ -109,11 +124,12 @@ bool VibesScene2D::setDimX(int dimX)
     {
         _dimX = dimX;
         emit changedDimX(dimX);
+        emit dimensionsChanged();
         updateDims();
         return true;
     } else {
         // Notify that invalid change has been refused
-        if (dimX != this->dimX()) emit changedDimX(this->dimX());
+        if (dimX != this->dimX()) { emit changedDimX(this->dimX()); emit dimensionsChanged(); }
         return false;
     }
 }
@@ -124,11 +140,12 @@ bool VibesScene2D::setDimY(int dimY)
     {
         _dimY = dimY;
         emit changedDimY(dimY);
+        emit dimensionsChanged();
         updateDims();
         return true;
     } else {
         // Notify that invalid change has been refused
-        if (dimY != this->dimY()) emit changedDimY(this->dimY());
+        if (dimY != this->dimY()) { emit changedDimY(this->dimY()); emit dimensionsChanged(); }
         return false;
     }
 }
@@ -145,12 +162,13 @@ bool VibesScene2D::setDims(int dimX, int dimY)
         _dimY = dimY;
         emit changedDimX(dimX);
         emit changedDimY(dimY);
+        emit dimensionsChanged();
         updateDims();
         return true;
     } else {
         // Notify that invalid change has been refused
-        if (dimX != this->dimX()) emit changedDimX(this->dimX());
-        if (dimY != this->dimY()) emit changedDimY(this->dimY());
+        if (dimX != this->dimX()) { emit changedDimX(this->dimX()); emit dimensionsChanged(); }
+        if (dimY != this->dimY()) { emit changedDimY(this->dimY()); emit dimensionsChanged(); }
         return false;
     }
 }

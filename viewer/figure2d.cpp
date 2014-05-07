@@ -47,6 +47,7 @@ Figure2D::Figure2D(QWidget *parent) :
     cbProjX = new QComboBox(lbProjX);
     cbProjX->setMaximumSize(lbProjX->size());
     connect(cbProjX, SIGNAL(currentTextChanged(QString)), lbProjX, SLOT(setText(QString)));
+    connect(cbProjX, SIGNAL(currentIndexChanged(QString)), lbProjX, SLOT(setText(QString)));
     for (int i=0; i<3; ++i)
         cbProjX->addItem(QString("x: dim %1").arg(i), i);
     cbProjX->setCurrentIndex(scene()->dimX());
@@ -57,12 +58,15 @@ Figure2D::Figure2D(QWidget *parent) :
     cbProjY = new QComboBox(lbProjY);
     cbProjY->setMaximumSize(lbProjY->size());
     connect(cbProjY, SIGNAL(currentTextChanged(QString)), lbProjY, SLOT(setText(QString)));
+    connect(cbProjY, SIGNAL(currentIndexChanged(QString)), lbProjY, SLOT(setText(QString)));
     for (int i=0; i<3; ++i)
         cbProjY->addItem(QString("y: dim %1").arg(i), i);
     cbProjY->setCurrentIndex(scene()->dimY());
     //cbProjY->installEventFilter(this);
     connect(cbProjY, SIGNAL(currentIndexChanged(int)), scene(), SLOT(setDimY(int)));
     connect(scene(), SIGNAL(changedDimY(int)), cbProjY, SLOT(setCurrentIndex(int)));
+
+    connect(scene(), SIGNAL(dimensionsChanged()), this, SLOT(refreshProjectionSelectors()));
 }
 
 bool Figure2D::eventFilter(QObject *obj, QEvent *event)
@@ -87,10 +91,42 @@ bool Figure2D::eventFilter(QObject *obj, QEvent *event)
     }
 }
 
+void Figure2D::refreshProjectionSelectors()
+{
+    for (int i=0; i<scene()->nbDim(); ++i)
+    {
+        if (i >= cbProjX->count())
+            cbProjX->addItem(scene()->dimName(i), i);
+        else
+            cbProjX->setItemText(i,scene()->dimName(i));
+
+        if (i >= cbProjY->count())
+            cbProjY->addItem(scene()->dimName(i), i);
+        else
+            cbProjY->setItemText(i,scene()->dimName(i));
+    }
+    cbProjX->setCurrentIndex( scene()->dimX() );
+    cbProjY->setCurrentIndex( scene()->dimY() );
+
+    lbProjX->setText( scene()->dimName( scene()->dimX() ) );
+    lbProjY->setText( scene()->dimName( scene()->dimY() ) );
+    /// \todo Remove unused dimensions
+}
+
 void Figure2D::mouseMoveEvent(QMouseEvent * event)
 {
-    cbProjX->hide();
-    cbProjY->hide();
+    if (cbProjX->isVisible())
+    {
+        cbProjX->hide();
+        refreshProjectionSelectors();
+        //this->scene()->update();
+    }
+    if (cbProjY->isVisible())
+    {
+        cbProjY->hide();
+        refreshProjectionSelectors();
+        //this->scene()->update();
+    }
     QGraphicsView::mouseMoveEvent(event);
 }
 
@@ -164,7 +200,15 @@ void Figure2D::wheelEvent(QWheelEvent *event)
 
         // Scales the view to zoom according to mouse wheel
         double s = qPow(2.0, 0.04*event->angleDelta().y()/8.0);
-        this->scale(s,s);
+
+        double sx = s;
+        double sy = s;
+
+        if (event->modifiers().testFlag(Qt::AltModifier))
+            sx = 1.0;
+        if (event->modifiers().testFlag(Qt::ShiftModifier))
+            sy = 1.0;
+        this->scale(sx,sy);
 //        double dx = sceneRect().width() * (s - 1.0);
 //        double dy = sceneRect().height() * (s - 1.0);
 //        this->setSceneRect(sceneRect().adjusted(-dx,-dy,dx,dy));
@@ -200,6 +244,11 @@ void Figure2D::resizeEvent(QResizeEvent *event)
 {
     lbProjX->move(width()-lbProjX->width()-5, 10);
     lbProjY->move(10, height()-lbProjX->height()-5);
+
+    if (event->oldSize().width() > 0 && event->oldSize().height())
+        this->scale((double)event->size().width() / event->oldSize().width(),
+                    (double)event->size().height() / event->oldSize().height());
+
     QGraphicsView::resizeEvent(event);
 }
 
