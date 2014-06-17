@@ -3,7 +3,7 @@
 vibes.beginDrawing();           % Initialize VIBes connection
 vibes.newFigure('sin and cos'); % Create a new VIBes figure
 
-x = 0:0.1:10;
+x = 0:0.01:10;
 sinx = sin(x);
 cosx = cos(x);
 
