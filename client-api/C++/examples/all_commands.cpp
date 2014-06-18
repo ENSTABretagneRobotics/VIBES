@@ -12,6 +12,7 @@
 #include <ctime>
 #include <vector>
 #include <cmath>
+#include <cstdlib>
 
 // Utility macro to log executed instructions on terminal
 #define VIBES_TEST(instruction) std::cout << "[l." << __LINE__ << "] " << #instruction << "..."; instruction; std::cout << " OK" << std::endl;
