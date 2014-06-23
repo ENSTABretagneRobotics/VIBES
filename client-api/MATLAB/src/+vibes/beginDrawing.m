@@ -4,7 +4,7 @@ function beginDrawing( filename )
     
     if nargin > 0
         if isa(filename,'char')
-            vibesPipeFile=fopen(filename,'w');
+            vibesPipeFile=fopen(filename,'a');
         else
             disp('Connect expects a string as an argument');
         end
@@ -14,9 +14,9 @@ function beginDrawing( filename )
             home_path=getenv('HOME');
         end
         if isempty(home_path)
-            vibesPipeFile=fopen('vibes.json','w');
+            vibesPipeFile=fopen('vibes.json','a');
         else
-            vibesPipeFile=fopen([home_path '/.vibes.json'],'w');
+            vibesPipeFile=fopen([home_path '/.vibes.json'],'a');
         end
     end
 end
