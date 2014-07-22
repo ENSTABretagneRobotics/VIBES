@@ -1,7 +1,6 @@
 function axisAuto()
 global vibesPipeFile;
 global current_fig;
-    msg=struct('figure',current_fig,'action','view','box','auto');
-    fprintf(vibesPipeFile,'%s\n\n',vibes.json.dump(msg));
-end
 
+msg=struct('action','set','figure',current_fig,'properties',struct('viewbox','auto'));
+fprintf(vibesPipeFile,'%s\n\n',vibes.json.dump(msg));

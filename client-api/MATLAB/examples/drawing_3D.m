@@ -12,6 +12,6 @@ points = [x', sinx', cosx'];
 vibes.drawLine(points, 'blue'); % Draw the 3D curve
 vibes.axisAuto();
 
-vibes.axisLabel(['x    '; 'cos x'; 'sin x']);
+vibes.axisLabels({'x', 'cos x', 'sin x'});
 
 vibes.endDrawing();             % Closes VIBes connection

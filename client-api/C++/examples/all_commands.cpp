@@ -12,6 +12,7 @@
 #include <ctime>
 #include <vector>
 #include <cmath>
+#include <cstdlib>
 
 // Utility macro to log executed instructions on terminal
 #define VIBES_TEST(instruction) std::cout << "[l." << __LINE__ << "] " << #instruction << "..."; instruction; std::cout << " OK" << std::endl;
@@ -27,6 +28,13 @@ int main()
 
     cout << "Figure creation function" << endl;
     VIBES_TEST( vibes::newFigure() );
+
+    cout << "Test bug GitHub #58" << endl;
+    VIBES_TEST( vibes::newGroup("group","[red]darkRed") );
+    //VIBES_TEST( vibes::drawCircle(0.0,0.0,1.0,vibesParams("group","red group")) );
+    //VIBES_TEST( vibes::clearGroup("group") );
+    VIBES_TEST( vibes::clearFigure() );
+
 
     cout << "Megatest Wayne!" << std::endl;
     {
@@ -65,6 +73,12 @@ int main()
 
         VIBES_TEST( vibes::newGroup("red group","[red]darkRed") );
         VIBES_TEST( vibes::newGroup("blue group","darkBlue[blue]") );
+
+        VIBES_TEST( vibes::drawCircle(0.0,0.0,1.0,vibesParams("group","red group")) );
+        VIBES_TEST( vibes::clearGroup("red group") );
+        cout << " Clear empty group" << endl;
+        VIBES_TEST( vibes::clearGroup("red group") );
+        VIBES_TEST( vibes::clearGroup("undefined group") );
 
         std::vector<double> box_bounds(dimBoxesMegaTest*2);
         for (int i=0; i<nbBoxesMegaTest; ++i)

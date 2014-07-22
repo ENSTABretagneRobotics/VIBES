@@ -66,12 +66,15 @@ namespace vibes
   //
   // Global variables and utility functions
   //
+  namespace {
 
-  /// Current communication file descriptor
-  FILE *channel=0;
+      /// Current communication file descriptor
+      FILE *channel=0;
 
-  /// Current figure name (client-maintained state)
-  string current_fig="default";
+      /// Current figure name (client-maintained state)
+      string current_fig="default";
+
+  }
 
   //
   // Management of connection to the Vibes server
