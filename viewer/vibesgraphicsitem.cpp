@@ -192,6 +192,9 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     else if (type == "line") {
         return new VibesGraphicsLine();
     }
+    else if (type == "polygon") {
+        return new VibesGraphicsPolygon();
+    }
     return 0;
 }
 
@@ -817,6 +820,73 @@ bool VibesGraphicsLine::computeProjection(int dimX, int dimY)
     // Set graphics properties
     this->setPen(pen);
     //this->setBrush(brush);
+
+    // Update successful
+    return true;
+}
+
+bool VibesGraphicsPolygon::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsBox has JSON type "polygon"
+        if (type == "polygon")
+        {
+            // Check that the "points" field is a matrix
+            int nbCols, nbRows;
+            if (!isJsonMatrix(json["points"], nbRows, nbCols))
+                return false;
+            // Number of coordinates has to be at least 3
+            if (nbCols < 2)
+                return 0;
+
+            // Compute dimension
+            this->_nbDim = 2;
+
+            // Set pen
+            this->setPen( vibesDefaults.pen( jsonValue("EdgeColor").toString() ) );
+            this->setBrush( vibesDefaults.brush( jsonValue("FaceColor").toString() ) );
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsPolygon::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+
+    Q_ASSERT(json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "polygon");
+
+    QJsonArray bounds = json["bounds"].toArray();
+    // Compute dimension
+    //Q_ASSERT(this->_nbDim == bounds.size() / 2);
+    //Q_ASSERT(bounds.size() >= (2*(qMax(dimX,dimY)+1)));
+
+    // Update polygon
+    QPolygonF polygon;
+    polygon << QPointF(10.4, 20.5);
+    polygon << QPointF(11.4, 20.5);
+    polygon << QPointF(13.4, 22.5);
+    this->setPolygon(polygon);
+
+    // Update polygon color
+    this->setPen(pen);
+    this->setBrush(brush);
 
     // Update successful
     return true;

@@ -297,6 +297,9 @@ namespace vibes {
   /// Draw a 2-D line from the list of abscissae \a x and the list of ordinates \a y
   VIBES_FUNC_COLOR_PARAM_2(drawLine,const std::vector<double> &,x, const std::vector<double> &,y)
 
+  /// Draw a 2-D polygon from the list of abscissae \a x and the list of ordinates \a y
+  VIBES_FUNC_COLOR_PARAM_2(drawPolygon,const std::vector<double> &,x, const std::vector<double> &,y)
+
   /// @}
   /// @name Objects grouping and deletion
   /// @{

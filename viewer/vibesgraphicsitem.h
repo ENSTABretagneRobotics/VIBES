@@ -41,6 +41,7 @@ public:
            // Primitive types
            VibesGraphicsBoxType,
            VibesGraphicsEllipseType,
+           VibesGraphicsPolygonType,
            // List based types
            //VibesGraphicsPointsType,
            VibesGraphicsLineType,
@@ -210,6 +211,17 @@ class VibesGraphicsLine : public QGraphicsPathItem, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsLine, QGraphicsPathItem)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("points")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// A polygon
+
+class VibesGraphicsPolygon : public QGraphicsPolygonItem, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsPolygon, QGraphicsPolygonItem)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("bounds")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
