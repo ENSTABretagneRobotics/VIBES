@@ -44,6 +44,7 @@ public:
            VibesGraphicsPolygonType,
            // Complex types based on primitive types
            VibesGraphicsVehicleType,
+           VibesGraphicsVehicleAUVType,
            // List based types
            //VibesGraphicsPointsType,
            VibesGraphicsLineType,
@@ -234,6 +235,17 @@ protected:
 class VibesGraphicsVehicle : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsVehicle, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("center","length","orientation")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// A submarine vehicle type AUV (torpedo)
+
+class VibesGraphicsVehicleAUV : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsVehicleAUV, QGraphicsItemGroup)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("center","length","orientation")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);

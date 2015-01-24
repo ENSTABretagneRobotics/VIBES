@@ -303,6 +303,9 @@ namespace vibes {
   /// Draw a 2-D vehicle at position (cx,cy)
   VIBES_FUNC_COLOR_PARAM_4(drawVehicle,const double &,cx, const double &,cy, const double &,length, const double &,rot)
   
+  /// Draw a 2-D submarine (type AUV) at position (cx,cy)
+  VIBES_FUNC_COLOR_PARAM_4(drawAUV,const double &,cx, const double &,cy, const double &,length, const double &,rot)
+  
   /// @}
   /// @name Objects grouping and deletion
   /// @{

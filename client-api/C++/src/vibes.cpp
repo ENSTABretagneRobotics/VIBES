@@ -349,6 +349,20 @@ namespace vibes
       fflush(channel);
   }
 
+  void drawAUV(const double &cx, const double &cy, const double &length, const double &rot, Params params)
+  {
+      Params msg;
+      msg["action"] = "draw";
+      msg["figure"] = params.pop("figure",current_fig);
+      msg["shape"] = (params, "type", "vehicle_auv",
+                              "center", (Vec2d){cx,cy},
+                              "length", length,
+                              "orientation", rot);
+
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+      fflush(channel);
+  }
+
 
   void newGroup(const std::string &name, Params params)
   {

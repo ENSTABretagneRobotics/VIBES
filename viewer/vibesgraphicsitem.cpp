@@ -198,6 +198,9 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     else if (type == "vehicle") {
         return new VibesGraphicsVehicle();
     }
+    else if (type == "vehicle_auv") {
+        return new VibesGraphicsVehicleAUV();
+    }
     return 0;
 }
 
@@ -959,8 +962,110 @@ bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
     graphics_polygon->setBrush(brush);
     graphics_polygon->setTransformOriginPoint(centerPoint);
     graphics_polygon->setRotation(orientation);
-    graphics_polygon->setScale(length / 4.);
+    graphics_polygon->setScale(length / 4.); // initial vehicle's length is 4
     this->addToGroup(graphics_polygon);
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsVehicleAUV
+//
+
+bool VibesGraphicsVehicleAUV::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if(json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // JSON type for VibesGraphicsVehicleAUV is "vehicle_auv"
+        if(type == "vehicle_auv")
+        {
+            if(json.contains("center") && json.contains("length") && json.contains("orientation"))
+            {
+                if(json["center"].toArray().size() == 2 && json["length"].toDouble() > 0.)
+                {
+                    // Set dimension
+                    this->_nbDim = 2;
+
+                    // Update successful
+                    return true;
+                }
+            }
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+
+    Q_ASSERT (json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "vehicle_auv");
+
+    QJsonArray center = json["center"].toArray();
+    double length = json["length"].toDouble();
+    double orientation = json["orientation"].toDouble();
+
+    Q_ASSERT(center.size() == 2);
+    Q_ASSERT(length > 0.);
+
+    // Get center
+    const QPointF & centerPoint = QPointF(center[dimX].toDouble(), center[dimY].toDouble());
+
+    /*  This shape is inspired by the MOOS middleware GUI (see pMarineViewer)   */
+
+    // Set body shape
+    {
+        QPolygonF body;
+        body << QPointF(-4. * length,  0. * length) + centerPoint;
+        body << QPointF(-2. * length,  1. * length) + centerPoint;
+        body << QPointF( 2. * length,  1. * length) + centerPoint;
+
+        for(float i = 90. ; i > -90. ; i-=10.) // noise
+            body << QPointF( (cos(i  * M_PI / 180.0) + 2.) * length, 
+                             (sin(i  * M_PI / 180.0) + 0.) * length) + centerPoint;
+
+        body << QPointF( 2. * length, -1. * length) + centerPoint;
+        body << QPointF(-2. * length, -1. * length) + centerPoint;
+
+        QGraphicsPolygonItem *graphics_body = new QGraphicsPolygonItem(body);
+        graphics_body->setPen(pen);
+        graphics_body->setBrush(brush);
+        graphics_body->setTransformOriginPoint(centerPoint);
+        graphics_body->setRotation(orientation);
+        graphics_body->setScale(length / 7.); // initial vehicle's length is 7
+        this->addToGroup(graphics_body);
+    }
+
+    // Set propulsion unit shape
+    {
+        QPolygonF propunit;
+        propunit << QPointF(- 4.  * length,  1 * length) + centerPoint;
+        propunit << QPointF(-3.25 * length,  1 * length) + centerPoint;
+        propunit << QPointF(-3.25 * length, -1 * length) + centerPoint;
+        propunit << QPointF(- 4.  * length, -1 * length) + centerPoint;
+
+        QGraphicsPolygonItem *graphics_propunit = new QGraphicsPolygonItem(propunit);
+        graphics_propunit->setPen(pen);
+        graphics_propunit->setBrush(brush);
+        graphics_propunit->setTransformOriginPoint(centerPoint);
+        graphics_propunit->setRotation(orientation);
+        graphics_propunit->setScale(length / 7.); // initial vehicle's length is 7
+        this->addToGroup(graphics_propunit);
+    }
 
     // Update successful
     return true;
