@@ -329,7 +329,7 @@ namespace vibes
      msg["action"] = "draw";
      msg["figure"] = params.pop("figure",current_fig);
      msg["shape"] = (params, "type", "polygon",
-                             "points", points);
+                             "bounds", points);
 
      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
      fflush(channel);

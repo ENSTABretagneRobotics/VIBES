@@ -14,6 +14,8 @@
 #include <QJsonArray>
 #include <QJsonValue>
 
+#include <iostream> 
+
 // The only instance of VibesDefaults
 VibesDefaults VibesDefaults::_instance;
 
@@ -839,13 +841,13 @@ bool VibesGraphicsPolygon::parseJsonGraphics(const QJsonObject &json)
         {
             // Check that the "points" field is a matrix
             int nbCols, nbRows;
-            if (!isJsonMatrix(json["points"], nbRows, nbCols))
+            if (!isJsonMatrix(json["bounds"], nbRows, nbCols))
                 return false;
             // Number of coordinates has to be at least 3
             if (nbCols < 2)
                 return 0;
 
-            // Compute dimension
+            // For now, a poylgon is only available in 2-D dimension
             this->_nbDim = 2;
 
             // Set pen
@@ -872,16 +874,13 @@ bool VibesGraphicsPolygon::computeProjection(int dimX, int dimY)
     Q_ASSERT(json.contains("type"));
     Q_ASSERT(json["type"].toString() == "polygon");
 
-    QJsonArray bounds = json["bounds"].toArray();
-    // Compute dimension
-    //Q_ASSERT(this->_nbDim == bounds.size() / 2);
-    //Q_ASSERT(bounds.size() >= (2*(qMax(dimX,dimY)+1)));
-
     // Update polygon
     QPolygonF polygon;
-    polygon << QPointF(10.4, 20.5);
-    polygon << QPointF(11.4, 20.5);
-    polygon << QPointF(13.4, 22.5);
+    foreach (const QJsonValue value, json["bounds"].toArray()) {
+        // Read coordinates and append them to the list of points
+        const QJsonArray coords = value.toArray();
+        polygon << QPointF(coords[dimX].toDouble(), coords[dimY].toDouble());
+    }
     this->setPolygon(polygon);
 
     // Update polygon color

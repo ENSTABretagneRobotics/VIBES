@@ -165,6 +165,19 @@ int main()
 
     VIBES_TEST( vibes::drawEllipse(0,-4.75,4,0.25,0.0, "darkGray") );
 
+    cout << "drawPolygon with vector of vector of bounds" << std::endl;
+    {
+        vector<double> x, y;
+        x.push_back(-2);    y.push_back(7);
+        x.push_back(-1);    y.push_back(7);
+        x.push_back(0);     y.push_back(5);
+        x.push_back(1);     y.push_back(7);
+        x.push_back(2);     y.push_back(7);
+        x.push_back(0.5);   y.push_back(4);
+        x.push_back(-0.5);  y.push_back(4);
+        VIBES_TEST( vibes::drawPolygon(x, y, "yellow[red]") );
+    }
+
     cout << "drawBoxes with vector of vector of bounds" << std::endl;
     {
         std::vector< std::vector<double> > boxes_bounds;
