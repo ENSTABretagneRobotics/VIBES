@@ -178,6 +178,10 @@ int main()
         VIBES_TEST( vibes::drawPolygon(x, y, "yellow[red]") );
     }
 
+    cout << "drawVehicle" << std::endl;
+    VIBES_TEST( vibes::drawVehicle(4, 16, 5, 52, "green") );
+    VIBES_TEST( vibes::drawVehicle(2, 16, 1, 0, "blue[lightGray]") );
+
     cout << "drawBoxes with vector of vector of bounds" << std::endl;
     {
         std::vector< std::vector<double> > boxes_bounds;

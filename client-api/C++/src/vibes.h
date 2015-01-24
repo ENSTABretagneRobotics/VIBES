@@ -300,6 +300,9 @@ namespace vibes {
   /// Draw a 2-D polygon from the list of abscissae \a x and the list of ordinates \a y
   VIBES_FUNC_COLOR_PARAM_2(drawPolygon,const std::vector<double> &,x, const std::vector<double> &,y)
 
+  /// Draw a 2-D vehicle at position (cx,cy)
+  VIBES_FUNC_COLOR_PARAM_4(drawVehicle,const double &,cx, const double &,cy, const double &,length, const double &,rot)
+  
   /// @}
   /// @name Objects grouping and deletion
   /// @{
