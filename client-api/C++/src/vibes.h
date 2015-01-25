@@ -301,10 +301,10 @@ namespace vibes {
   VIBES_FUNC_COLOR_PARAM_2(drawPolygon,const std::vector<double> &,x, const std::vector<double> &,y)
 
   /// Draw a 2-D vehicle at position (cx,cy)
-  VIBES_FUNC_COLOR_PARAM_4(drawVehicle,const double &,cx, const double &,cy, const double &,length, const double &,rot)
+  VIBES_FUNC_COLOR_PARAM_4(drawVehicle,const double &,cx, const double &,cy, const double &,rot, const double &,length)
   
   /// Draw a 2-D submarine (type AUV) at position (cx,cy)
-  VIBES_FUNC_COLOR_PARAM_4(drawAUV,const double &,cx, const double &,cy, const double &,length, const double &,rot)
+  VIBES_FUNC_COLOR_PARAM_4(drawAUV,const double &,cx, const double &,cy, const double &,rot, const double &,length)
   
   /// @}
   /// @name Objects grouping and deletion

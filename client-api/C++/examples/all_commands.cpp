@@ -179,11 +179,11 @@ int main()
     }
 
     cout << "drawVehicle" << std::endl;
-    VIBES_TEST( vibes::drawVehicle(4, 16, 5, 52, "green") ); // cx, cy, length, rotation
-    VIBES_TEST( vibes::drawVehicle(2, 16, 1, 0, "blue[lightGray]") );
+    VIBES_TEST( vibes::drawVehicle(4, 16, 52, 5, "green") ); // cx, cy, rotation, length
+    VIBES_TEST( vibes::drawVehicle(2, 16, 0, 1, "blue[lightGray]") );
     cout << "drawAUV" << std::endl;
-    VIBES_TEST( vibes::drawAUV(2, -16, 5, 52, "blue[yellow]") );
-    VIBES_TEST( vibes::drawAUV(2, -16, 1, 0, "blue[green]") );
+    VIBES_TEST( vibes::drawAUV(2, -16, 52, 5, "blue[yellow]") );
+    VIBES_TEST( vibes::drawAUV(2, -16, 0, 1, "blue[green]") );
 
     cout << "drawBoxes with vector of vector of bounds" << std::endl;
     {

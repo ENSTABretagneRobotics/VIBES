@@ -335,7 +335,7 @@ namespace vibes
      fflush(channel);
   }
 
-  void drawVehicle(const double &cx, const double &cy, const double &length, const double &rot, Params params)
+  void drawVehicle(const double &cx, const double &cy, const double &rot, const double &length, Params params)
   {
       Params msg;
       msg["action"] = "draw";
@@ -349,7 +349,7 @@ namespace vibes
       fflush(channel);
   }
 
-  void drawAUV(const double &cx, const double &cy, const double &length, const double &rot, Params params)
+  void drawAUV(const double &cx, const double &cy, const double &rot, const double &length, Params params)
   {
       Params msg;
       msg["action"] = "draw";
