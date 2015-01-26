@@ -296,6 +296,13 @@ namespace vibes {
   VIBES_FUNC_COLOR_PARAM_1(drawLine,const std::vector< std::vector<double> > &,points)
   /// Draw a 2-D line from the list of abscissae \a x and the list of ordinates \a y
   VIBES_FUNC_COLOR_PARAM_2(drawLine,const std::vector<double> &,x, const std::vector<double> &,y)
+  
+  /// Draw a 2-D arrow from (xA,yA) to (xB,yB)
+  VIBES_FUNC_COLOR_PARAM_5(drawArrow,const double &,xA, const double &,yA, const double &,xB, const double &,yB, const double &,tip_length)
+  /// Draw a N-D arrow from the list of coordinates \a points in the form ((x_1, y_1, z_1, ...), (x_2, y_2, z_2, ...), ...)
+  VIBES_FUNC_COLOR_PARAM_2(drawArrow,const std::vector< std::vector<double> > &,points, const double &,tip_length)
+  /// Draw a 2-D arrow from the list of abscissae \a x and the list of ordinates \a y
+  VIBES_FUNC_COLOR_PARAM_3(drawArrow,const std::vector<double> &,x, const std::vector<double> &,y, const double &,tip_length)
 
   /// Draw a 2-D polygon from the list of abscissae \a x and the list of ordinates \a y
   VIBES_FUNC_COLOR_PARAM_2(drawPolygon,const std::vector<double> &,x, const std::vector<double> &,y)

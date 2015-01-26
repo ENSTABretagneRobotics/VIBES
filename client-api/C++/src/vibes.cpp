@@ -315,6 +315,59 @@ namespace vibes
      fflush(channel);
   }
 
+  void drawArrow(const double &xA, const double &yA, const double &xB, const double &yB, const double &tip_length, Params params)
+  {
+     // Reshape A and B into a vector of points
+     std::vector<Value> points;
+     points.push_back((Vec2d){ xA, yA} );
+     points.push_back((Vec2d){ xB, yB} );
+
+     // Send message
+     Params msg;
+     msg["action"] = "draw";
+     msg["figure"] = params.pop("figure",current_fig);
+     msg["shape"] = (params, "type", "arrow",
+                             "points", points,
+                             "tip_length", tip_length);
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void drawArrow(const std::vector<std::vector<double> > &points, const double &tip_length, Params params)
+  {
+     Params msg;
+     msg["action"] = "draw";
+     msg["figure"] = params.pop("figure",current_fig);
+     msg["shape"] = (params, "type", "arrow",
+                             "points", points,
+                             "tip_length", tip_length);
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
+  void drawArrow(const std::vector<double> &x, const std::vector<double> &y, const double &tip_length, Params params)
+  {
+     // Reshape x and y into a vector of points
+     std::vector<Value> points;
+     std::vector<double>::const_iterator itx = x.begin();
+     std::vector<double>::const_iterator ity = y.begin();
+     while (itx != x.end() && ity != y.end()) {
+        points.push_back( (Vec2d){*itx++,*ity++} );
+     }
+     // Send message
+     Params msg;
+     msg["action"] = "draw";
+     msg["figure"] = params.pop("figure",current_fig);
+     msg["shape"] = (params, "type", "arrow",
+                             "points", points,
+                             "tip_length", tip_length);
+
+     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+     fflush(channel);
+  }
+
   void drawPolygon(const std::vector<double> &x, const std::vector<double> &y, Params params)
   {
      // Reshape x and y into a vector of points

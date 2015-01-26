@@ -42,6 +42,7 @@ public:
            VibesGraphicsBoxType,
            VibesGraphicsEllipseType,
            VibesGraphicsPolygonType,
+           VibesGraphicsArrowType,
            // Complex types based on primitive types
            VibesGraphicsVehicleType,
            VibesGraphicsVehicleAUVType,
@@ -247,6 +248,17 @@ class VibesGraphicsVehicleAUV : public QGraphicsItemGroup, public VibesGraphicsI
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsVehicleAUV, QGraphicsItemGroup)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("center","length","orientation")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// An arrow
+
+class VibesGraphicsArrow : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsArrow, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("points","tip_length")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);

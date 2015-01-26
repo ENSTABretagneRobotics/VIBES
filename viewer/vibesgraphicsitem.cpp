@@ -192,6 +192,9 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     else if (type == "line") {
         return new VibesGraphicsLine();
     }
+    else if (type == "arrow") {
+        return new VibesGraphicsArrow();
+    }
     else if (type == "polygon") {
         return new VibesGraphicsPolygon();
     }
@@ -1065,6 +1068,122 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
         graphics_propunit->setRotation(orientation);
         graphics_propunit->setScale(length / 7.); // initial vehicle's length is 7
         this->addToGroup(graphics_propunit);
+    }
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsArrow
+//
+
+bool VibesGraphicsArrow::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsArrow has JSON type "arrow"
+        if (type == "arrow")
+        {
+            // Check that the "points" field is a matrix
+            int nbCols, nbRows;
+            if (!isJsonMatrix(json["points"], nbRows, nbCols))
+                return false;
+            if (json["tip_length"].toDouble() < 0)
+                return false;
+            // Number of coordinates has to be at least 2 (to draw in the plane)
+            if (nbCols < 2)
+                return 0;
+
+            // Compute dimension
+            this->_nbDim = nbCols;
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+
+bool VibesGraphicsArrow::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get arrow color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT (json.contains("type"));
+    // VibesGraphicsArrow has JSON type "arrow"
+    Q_ASSERT ( json["type"].toString() == "arrow" );
+    // "bounds" is a matrix
+    Q_ASSERT ( isJsonMatrix(json["points"]) );
+    Q_ASSERT ( json["tip_length"].toDouble() > 0);
+    
+    double before_last_x = 0., before_last_y = 0., last_x = 0., last_y = 0.;
+
+    // Body
+    {
+        QPolygonF line;
+
+        // Update line with projected points
+        foreach (const QJsonValue value, json["points"].toArray()) {
+            // Read coordinates and append them to the list of points
+            const QJsonArray coords = value.toArray();
+            before_last_x = last_x;
+            before_last_y = last_y;
+            last_x = coords[dimX].toDouble();
+            last_y = coords[dimY].toDouble();
+            line << QPointF(last_x, last_y);
+        }
+
+        QPainterPath path;
+        path.addPolygon(line);
+        QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
+        graphics_path->setPen(pen);
+        this->addToGroup(graphics_path);
+    }
+
+    // Tip
+    {
+        QPolygonF tip;
+
+        double tip_length = json["tip_length"].toDouble();
+        double dx = (before_last_x - last_x);
+        double dy = (before_last_y - last_y);
+        double arrow_angle = atan2(dy, dx);
+        double tip_angle = 160. * M_PI / 180.0;
+  
+        double x = last_x;
+        double y = last_y;
+
+         // tip (right)
+        tip << QPointF(x,  y);
+        // (upper left)
+        tip << QPointF(x - cos(tip_angle + arrow_angle) * tip_length,
+                       y - sin(tip_angle + arrow_angle) * tip_length);
+        // (left)
+        tip << QPointF(x + cos(arrow_angle) * tip_length * 2. / 3.,
+                       y + sin(arrow_angle) * tip_length * 2. / 3.);
+        // (bottom left)
+        tip << QPointF(x - cos(-tip_angle + arrow_angle) * tip_length,
+                       y - sin(-tip_angle + arrow_angle) * tip_length);
+
+        QGraphicsPolygonItem *graphics_tip = new QGraphicsPolygonItem(tip);
+        graphics_tip->setPen(pen);
+        graphics_tip->setBrush(brush);
+        this->addToGroup(graphics_tip);
     }
 
     // Update successful

@@ -185,6 +185,18 @@ int main()
     VIBES_TEST( vibes::drawAUV(2, -16, 52, 5, "blue[yellow]") );
     VIBES_TEST( vibes::drawAUV(2, -16, 0, 1, "blue[green]") );
 
+    cout << "drawArrow" << std::endl;
+    VIBES_TEST( vibes::drawArrow(0., 0., 20., 20., 1., "black[yellow]") );
+    VIBES_TEST( vibes::drawArrow(20., 30., 0., 10., 2., "black[yellow]") );
+    VIBES_TEST( vibes::drawArrow(0., 20., 20., 40., 3., "black[yellow]") );
+    VIBES_TEST( vibes::drawArrow(20., 50., 0., 30., 4., "black[yellow]") );
+
+    VIBES_TEST( vibes::drawArrow(0., 65., 20., 65., 2., "black[red]") );
+    VIBES_TEST( vibes::drawArrow(20., 62., 0., 62., 2., "black[red]") );
+
+    VIBES_TEST( vibes::drawArrow(65., 70., 65., 50., 2., "black[red]") );
+    VIBES_TEST( vibes::drawArrow(62., 50., 62., 70., 2., "black[red]") );
+
     cout << "drawBoxes with vector of vector of bounds" << std::endl;
     {
         std::vector< std::vector<double> > boxes_bounds;
