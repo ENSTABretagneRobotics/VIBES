@@ -850,12 +850,12 @@ bool VibesGraphicsPolygon::parseJsonGraphics(const QJsonObject &json)
             int nbCols, nbRows;
             if (!isJsonMatrix(json["bounds"], nbRows, nbCols))
                 return false;
-            // Number of coordinates has to be at least 3
+            // Number of coordinates has to be at least 2 (to draw in the plane)
             if (nbCols < 2)
                 return 0;
 
-            // For now, a poylgon is only available in 2-D dimension
-            this->_nbDim = 2;
+            // Compute dimension
+            this->_nbDim = nbCols;
 
             // Set pen
             this->setPen( vibesDefaults.pen( jsonValue("EdgeColor").toString() ) );
@@ -917,10 +917,11 @@ bool VibesGraphicsVehicle::parseJsonGraphics(const QJsonObject &json)
         {
             if(json.contains("center") && json.contains("length") && json.contains("orientation"))
             {
-                if(json["center"].toArray().size() == 2 && json["length"].toDouble() > 0.)
+                int center_size = json["center"].toArray().size();
+                if(center_size == 2 && json["length"].toDouble() > 0.)
                 {
                     // Set dimension
-                    this->_nbDim = 2;
+                    this->_nbDim = center_size;
 
                     // Update successful
                     return true;
@@ -941,7 +942,7 @@ bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
     const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
     const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
 
-    Q_ASSERT (json.contains("type"));
+    Q_ASSERT(json.contains("type"));
     Q_ASSERT(json["type"].toString() == "vehicle");
 
     QJsonArray center = json["center"].toArray();
@@ -949,6 +950,7 @@ bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
     double orientation = json["orientation"].toDouble();
 
     Q_ASSERT(center.size() == 2);
+    Q_ASSERT(this->_nbDim == center.size());
     Q_ASSERT(length > 0.);
 
     // Get center
@@ -991,10 +993,11 @@ bool VibesGraphicsVehicleAUV::parseJsonGraphics(const QJsonObject &json)
         {
             if(json.contains("center") && json.contains("length") && json.contains("orientation"))
             {
-                if(json["center"].toArray().size() == 2 && json["length"].toDouble() > 0.)
+                int center_size = json["center"].toArray().size();
+                if(center_size == 2 && json["length"].toDouble() > 0.)
                 {
                     // Set dimension
-                    this->_nbDim = 2;
+                    this->_nbDim = center_size;
 
                     // Update successful
                     return true;
@@ -1023,6 +1026,7 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
     double orientation = json["orientation"].toDouble();
 
     Q_ASSERT(center.size() == 2);
+    Q_ASSERT(this->_nbDim == center.size());
     Q_ASSERT(length > 0.);
 
     // Get center
