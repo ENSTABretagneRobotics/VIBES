@@ -41,6 +41,11 @@ public:
            // Primitive types
            VibesGraphicsBoxType,
            VibesGraphicsEllipseType,
+           VibesGraphicsPolygonType,
+           VibesGraphicsArrowType,
+           // Complex types based on primitive types
+           VibesGraphicsVehicleType,
+           VibesGraphicsVehicleAUVType,
            // List based types
            //VibesGraphicsPointsType,
            VibesGraphicsLineType,
@@ -215,5 +220,48 @@ protected:
     bool computeProjection(int dimX, int dimY);
 };
 
+/// A polygon
+
+class VibesGraphicsPolygon : public QGraphicsPolygonItem, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsPolygon, QGraphicsPolygonItem)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("bounds")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// A simple vehicle (triangle)
+
+class VibesGraphicsVehicle : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsVehicle, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("center","length","orientation")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// A submarine vehicle type AUV (torpedo)
+
+class VibesGraphicsVehicleAUV : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsVehicleAUV, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("center","length","orientation")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// An arrow
+
+class VibesGraphicsArrow : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsArrow, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("points","tip_length")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
 
 #endif // VIBESGRAPHICSITEM_H

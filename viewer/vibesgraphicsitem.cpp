@@ -192,6 +192,18 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     else if (type == "line") {
         return new VibesGraphicsLine();
     }
+    else if (type == "arrow") {
+        return new VibesGraphicsArrow();
+    }
+    else if (type == "polygon") {
+        return new VibesGraphicsPolygon();
+    }
+    else if (type == "vehicle") {
+        return new VibesGraphicsVehicle();
+    }
+    else if (type == "vehicle_auv") {
+        return new VibesGraphicsVehicleAUV();
+    }
     return 0;
 }
 
@@ -817,6 +829,366 @@ bool VibesGraphicsLine::computeProjection(int dimX, int dimY)
     // Set graphics properties
     this->setPen(pen);
     //this->setBrush(brush);
+
+    // Update successful
+    return true;
+}
+
+bool VibesGraphicsPolygon::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsBox has JSON type "polygon"
+        if (type == "polygon")
+        {
+            // Check that the "points" field is a matrix
+            int nbCols, nbRows;
+            if (!isJsonMatrix(json["bounds"], nbRows, nbCols))
+                return false;
+            // Number of coordinates has to be at least 2 (to draw in the plane)
+            if (nbCols < 2)
+                return 0;
+
+            // Compute dimension
+            this->_nbDim = nbCols;
+
+            // Set pen
+            this->setPen( vibesDefaults.pen( jsonValue("EdgeColor").toString() ) );
+            this->setBrush( vibesDefaults.brush( jsonValue("FaceColor").toString() ) );
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsPolygon::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+
+    Q_ASSERT(json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "polygon");
+
+    // Update polygon
+    QPolygonF polygon;
+    foreach (const QJsonValue value, json["bounds"].toArray()) {
+        // Read coordinates and append them to the list of points
+        const QJsonArray coords = value.toArray();
+        polygon << QPointF(coords[dimX].toDouble(), coords[dimY].toDouble());
+    }
+    this->setPolygon(polygon);
+
+    // Update polygon color
+    this->setPen(pen);
+    this->setBrush(brush);
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsVehicle
+//
+
+bool VibesGraphicsVehicle::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if(json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // JSON type for VibesGraphicsVehicle is "vehicle"
+        if(type == "vehicle")
+        {
+            if(json.contains("center") && json.contains("length") && json.contains("orientation"))
+            {
+                int center_size = json["center"].toArray().size();
+                if(center_size == 2 && json["length"].toDouble() > 0.)
+                {
+                    // Set dimension
+                    this->_nbDim = center_size;
+
+                    // Update successful
+                    return true;
+                }
+            }
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+
+    Q_ASSERT(json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "vehicle");
+
+    QJsonArray center = json["center"].toArray();
+    double length = json["length"].toDouble();
+    double orientation = json["orientation"].toDouble();
+
+    Q_ASSERT(center.size() == 2);
+    Q_ASSERT(this->_nbDim == center.size());
+    Q_ASSERT(length > 0.);
+
+    // Get center
+    const QPointF & centerPoint = QPointF(center[dimX].toDouble(), center[dimY].toDouble());
+
+    // Set polygon shape
+    QPolygonF polygon;
+    polygon << QPointF(- 1. * length, 1. * length) + centerPoint;
+    polygon << QPointF(+ 3. * length, 0. * length) + centerPoint;
+    polygon << QPointF(- 1. * length, -1. * length) + centerPoint;
+
+    QGraphicsPolygonItem *graphics_polygon = new QGraphicsPolygonItem(polygon);
+    graphics_polygon->setPen(pen);
+    graphics_polygon->setBrush(brush);
+    graphics_polygon->setTransformOriginPoint(centerPoint);
+    graphics_polygon->setRotation(orientation);
+    graphics_polygon->setScale(length / 4.); // initial vehicle's length is 4
+    this->addToGroup(graphics_polygon);
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsVehicleAUV
+//
+
+bool VibesGraphicsVehicleAUV::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if(json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // JSON type for VibesGraphicsVehicleAUV is "vehicle_auv"
+        if(type == "vehicle_auv")
+        {
+            if(json.contains("center") && json.contains("length") && json.contains("orientation"))
+            {
+                int center_size = json["center"].toArray().size();
+                if(center_size == 2 && json["length"].toDouble() > 0.)
+                {
+                    // Set dimension
+                    this->_nbDim = center_size;
+
+                    // Update successful
+                    return true;
+                }
+            }
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+
+    Q_ASSERT (json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "vehicle_auv");
+
+    QJsonArray center = json["center"].toArray();
+    double length = json["length"].toDouble();
+    double orientation = json["orientation"].toDouble();
+
+    Q_ASSERT(center.size() == 2);
+    Q_ASSERT(this->_nbDim == center.size());
+    Q_ASSERT(length > 0.);
+
+    // Get center
+    const QPointF & centerPoint = QPointF(center[dimX].toDouble(), center[dimY].toDouble());
+
+    /*  This shape is inspired by the MOOS middleware GUI (see pMarineViewer)   */
+
+    // Set body shape
+    {
+        QPolygonF body;
+        body << QPointF(-4. * length,  0. * length) + centerPoint;
+        body << QPointF(-2. * length,  1. * length) + centerPoint;
+        body << QPointF( 2. * length,  1. * length) + centerPoint;
+
+        for(float i = 90. ; i > -90. ; i-=10.) // noise
+            body << QPointF( (cos(i  * M_PI / 180.0) + 2.) * length, 
+                             (sin(i  * M_PI / 180.0) + 0.) * length) + centerPoint;
+
+        body << QPointF( 2. * length, -1. * length) + centerPoint;
+        body << QPointF(-2. * length, -1. * length) + centerPoint;
+
+        QGraphicsPolygonItem *graphics_body = new QGraphicsPolygonItem(body);
+        graphics_body->setPen(pen);
+        graphics_body->setBrush(brush);
+        graphics_body->setTransformOriginPoint(centerPoint);
+        graphics_body->setRotation(orientation);
+        graphics_body->setScale(length / 7.); // initial vehicle's length is 7
+        this->addToGroup(graphics_body);
+    }
+
+    // Set propulsion unit shape
+    {
+        QPolygonF propunit;
+        propunit << QPointF(- 4.  * length,  1 * length) + centerPoint;
+        propunit << QPointF(-3.25 * length,  1 * length) + centerPoint;
+        propunit << QPointF(-3.25 * length, -1 * length) + centerPoint;
+        propunit << QPointF(- 4.  * length, -1 * length) + centerPoint;
+
+        QGraphicsPolygonItem *graphics_propunit = new QGraphicsPolygonItem(propunit);
+        graphics_propunit->setPen(pen);
+        graphics_propunit->setBrush(brush);
+        graphics_propunit->setTransformOriginPoint(centerPoint);
+        graphics_propunit->setRotation(orientation);
+        graphics_propunit->setScale(length / 7.); // initial vehicle's length is 7
+        this->addToGroup(graphics_propunit);
+    }
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsArrow
+//
+
+bool VibesGraphicsArrow::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsArrow has JSON type "arrow"
+        if (type == "arrow")
+        {
+            // Check that the "points" field is a matrix
+            int nbCols, nbRows;
+            if (!isJsonMatrix(json["points"], nbRows, nbCols))
+                return false;
+            if (json["tip_length"].toDouble() < 0)
+                return false;
+            // Number of coordinates has to be at least 2 (to draw in the plane)
+            if (nbCols < 2)
+                return 0;
+
+            // Compute dimension
+            this->_nbDim = nbCols;
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+
+bool VibesGraphicsArrow::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get arrow color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT (json.contains("type"));
+    // VibesGraphicsArrow has JSON type "arrow"
+    Q_ASSERT ( json["type"].toString() == "arrow" );
+    // "bounds" is a matrix
+    Q_ASSERT ( isJsonMatrix(json["points"]) );
+    Q_ASSERT ( json["tip_length"].toDouble() > 0);
+    
+    double before_last_x = 0., before_last_y = 0., last_x = 0., last_y = 0.;
+
+    // Body
+    {
+        QPolygonF line;
+
+        // Update line with projected points
+        foreach (const QJsonValue value, json["points"].toArray()) {
+            // Read coordinates and append them to the list of points
+            const QJsonArray coords = value.toArray();
+            before_last_x = last_x;
+            before_last_y = last_y;
+            last_x = coords[dimX].toDouble();
+            last_y = coords[dimY].toDouble();
+            line << QPointF(last_x, last_y);
+        }
+
+        QPainterPath path;
+        path.addPolygon(line);
+        QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
+        graphics_path->setPen(pen);
+        this->addToGroup(graphics_path);
+    }
+
+    // Tip
+    {
+        QPolygonF tip;
+
+        double tip_length = json["tip_length"].toDouble();
+        double dx = (before_last_x - last_x);
+        double dy = (before_last_y - last_y);
+        double arrow_angle = atan2(dy, dx);
+        double tip_angle = 160. * M_PI / 180.0;
+  
+        double x = last_x;
+        double y = last_y;
+
+         // tip (right)
+        tip << QPointF(x,  y);
+        // (upper left)
+        tip << QPointF(x - cos(tip_angle + arrow_angle) * tip_length,
+                       y - sin(tip_angle + arrow_angle) * tip_length);
+        // (left)
+        tip << QPointF(x + cos(arrow_angle) * tip_length * 2. / 3.,
+                       y + sin(arrow_angle) * tip_length * 2. / 3.);
+        // (bottom left)
+        tip << QPointF(x - cos(-tip_angle + arrow_angle) * tip_length,
+                       y - sin(-tip_angle + arrow_angle) * tip_length);
+
+        QGraphicsPolygonItem *graphics_tip = new QGraphicsPolygonItem(tip);
+        graphics_tip->setPen(pen);
+        graphics_tip->setBrush(brush);
+        this->addToGroup(graphics_tip);
+    }
 
     // Update successful
     return true;

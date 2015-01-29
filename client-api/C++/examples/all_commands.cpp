@@ -165,6 +165,39 @@ int main()
 
     VIBES_TEST( vibes::drawEllipse(0,-4.75,4,0.25,0.0, "darkGray") );
 
+    cout << "drawPolygon with vector of bounds" << std::endl;
+    {
+        vector<double> x, y;
+        x.push_back(-2);    y.push_back(7);
+        x.push_back(-1);    y.push_back(7);
+        x.push_back(0);     y.push_back(5);
+        x.push_back(1);     y.push_back(7);
+        x.push_back(2);     y.push_back(7);
+        x.push_back(0.5);   y.push_back(4);
+        x.push_back(-0.5);  y.push_back(4);
+        VIBES_TEST( vibes::drawPolygon(x, y, "yellow[red]") );
+    }
+
+    cout << "drawVehicle" << std::endl;
+    VIBES_TEST( vibes::drawVehicle(4, 36, 52, 5, "green") ); // cx, cy, rotation, length
+    VIBES_TEST( vibes::drawVehicle(-5, 20, 0, 3, "blue[lightGray]") );
+
+    cout << "drawAUV" << std::endl;
+    VIBES_TEST( vibes::drawAUV(22, -16, 52, 5, "blue[yellow]") );
+    VIBES_TEST( vibes::drawAUV(40, 0, 0, 3, "blue[green]") );
+
+    cout << "drawArrow" << std::endl;
+    VIBES_TEST( vibes::drawArrow(20., 0., 40., 20., 1., "black[yellow]") );
+    VIBES_TEST( vibes::drawArrow(40., 30., 20., 10., 2., "black[yellow]") );
+    VIBES_TEST( vibes::drawArrow(20., 20., 40., 40., 3., "black[yellow]") );
+    VIBES_TEST( vibes::drawArrow(40., 50., 20., 30., 4., "black[yellow]") );
+
+    VIBES_TEST( vibes::drawArrow(20., 65., 40., 65., 2., "black[red]") );
+    VIBES_TEST( vibes::drawArrow(40., 62., 20., 62., 2., "black[red]") );
+
+    VIBES_TEST( vibes::drawArrow(65., 70., 65., 50., 2., "black[red]") );
+    VIBES_TEST( vibes::drawArrow(62., 50., 62., 70., 2., "black[red]") );
+
     cout << "drawBoxes with vector of vector of bounds" << std::endl;
     {
         std::vector< std::vector<double> > boxes_bounds;
