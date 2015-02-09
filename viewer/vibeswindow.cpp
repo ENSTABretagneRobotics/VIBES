@@ -21,7 +21,8 @@
 
 VibesWindow::VibesWindow(bool showFileOpenDlg, QWidget *parent) :
 QMainWindow(parent),
-ui(new Ui::VibesWindow)
+ui(new Ui::VibesWindow),
+bRemoveFileOnExit(false)
 {
     ui->setupUi(this);
     ui->treeView->setModel(new VibesTreeModel(figures, this));
@@ -49,6 +50,7 @@ ui(new Ui::VibesWindow)
     if (showFileOpenDlg)
     {
         file.setFileName(QFileDialog::getOpenFileName());
+        bRemoveFileOnExit = false;
     }
     else
     {
@@ -70,6 +72,8 @@ ui(new Ui::VibesWindow)
         {
             file.close();
         }
+        // Indicate the file should be removed on program exit
+        bRemoveFileOnExit = true;
     }
 
     // Try to open the shared file
@@ -87,6 +91,12 @@ ui(new Ui::VibesWindow)
 VibesWindow::~VibesWindow()
 {
     delete ui;
+
+    // Remove .vibes.json file
+    if (bRemoveFileOnExit)
+    {
+        file.remove();
+    }
 }
 
 

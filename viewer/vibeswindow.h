@@ -38,6 +38,7 @@ private:
     QHash<QString, Figure2D*> figures;
 
     QFile file;
+    bool bRemoveFileOnExit;
     QByteArray message;
 };
 
