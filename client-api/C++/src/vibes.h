@@ -383,7 +383,7 @@ namespace vibes {
     * Draws a circle of radius \a r with center at (\a cx , \a cy ).
     * This functions internally calls \fn drawEllipse
     */
-  inline void drawCircle(const double &cx, const double &cy, const double &r, const Params &params)
+  inline void drawCircle(const double &cx, const double &cy, const double &r, Params params)
   {
      drawEllipse(cx,cy,r,r,0.,params);
   }
