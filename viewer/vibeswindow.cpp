@@ -16,6 +16,9 @@
 
 #include "vibestreemodel.h"
 
+#include "propertyeditdialog.h"
+#include <QJsonObject>
+
 VibesWindow::VibesWindow(bool showFileOpenDlg, QWidget *parent) :
 QMainWindow(parent),
 ui(new Ui::VibesWindow)
@@ -25,10 +28,21 @@ ui(new Ui::VibesWindow)
 
     // When its name is double clicked in the list, the corresponding figure is brought to front
     connect(ui->treeView, &QTreeView::doubleClicked,
-            [](const QModelIndex& mi){Figure2D* fig = static_cast<Figure2D*>( mi.internalPointer() );
+            [this](const QModelIndex& mi){//Figure2D* fig = static_cast<Figure2D*>( mi.internalPointer() );
+                                      Figure2D* fig = 0;
+                                      if (mi.internalPointer() == 0) { fig = this->figures.values().at(mi.row()); }
                                       if (fig) { fig->showNormal();
                                                  fig->activateWindow();
                                                  fig->raise(); }
+                                     } );
+    // When a object name is double clicked in the list, the property editor is shown
+    connect(ui->treeView, &QTreeView::doubleClicked,
+            [](const QModelIndex& mi){Figure2D* fig = static_cast<Figure2D*>( mi.internalPointer() );
+                                      if (fig) { VibesScene2D * scene = fig->scene();
+                                                 VibesGraphicsItem * item = scene->itemByName(scene->namedItems().at(mi.row()));
+                                                 QJsonObject json = PropertyEditDialog::showEditorForJson(item->json());
+                                                 item->setJsonValues(json);
+                                               }
                                      } );
 
     /// \todo Put platform dependent code here for named pipe creation and opening
@@ -312,6 +326,10 @@ VibesWindow::processMessage(const QByteArray &msg_data)
     {
         return false;
     }
+
+    /// \todo Do not force update after each message
+    static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
+
     return true;
 }
 

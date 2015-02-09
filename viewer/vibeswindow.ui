@@ -18,7 +18,7 @@
     <item>
      <widget class="QTreeView" name="treeView">
       <property name="rootIsDecorated">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -30,7 +30,7 @@
      <x>0</x>
      <y>0</y>
      <width>166</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

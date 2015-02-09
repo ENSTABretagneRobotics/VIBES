@@ -42,10 +42,11 @@ SET(VIBes_viewer_SOURCES main.cpp
                          vibesscene2d.cpp
                          figure2d.cpp
                          vibestreemodel.cpp
-                         vibeswindow.cpp )
+                         vibeswindow.cpp
+                         propertyeditdialog.cpp )
 
 # Qt designer UI files
-SET(VIBes_viewer_FORMS vibeswindow.ui)
+SET(VIBes_viewer_FORMS vibeswindow.ui propertyeditdialog.ui)
 # Process Qt UI files
 QT5_WRAP_UI(VIBes_viewer_FORMS_HEADERS ${VIBes_viewer_FORMS})
 

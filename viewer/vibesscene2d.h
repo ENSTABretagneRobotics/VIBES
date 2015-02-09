@@ -22,6 +22,7 @@ public:
     void addVibesItem(VibesGraphicsItem *item);
     VibesGraphicsItem * itemByName(QString name) {if (_namedItems.contains(name)) return _namedItems[name]; else return 0;}
     void setItemName(VibesGraphicsItem *item, QString name);
+    QList<QString> namedItems() const {return _namedItems.keys();}
 
     const int nbDim() const { return _nbDim; }
     const int dimX() const { return _dimX; }
