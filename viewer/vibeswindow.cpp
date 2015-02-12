@@ -351,7 +351,12 @@ void VibesWindow::exportCurrentFigureGraphics()
     if (!selectId.isValid())
         return;
     // If the selected item is a figure, export it
-    Figure2D * pfig = static_cast<Figure2D*> (selectId.internalPointer());
+    Figure2D * pfig = 0;
+    if (!selectId.internalPointer())
+        pfig = figures.values().at(selectId.row());
+    else
+        pfig = static_cast<Figure2D*> (selectId.internalPointer());
+    
     if (figures.values().contains(pfig))
     {
         pfig->exportGraphics();
