@@ -49,6 +49,12 @@ VibesGraphicsItem * VibesScene2D::addJsonShapeItem(const QJsonObject &shape)
         QString type = shape["type"].toString();
         item = VibesGraphicsItem::newWithType(type);
     }
+    
+    // Check if an VibesGraphicsItem has been created
+    if (!item)
+    {
+        return 0;
+    }
 
     // Find the object parent group if specified
     if (shape.contains("group"))
