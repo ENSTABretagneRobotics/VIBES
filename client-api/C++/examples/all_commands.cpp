@@ -15,7 +15,14 @@
 #include <cstdlib>
 
 // Utility macro to log executed instructions on terminal
-#define VIBES_TEST(instruction) std::cout << "[l." << __LINE__ << "] " << #instruction << "..."; instruction; std::cout << " OK" << std::endl;
+#define VIBES_TEST(instruction) \
+{   clock_t t = clock(); \
+    std::cout << "[l." << __LINE__ << "@" << ((float)t)/CLOCKS_PER_SEC << "s] " << #instruction << "..."; \
+    t = clock(); \
+    instruction; \
+    t = clock() - t; \
+    std::cout << " DONE (" << ((float)t)/CLOCKS_PER_SEC << "s)" << std::endl; \
+}
 
 int main()
 {
