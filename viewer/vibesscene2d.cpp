@@ -97,15 +97,20 @@ void VibesScene2D::addVibesItem(VibesGraphicsItem *item)
 
 void VibesScene2D::setItemName(VibesGraphicsItem *item, QString name)
 {
-    // Unname previous item with the same name
+    // If needed, unname existing item with the same name
     if (VibesGraphicsItem *old_item = itemByName(name))
     {
         // Nothing to do if the name already points to the good item
         if (old_item != item)
-            return;
-        // Unname previous item
-        old_item->setName(QString());
+        {
+            // Unname previous item
+            old_item->setName(QString());
+        }
     }
+    
+    // If needed, remove existing entry for the item
+    _namedItems.remove(_namedItems.key(item));
+    
     // Update named items list
     if (!name.isEmpty())
     {
