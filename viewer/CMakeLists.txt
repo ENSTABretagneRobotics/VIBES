@@ -45,17 +45,30 @@ SET(VIBes_viewer_SOURCES main.cpp
                          vibeswindow.cpp
                          propertyeditdialog.cpp )
 
+# Headers
+SET(VIBes_viewer_HEADERS
+                         vibesgraphicsitem.h
+                         vibesscene2d.h
+                         figure2d.h
+                         vibestreemodel.h
+                         vibeswindow.h
+                         propertyeditdialog.h )
+
 # Qt designer UI files
 SET(VIBes_viewer_FORMS vibeswindow.ui propertyeditdialog.ui)
 # Process Qt UI files
 QT5_WRAP_UI(VIBes_viewer_FORMS_HEADERS ${VIBes_viewer_FORMS})
+
+# Organise source files
+source_group("Headers" FILES ${VIBes_viewer_HEADERS})
+source_group("Qt generated headers" FILES ${VIBes_viewer_FORMS_HEADERS})
 
 # Build and add an application icon
 include(MacroAddAppIcon.cmake)
 ADD_APP_ICON(VIBes_viewer_SOURCES icons/vibes)
 
 # Vibes-viewer executable
-ADD_EXECUTABLE(${VIBES_viewer_EXE} WIN32 MACOSX_BUNDLE ${VIBes_viewer_SOURCES} ${VIBes_viewer_FORMS_HEADERS})
+ADD_EXECUTABLE(${VIBES_viewer_EXE} WIN32 MACOSX_BUNDLE ${VIBes_viewer_SOURCES} ${VIBes_viewer_HEADERS} ${VIBes_viewer_FORMS_HEADERS})
 
 # Qt5 Modules
 QT5_USE_MODULES(${VIBES_viewer_EXE} Widgets Gui Core Network Svg)
