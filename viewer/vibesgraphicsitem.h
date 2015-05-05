@@ -52,7 +52,8 @@ public:
            VibesGraphicsBoxesType,
            VibesGraphicsBoxesUnionType,
            // Do not remove the following value! It signals the end of VibesGraphicsItem types
-           VibesGraphicsLastType
+           VibesGraphicsLastType,
+           VibesGraphicsPieType
          };
     // Constructor
     VibesGraphicsItem(QGraphicsItem * qGraphicsItem);
@@ -259,6 +260,17 @@ class VibesGraphicsArrow : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsArrow, QGraphicsItemGroup)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("points","tip_length")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// An Pie
+
+class VibesGraphicsPie : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsPie, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("center","rho", "theta")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
