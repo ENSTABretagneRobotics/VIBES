@@ -318,6 +318,11 @@ namespace vibes {
                                        const double &,a, const double &,b, 
                                        const double &,startAngle, const double &,endAngle)
   
+  /// Draw a Pie at position (cx, cy) with radius between (r_min, r_max) and angular bounds (theta_min, theta_max)
+  /// theta_max and theta_min are in degrees and in counterclockwise 
+  VIBES_FUNC_COLOR_PARAM_6(drawPie, const double &,cx, const double &,cy, 
+                                       const double &,r_min, const double &,r_max, 
+                                       const double &,theta_min, const double &,theta_max)
   /// @}
   /// @name Objects grouping and deletion
   /// @{
