@@ -264,4 +264,5 @@ protected:
     bool computeProjection(int dimX, int dimY);
 };
 
+
 #endif // VIBESGRAPHICSITEM_H
