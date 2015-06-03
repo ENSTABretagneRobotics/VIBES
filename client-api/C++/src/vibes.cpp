@@ -259,6 +259,22 @@ namespace vibes
       fflush(channel);
   }
 
+  void drawPie(const double &cx, const double &cy, const double &r_min, const double &r_max, 
+                  const double &theta_min, const double &theta_max, Params params)
+  {
+      // Angle need to be in degree
+      Params msg;
+      msg["action"] = "draw";
+      msg["figure"] = params.pop("figure",current_fig);
+      msg["shape"] = (params, "type", "pie",
+                              "center", (Vec2d){cx,cy},
+                              "rho", (Vec2d){r_min,r_max},
+                              "theta", (Vec2d){theta_min, theta_max});
+
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+      fflush(channel);
+  }  
+
   void drawBoxes(const std::vector<std::vector<double> > &bounds, Params params)
   {
      Params msg;
