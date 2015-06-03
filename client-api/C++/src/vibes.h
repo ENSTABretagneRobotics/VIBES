@@ -312,7 +312,17 @@ namespace vibes {
   
   /// Draw a 2-D submarine (type AUV) at position (cx,cy)
   VIBES_FUNC_COLOR_PARAM_4(drawAUV,const double &,cx, const double &,cy, const double &,rot, const double &,length)
+
+  /// Draw a sector (part of an ellipse) at position (cx, cy) with axis (a, b) and angular bounds (startAngle, endAngle)
+  VIBES_FUNC_COLOR_PARAM_6(drawSector, const double &,cx, const double &,cy, 
+                                       const double &,a, const double &,b, 
+                                       const double &,startAngle, const double &,endAngle)
   
+  /// Draw a Pie at position (cx, cy) with radius between (r_min, r_max) and angular bounds (theta_min, theta_max)
+  /// theta_max and theta_min are in degrees and in counterclockwise 
+  VIBES_FUNC_COLOR_PARAM_6(drawPie, const double &,cx, const double &,cy, 
+                                       const double &,r_min, const double &,r_max, 
+                                       const double &,theta_min, const double &,theta_max)
   /// @}
   /// @name Objects grouping and deletion
   /// @{
