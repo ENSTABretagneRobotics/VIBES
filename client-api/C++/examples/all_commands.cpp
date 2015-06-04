@@ -205,6 +205,12 @@ int main()
     VIBES_TEST( vibes::drawArrow(65., 70., 65., 50., 2., "black[red]") );
     VIBES_TEST( vibes::drawArrow(62., 50., 62., 70., 2., "black[red]") );
 
+    cout << "drawSector" << std::endl;
+    VIBES_TEST( vibes::drawSector(0,0,3,3,20, 120, "black[red]") );
+    VIBES_TEST( vibes::drawSector(0,0,3,1,-20, -220, "black[red]") );
+    VIBES_TEST( vibes::drawSector(10,-3,3,3,700, 800, "black[red]") );
+    VIBES_TEST( vibes::drawSector(0,0,3,3,20, 120, "black[red]") ); 
+
     cout << "drawPie" << std::endl;
     VIBES_TEST( vibes::drawPie(0,-20,3,4,20, 120, "black[red]") );
     VIBES_TEST( vibes::drawPie(0,-20,3,1,-20, -220, "black[red]") );

@@ -626,6 +626,9 @@ bool VibesGraphicsEllipse::parseJsonGraphics(const QJsonObject &json)
                     if (center.size() != 2) return false;
                     if (json["axis"].toArray().size() != 2) return false;
 
+                } else if (json.contains("angles"))
+                {
+                    if (json["angles"].toArray().size() != 2) return false;
                 }
                 else if (json.contains("covariance"))
                 {
@@ -679,6 +682,9 @@ bool VibesGraphicsEllipse::computeProjection(int dimX, int dimY)
 
     // Semi-major and semi-minor axes, and rotation
     double wx, wy, angle;
+    // Intialize with full-ellipse
+    int angle_min = 0;
+    int angle_max = 5760;
 
     Q_ASSERT((json.contains("axis") && json.contains("orientation")) || json.contains("covariance"));
     if (json.contains("axis") && json.contains("orientation"))
@@ -713,10 +719,19 @@ bool VibesGraphicsEllipse::computeProjection(int dimX, int dimY)
         // Should not be here, ellipse parameters have not been provided
         return false;
     }
+
+    if (json.contains("angles"))
+    {
+        QJsonArray bounds = json["angles"].toArray();
+        angle_min = static_cast<int>( bounds[0].toDouble()*16);
+        angle_max = static_cast<int>( bounds[1].toDouble()*16);
+    }
     // Update ellipse
     this->setRect(-wx, -wy, 2 * wx, 2 * wy);
     this->setRotation(angle);
     this->setPos(x, y);
+    this->setStartAngle(angle_min);
+    this->setSpanAngle( angle_max - angle_min );
     // Update ellipse properties
     this->setPen(pen);
     this->setBrush(brush);
