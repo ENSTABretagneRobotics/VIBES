@@ -17,9 +17,32 @@ class VibesDefaults {
     QHash<QString, QBrush> _brushes;
     QHash<QString, QPen> _pens;
 public:
-    static const VibesDefaults & instance() { return _instance; }
-    const QBrush brush(const QString & name = QString()) const { return _brushes[name]; }
-    const QPen pen(const QString & name = QString()) const { return _pens[name]; }
+    static VibesDefaults & instance() { return _instance; }
+
+    const QColor parseColorName(const QString& name){
+        Q_ASSERT(name.size() == 7 || name.size() == 9);
+        // Suported format #RRGGBB and #RRGGBBAA
+        QColor color;
+        color.setNamedColor(name.mid(0,7));
+        // if len of name > 7 the 2 last caracters are the alpha value
+        if(name.size() > 7){
+            color.setAlpha(name.mid(7,2).toUInt(0,16));
+        }
+        return color;
+    }
+    const QBrush brush(const QString & name = QString()) {
+        if( !_brushes.contains(name)){
+            _brushes[name] = QBrush(parseColorName(name));
+        }
+        return _brushes[name];
+    }
+
+    const QPen pen(const QString & name = QString()) {
+        if( !_pens.contains(name)){
+            _pens[name] = QPen(parseColorName(name),0);
+        }
+        return _pens[name];
+    }
 private:
     VibesDefaults();
     static VibesDefaults _instance;
