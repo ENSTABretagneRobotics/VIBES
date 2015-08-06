@@ -183,6 +183,9 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     else if (type == "ellipse") {
         return new VibesGraphicsEllipse();
     }
+    else if (type == "pie") {
+        return new VibesGraphicsPie();
+    }
     else if (type == "point") {
         //! \todo Implement "point" type
     }
@@ -623,6 +626,9 @@ bool VibesGraphicsEllipse::parseJsonGraphics(const QJsonObject &json)
                     if (center.size() != 2) return false;
                     if (json["axis"].toArray().size() != 2) return false;
 
+                } else if (json.contains("angles"))
+                {
+                    if (json["angles"].toArray().size() != 2) return false;
                 }
                 else if (json.contains("covariance"))
                 {
@@ -676,6 +682,9 @@ bool VibesGraphicsEllipse::computeProjection(int dimX, int dimY)
 
     // Semi-major and semi-minor axes, and rotation
     double wx, wy, angle;
+    // Intialize with full-ellipse
+    int angle_min = 0;
+    int angle_max = 5760;
 
     Q_ASSERT((json.contains("axis") && json.contains("orientation")) || json.contains("covariance"));
     if (json.contains("axis") && json.contains("orientation"))
@@ -710,10 +719,19 @@ bool VibesGraphicsEllipse::computeProjection(int dimX, int dimY)
         // Should not be here, ellipse parameters have not been provided
         return false;
     }
+
+    if (json.contains("angles"))
+    {
+        QJsonArray bounds = json["angles"].toArray();
+        angle_min = static_cast<int>( bounds[0].toDouble()*16);
+        angle_max = static_cast<int>( bounds[1].toDouble()*16);
+    }
     // Update ellipse
     this->setRect(-wx, -wy, 2 * wx, 2 * wy);
     this->setRotation(angle);
     this->setPos(x, y);
+    this->setStartAngle(angle_min);
+    this->setSpanAngle( angle_max - angle_min );
     // Update ellipse properties
     this->setPen(pen);
     this->setBrush(brush);
@@ -1188,6 +1206,102 @@ bool VibesGraphicsArrow::computeProjection(int dimX, int dimY)
         graphics_tip->setPen(pen);
         graphics_tip->setBrush(brush);
         this->addToGroup(graphics_tip);
+    }
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsPie
+//
+bool VibesGraphicsPie::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsPie has JSON type "arrow"
+        if (type == "pie" && json.contains("center"))
+        {            
+            QJsonArray center = json["center"].toArray();
+            if (center.size() != 2) return false;
+            if (json.contains("rho"))
+            {
+                if (json["rho"].toArray().size() != 2) return false;
+            }
+            else if (json.contains("theta"))
+            {
+                if (json["theta"].toArray().size() != 2) return false;
+            }
+            // Compute dimension
+            this->_nbDim = center.size();
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get arrow color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT (json.contains("type"));
+    // VibesGraphicsPie has JSON type "arrow"
+    Q_ASSERT ( json["type"].toString() == "pie" );
+    // "bounds" is a matrix
+    QJsonArray center =  json["center"].toArray();
+    QJsonArray rho =  json["rho"].toArray();
+    QJsonArray theta =  json["theta"].toArray();
+
+    Q_ASSERT ( rho[0].toDouble() >= 0);
+    Q_ASSERT ( rho[1].toDouble() >= rho[0].toDouble());
+    Q_ASSERT ( theta[1].toDouble() >= theta[0].toDouble());
+
+
+    // Body
+    {
+
+        double cx = center[0].toDouble();
+        double cy = center[1].toDouble();
+
+        double rho_m = rho[0].toDouble();
+        double rho_p = rho[1].toDouble();
+        double theta_m = -theta[0].toDouble();
+        double theta_p = -theta[1].toDouble();
+
+        // Angles are in degree and in clock-wise
+        double m1_x = cx + rho_m*std::cos(-theta_m*M_PI/180.0);
+        double m1_y = cy + rho_m*std::sin(-theta_m*M_PI/180.0);
+
+        double m4_x = cx + rho_p*std::cos(-theta_m*M_PI/180.0);
+        double m4_y = cy + rho_p*std::sin(-theta_m*M_PI/180.0);
+
+        double dtheta = theta_p - theta_m;
+
+        QPainterPath path(QPointF(m1_x, m1_y));
+        path.lineTo(m4_x, m4_y);
+        path.arcTo(QRectF(QPointF(cx-rho_p,cy-rho_p),QPointF(cx+rho_p, cy+rho_p)), theta_m, dtheta);
+        path.arcTo(QRectF(QPointF(cx-rho_m,cy-rho_m),QPointF(cx+rho_m, cy+rho_m)), theta_p, -dtheta);
+
+        QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
+        graphics_path->setPen(pen);
+        graphics_path->setBrush(brush);
+        this->addToGroup(graphics_path);
     }
 
     // Update successful
