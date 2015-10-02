@@ -3,7 +3,7 @@ VIBes
 
 [![Build Status](https://travis-ci.org/ENSTABretagneRobotics/VIBES.png)](https://travis-ci.org/ENSTABretagneRobotics/VIBES)
 
-**V**isualizer for **I**ntervals and **B**oxes
+**V**isualizer for **I**ntervals and **B**oxes: http://ENSTABretagneRobotics.github.io/VIBES
 
 Get the last version from https://github.com/ENSTABretagneRobotics/VIBES/releases
 

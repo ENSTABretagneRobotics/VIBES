@@ -167,7 +167,8 @@ namespace vibes
 
   void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &figureName)
   {
-    setFigureProperty(figureName.empty()?current_fig:figureName, "viewbox", (Vec4d){x_lb,x_ub,y_lb,y_ub});
+	Vec4d v4d = { x_lb, x_ub, y_lb, y_ub };
+    setFigureProperty(figureName.empty()?current_fig:figureName, "viewbox", v4d);
   }
 
   void axisLabels(const std::string &x_label, const std::string &y_label, const std::string &figureName)
@@ -190,10 +191,11 @@ namespace vibes
 
   void drawBox(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, Params params)
   {
+	Vec4d v4d = { x_lb, x_ub, y_lb, y_ub };
     Params msg;
     msg["action"] = "draw";
     msg["figure"] = params.pop("figure",current_fig);
-    msg["shape"] = (params, "type", "box", "bounds", (Vec4d){x_lb,x_ub,y_lb,y_ub});
+    msg["shape"] = (params, "type", "box", "bounds", v4d);
 
     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
     fflush(channel);
@@ -216,12 +218,14 @@ namespace vibes
 
   void drawEllipse(const double &cx, const double &cy, const double &a, const double &b, const double &rot, Params params)
   {
+	  Vec2d vc = { cx, cy };
+	  Vec2d va = {a, b};
       Params msg;
       msg["action"] = "draw";
       msg["figure"] = params.pop("figure",current_fig);
       msg["shape"] = (params, "type", "ellipse",
-                              "center", (Vec2d){cx,cy},
-                              "axis", (Vec2d){a,b},
+                              "center", vc,
+                              "axis", va,
                               "orientation", rot);
 
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
@@ -232,12 +236,14 @@ namespace vibes
                              const double &sxx, const double &sxy, const double &syy,
                              const double &K, Params params)
   {
+	  Vec2d vc = {cx, cy};
+	  Vec4d vcov = { sxx, sxy, sxy, syy };
       Params msg;
       msg["action"] = "draw";
       msg["figure"] = params.pop("figure",current_fig);
       msg["shape"] = (params, "type", "ellipse",
-                              "center", (Vec2d){cx,cy},
-                              "covariance", (Vec4d){sxx,sxy,sxy,syy},
+                              "center", vc,
+                              "covariance", vcov,
                               "sigma", K);
 
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
@@ -258,6 +264,39 @@ namespace vibes
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
   }
+
+  void drawSector(const double &cx, const double &cy, const double &a, const double &b, 
+                  const double &startAngle, const double &endAngle, Params params)
+  {
+      // Angle need to be in degree
+      Params msg;
+      msg["action"] = "draw";
+      msg["figure"] = params.pop("figure",current_fig);      
+      msg["shape"] = (params, "type", "ellipse",
+                              "center", (Vec2d){cx,cy},
+                              "axis", (Vec2d){a,b},
+                              "orientation", 0,
+                              "angles", (Vec2d){startAngle, endAngle});
+
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+      fflush(channel);
+  }
+  
+  void drawPie(const double &cx, const double &cy, const double &r_min, const double &r_max, 
+                  const double &theta_min, const double &theta_max, Params params)
+  {
+      // Angle need to be in degree
+      Params msg;
+      msg["action"] = "draw";
+      msg["figure"] = params.pop("figure",current_fig);
+      msg["shape"] = (params, "type", "pie",
+                              "center", (Vec2d){cx,cy},
+                              "rho", (Vec2d){r_min,r_max},
+                              "theta", (Vec2d){theta_min, theta_max});
+
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+      fflush(channel);
+  }  
 
   void drawBoxes(const std::vector<std::vector<double> > &bounds, Params params)
   {
@@ -301,8 +340,11 @@ namespace vibes
      std::vector<Value> points;
      std::vector<double>::const_iterator itx = x.begin();
      std::vector<double>::const_iterator ity = y.begin();
+	 Vec2d vp;
      while (itx != x.end() && ity != y.end()) {
-        points.push_back( (Vec2d){*itx++,*ity++} );
+		vp._data[0] = *itx++;
+		vp._data[1] = *ity++;
+        points.push_back( vp );
      }
      // Send message
      Params msg;
@@ -319,8 +361,10 @@ namespace vibes
   {
      // Reshape A and B into a vector of points
      std::vector<Value> points;
-     points.push_back((Vec2d){ xA, yA} );
-     points.push_back((Vec2d){ xB, yB} );
+	 Vec2d va = { xA, yA };
+	 Vec2d vb = { xB, yB };
+     points.push_back(va);
+     points.push_back(vb);
 
      // Send message
      Params msg;
@@ -353,8 +397,11 @@ namespace vibes
      std::vector<Value> points;
      std::vector<double>::const_iterator itx = x.begin();
      std::vector<double>::const_iterator ity = y.begin();
+	 Vec2d vp;
      while (itx != x.end() && ity != y.end()) {
-        points.push_back( (Vec2d){*itx++,*ity++} );
+		vp._data[0] = *itx++;
+		vp._data[1] = *ity++;
+        points.push_back( vp );
      }
      // Send message
      Params msg;
@@ -374,8 +421,11 @@ namespace vibes
      std::vector<Value> points;
      std::vector<double>::const_iterator itx = x.begin();
      std::vector<double>::const_iterator ity = y.begin();
+	 Vec2d vp;
      while (itx != x.end() && ity != y.end()) {
-        points.push_back( (Vec2d){*itx++,*ity++} );
+		vp._data[0] = *itx++;
+		vp._data[1] = *ity++;
+        points.push_back( vp );
      }
      // Send message
      Params msg;
@@ -390,11 +440,12 @@ namespace vibes
 
   void drawVehicle(const double &cx, const double &cy, const double &rot, const double &length, Params params)
   {
+	  Vec2d vc = { cx, cy };
       Params msg;
       msg["action"] = "draw";
       msg["figure"] = params.pop("figure",current_fig);
       msg["shape"] = (params, "type", "vehicle",
-                              "center", (Vec2d){cx,cy},
+                              "center", vc,
                               "length", length,
                               "orientation", rot);
 
@@ -404,11 +455,12 @@ namespace vibes
 
   void drawAUV(const double &cx, const double &cy, const double &rot, const double &length, Params params)
   {
+	  Vec2d vc = { cx, cy };
       Params msg;
       msg["action"] = "draw";
       msg["figure"] = params.pop("figure",current_fig);
       msg["shape"] = (params, "type", "vehicle_auv",
-                              "center", (Vec2d){cx,cy},
+                              "center", vc,
                               "length", length,
                               "orientation", rot);
 
