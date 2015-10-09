@@ -14,6 +14,8 @@
 #include <QJsonArray>
 #include <QJsonValue>
 
+#include <cmath>
+
 // The only instance of VibesDefaults
 VibesDefaults VibesDefaults::_instance;
 
