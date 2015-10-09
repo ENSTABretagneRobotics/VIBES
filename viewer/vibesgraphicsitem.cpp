@@ -1371,12 +1371,12 @@ bool VibesGraphicsRing::computeProjection(int dimX, int dimY)
         double rho_m = rho[0].toDouble();
         double rho_p = rho[1].toDouble();
 
-        QRectF boundingBoxP(cx+rho_p,cy+rho_p,2*rho_p,2*rho_p);
+        QRectF boundingBoxP(cx-rho_p,cy-rho_p,2*rho_p,2*rho_p);
 
         QPainterPath path;
         path.addEllipse(boundingBoxP);
         
-        QRectF boundingBoxM(cx+rho_m,cy+rho_m,2*rho_m,2*rho_m);
+        QRectF boundingBoxM(cx-rho_m,cy-rho_m,2*rho_m,2*rho_m);
         QPainterPath pathM;
         pathM.addEllipse(boundingBoxM);
         
