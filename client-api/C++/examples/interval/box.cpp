@@ -106,6 +106,7 @@ box& box::Intersect(const box& Y)
 {  box X=*this;
    box Z=Inter(X,Y);
    *this=Z;
+   return *this;
 }
 
 
@@ -208,7 +209,7 @@ box Sup(box X)
 }
 //----------------------------------------------------------------------
 box Concat(const box& X, const box& Y)
-/*  Produit Cartesien ou Concaténation de deuX pavés X et y :
+/*  Produit Cartesien ou Concatï¿½nation de deuX pavï¿½s X et y :
        Ans=[X,Y]     =>     Ans=Concat(X,Y); */
 {  double dim=X.Size()+Y.Size(); box Ans(dim);
    if ((!X.IsEmpty())&&(!Y.IsEmpty()))
@@ -219,7 +220,7 @@ box Concat(const box& X, const box& Y)
 }
 //----------------------------------------------------------------------
 box Proj(const box& X, int i, int j)
-/* Projection du pavé X dans un espace de dimension dim=(j-i)+1;
+/* Projection du pavï¿½ X dans un espace de dimension dim=(j-i)+1;
    X=[[X1],[X2],..,[Xi],..,[Xj],..[Xn]]
    =>  Proj(X,i,j)=[[Xi],..,[Xj]] et Proj(X,i,i)=[Xi] */
 {  int dim=abs(j-i)+1; box Ans(dim);
