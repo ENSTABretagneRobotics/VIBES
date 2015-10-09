@@ -186,6 +186,9 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     else if (type == "pie") {
         return new VibesGraphicsPie();
     }
+    else if (type == "ring") {
+        return new VibesGraphicsRing();
+    }
     else if (type == "point") {
         //! \todo Implement "point" type
     }
@@ -1261,9 +1264,9 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
     Q_ASSERT (json.contains("type"));
-    // VibesGraphicsPie has JSON type "arrow"
+    // VibesGraphicsPie has JSON type "pie"
     Q_ASSERT ( json["type"].toString() == "pie" );
-    // "bounds" is a matrix
+    
     QJsonArray center =  json["center"].toArray();
     QJsonArray rho =  json["rho"].toArray();
     QJsonArray theta =  json["theta"].toArray();
@@ -1298,6 +1301,85 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
         path.arcTo(QRectF(QPointF(cx-rho_p,cy-rho_p),QPointF(cx+rho_p, cy+rho_p)), theta_m, dtheta);
         path.arcTo(QRectF(QPointF(cx-rho_m,cy-rho_m),QPointF(cx+rho_m, cy+rho_m)), theta_p, -dtheta);
 
+        QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
+        graphics_path->setPen(pen);
+        graphics_path->setBrush(brush);
+        this->addToGroup(graphics_path);
+    }
+
+    // Update successful
+    return true;
+}
+
+//
+// VibesGraphicsRing
+//
+bool VibesGraphicsRing::parseJsonGraphics(const QJsonObject& json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsPie has JSON type "arrow"
+        if (type == "ring" && json.contains("center") && json.contains("rho"))
+        {            
+            QJsonArray center = json["center"].toArray();
+            if (center.size() != 2) return false;
+            if (json["rho"].toArray().size() != 2) return false;
+            // Compute dimension
+            this->_nbDim = center.size();
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsRing::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get ring color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT (json.contains("type"));
+    // VibesGraphicsRing has JSON type "ring"
+    Q_ASSERT ( json["type"].toString() == "ring" );
+    
+    QJsonArray center =  json["center"].toArray();
+    QJsonArray rho =  json["rho"].toArray();
+    
+    Q_ASSERT ( rho[0].toDouble() >= 0);
+    Q_ASSERT ( rho[1].toDouble() >= rho[0].toDouble());
+
+    // Body
+    {
+        double cx = center[0].toDouble();
+        double cy = center[1].toDouble();
+
+        double rho_m = rho[0].toDouble();
+        double rho_p = rho[1].toDouble();
+
+        QRectF boundingBoxP(cx+rho_p,cy+rho_p,2*rho_p,2*rho_p);
+
+        QPainterPath path;
+        path.addEllipse(boundingBoxP);
+        
+        QRectF boundingBoxM(cx+rho_m,cy+rho_m,2*rho_m,2*rho_m);
+        QPainterPath pathM;
+        pathM.addEllipse(boundingBoxM);
+        
+        path=path.subtracted(pathM);
+        
         QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
         graphics_path->setPen(pen);
         graphics_path->setBrush(brush);
