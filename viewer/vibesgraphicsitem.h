@@ -43,6 +43,8 @@ public:
            VibesGraphicsEllipseType,
            VibesGraphicsPolygonType,
            VibesGraphicsArrowType,
+           VibesGraphicsPieType,
+           VibesGraphicsRingType,
            // Complex types based on primitive types
            VibesGraphicsVehicleType,
            VibesGraphicsVehicleAUVType,
@@ -52,8 +54,7 @@ public:
            VibesGraphicsBoxesType,
            VibesGraphicsBoxesUnionType,
            // Do not remove the following value! It signals the end of VibesGraphicsItem types
-           VibesGraphicsLastType,
-           VibesGraphicsPieType
+           VibesGraphicsLastType
          };
     // Constructor
     VibesGraphicsItem(QGraphicsItem * qGraphicsItem);
@@ -271,6 +272,15 @@ class VibesGraphicsPie : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsPie, QGraphicsItemGroup)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("center","rho", "theta")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+class VibesGraphicsRing : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsRing, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("center","rho")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
