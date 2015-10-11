@@ -15,6 +15,8 @@
 #include <QJsonValue>
 
 #include <cmath>
+#include <iostream>
+using namespace std;
 
 // The only instance of VibesDefaults
 VibesDefaults VibesDefaults::_instance;
@@ -330,6 +332,9 @@ bool VibesGraphicsBox::parseJsonGraphics(const QJsonObject &json)
         // VibesGraphicsBox has JSON type "box"
         if (type == "box")
         {
+            cout << "type=box"<<endl;
+            QJsonDocument doc(json);
+            cout << "json: "<<doc.toJson().toStdString()<<endl;
             QJsonArray bounds = json["bounds"].toArray();
             // We need at least a 2-D box. Number of bounds has to be even.
             if (bounds.size() < 4 || bounds.size()%2 != 0)
@@ -339,8 +344,16 @@ bool VibesGraphicsBox::parseJsonGraphics(const QJsonObject &json)
             this->_nbDim = bounds.size() / 2;
 
             // Set graphical properties
-            this->setPen( vibesDefaults.pen( jsonValue("EdgeColor").toString() ) );
-            this->setBrush( vibesDefaults.brush( jsonValue("FaceColor").toString() ) );
+//            cout << "Avant setPen"<<endl;
+//            cout << "EdgeColor is Array: "<<jsonValue("EdgeColor").isArray()<<endl;
+//            cout << "EdgeColor.toString(): "<<jsonValue("EdgeColor").toString().toStdString()<<endl;
+            // Those seems to be called on NULL values
+            //this->setPen( vibesDefaults.pen2( jsonValue("EdgeColor")) );
+            //this->setPen( vibesDefaults.pen( jsonValue("EdgeColor").toString() ) );
+//            cout << "Avant setBrush"<<endl;
+//            cout << "FaceColor is Array: "<<jsonValue("FaceColor").isArray()<<endl;
+//            cout << "FaceColor.toString(): "<<jsonValue("FaceColor").toString().toStdString()<<endl;
+            //this->setBrush( vibesDefaults.brush( jsonValue("FaceColor").toString() ) );
 
             // Update successful
             return true;
@@ -354,10 +367,10 @@ bool VibesGraphicsBox::parseJsonGraphics(const QJsonObject &json)
 bool VibesGraphicsBox::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
-
+    cout << "Compute Projection"<<endl;
     // Get shape color (or default if not specified)
     const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
-    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor"));
 
     Q_ASSERT(json.contains("type"));
     Q_ASSERT(json["type"].toString() == "box");

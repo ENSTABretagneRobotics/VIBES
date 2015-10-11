@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QJsonArray>
 
 //#include <QBitArray>
 #include "vibesscene2d.h"
@@ -12,14 +13,123 @@
 #include <QHash>
 #include <QPen>
 
+#include <iostream>
+using namespace std;
+
 // Singleton class to hold Vibes defaults and constants
 class VibesDefaults {
     QHash<QString, QBrush> _brushes;
     QHash<QString, QPen> _pens;
 public:
     static const VibesDefaults & instance() { return _instance; }
-    const QBrush brush(const QString & name = QString()) const { return _brushes[name]; }
-    const QPen pen(const QString & name = QString()) const { return _pens[name]; }
+    
+    static const QColor QJsonArrayToQColor(const QJsonArray &l)
+    {
+        double r=0,g=0,b=0,a=255;
+        
+        bool ok;
+            if(l.size()>=1)
+            {
+                if(l[0].isString())
+                {
+                    r=l[0].toString().toDouble(&ok);
+                    r=ok?r:0;
+                }
+                else if(l[0].isDouble())
+                {
+                    r=l[0].toDouble(0);
+                }
+            }
+        
+        
+            if(l.size()>=2)
+            {
+                if(l[1].isString())
+                {
+                    g=l[1].toString().toDouble(&ok);
+                    g=ok?g:0;
+                }
+                else if(l[1].isDouble())
+                {
+                    g=l[1].toDouble(0);
+                }
+            }
+        
+            if(l.size()>=3)
+            {
+                if(l[2].isString())
+                {
+                    b=l[2].toString().toDouble(&ok);
+                    b=ok?b:0;
+                }
+                else if(l[2].isDouble())
+                {
+                    r=l[2].toDouble(0);
+                }
+            }
+        
+            if(l.size()>=4)
+            {
+                if(l[3].isString())
+                {
+                    a=l[3].toString().toDouble(&ok);
+                    a=ok?a:255;
+                }
+                else if(l[3].isDouble())
+                {
+                    a=l[3].toDouble(255);
+                }
+            }
+            return QColor(r,g,b,a);
+    }
+    
+    const QBrush brush(const QJsonValue &value) const { 
+        QString name;
+        if(value.isArray())
+        {
+            cout << "Brush isArray"<<endl;
+            return QBrush(QJsonArrayToQColor(value.toArray()));
+        }
+        if(value.isString())
+        {
+            cout << "brush is string: "<<value.toString().toStdString()<<endl;
+            QString valString=value.toString();
+            if(valString.contains(","))
+            {
+                QStringList sl=value.toString().split(",");
+                return QBrush(QJsonArrayToQColor(QJsonArray::fromStringList(sl)));
+            }
+            else
+            {
+                name=value.toString();
+            }
+        }
+        return _brushes[name]; 
+    }
+    
+    const QPen pen(const QJsonValue &value) const {
+        QString name;
+        if(value.isArray())
+        {
+            return QPen(QJsonArrayToQColor(value.toArray()),0);
+        }
+        if(value.isString())
+        {
+            QString valString=value.toString();
+            if(valString.contains(","))
+            {
+                cout << valString.toStdString()<<"contains a ,"<<endl;
+                QStringList sl=value.toString().split(",");
+            
+                return QPen(QJsonArrayToQColor(QJsonArray::fromStringList(sl)),0);
+            }
+            else
+            {
+                name=value.toString();
+            }
+        }
+        return _pens[name];
+    }
 private:
     VibesDefaults();
     static VibesDefaults _instance;
