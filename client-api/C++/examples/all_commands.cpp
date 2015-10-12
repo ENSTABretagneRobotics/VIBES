@@ -209,7 +209,7 @@ int main()
 
     VIBES_TEST( vibesDrawEllipse(-1,-1,1.5,2,30.0, "parent",0.1, "g") );
 
-    VIBES_TEST( vibes::drawEllipse(0,-4.75,4,0.25,0.0, "darkGray") );
+    VIBES_TEST( vibes::drawEllipse(0,-4.75,4,0.25,0.0, "darkGray-..[255,10,10,128]") );
 
     cout << "drawPolygon with vector of bounds" << std::endl;
     {
