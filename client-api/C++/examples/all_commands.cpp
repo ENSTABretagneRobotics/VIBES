@@ -67,6 +67,11 @@ int main()
 
         VIBES_TEST( vibes::newFigure("Megatest with boxes union") );
         VIBES_TEST(vibes::drawBox(5,15,5,15,"-khaki[black]"));
+        VIBES_TEST(vibes::drawBox(0,10,0,10,"red-..[green]"));
+    VIBES_TEST(vibes::drawBox(10,20,10,20,vibesParams("FaceColor","red","EdgeColor",(vibes::RGBA){128,0,249,128})));
+    VIBES_TEST(vibes::drawBox(20,30,20,30,vibesParams("FaceColor",(vibes::RGBA){0,255,0,128},"EdgeColor","blue","LineStyle","-..","LineWidth",0.1)));
+    VIBES_TEST(vibes::drawBox(25,40,25,40,"255,255,255,129--[128,128,128,100]"));
+    
         VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"darkGreen:[0,128,128,100]") );
         VIBES_TEST( vibes::setFigureProperties(vibesParams("x",150,"y",40,"width",150,"height",150)) );
     }
@@ -238,8 +243,8 @@ int main()
     VIBES_TEST( vibes::drawArrow(20., 20., 40., 40., 3., "black[yellow]") );
     VIBES_TEST( vibes::drawArrow(40., 50., 20., 30., 4., "black[yellow]") );
 
-    VIBES_TEST( vibes::drawArrow(20., 65., 40., 65., 2., "black[red]") );
-    VIBES_TEST( vibes::drawArrow(40., 62., 20., 62., 2., "black[red]") );
+    VIBES_TEST( vibes::drawArrow(20., 65., 40., 65., 2., "black:[indigo]") );
+    VIBES_TEST( vibes::drawArrow(40., 62., 20., 62., 2., "black--[0,0,0,100]") );
 
     VIBES_TEST( vibes::drawArrow(65., 70., 65., 50., 2., "black[red]") );
     VIBES_TEST( vibes::drawArrow(62., 50., 62., 70., 2., "black[red]") );
@@ -251,9 +256,9 @@ int main()
     VIBES_TEST( vibes::drawSector(0,0,3,3,20, 120, "black[red]") ); 
 
     cout << "drawPie" << std::endl;
-    VIBES_TEST( vibes::drawPie(0,-20,3,4,20, 120, "black[red]") );
-    VIBES_TEST( vibes::drawPie(0,-20,3,1,-20, -220, "black[red]") );
-    VIBES_TEST( vibes::drawPie(10,-20,3,4,700, 800, "black[red]") );
+    VIBES_TEST( vibes::drawPie(0,-20,3,4,20, 120, "springgreen:[teal]") );
+    VIBES_TEST( vibes::drawPie(0,-20,3,1,-20, -220, "black[slateblue]") );
+    VIBES_TEST( vibes::drawPie(10,-20,3,4,700, 800, "black:[red]") );
     VIBES_TEST( vibes::drawPie(5,-20,3,3,20, 120, "black[red]") ); 
 
     cout << "drawBoxes with vector of vector of bounds" << std::endl;
