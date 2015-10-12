@@ -62,11 +62,12 @@ int main()
             boxes_bounds.push_back(box_bounds);
         }
         VIBES_TEST( vibes::newFigure("Megatest with boxes") );
-        VIBES_TEST( vibes::drawBoxes(boxes_bounds,"[darkYellow]") );
+        VIBES_TEST( vibes::drawBoxes(boxes_bounds,"darkYellow-.[128,128,0,40]") );
         VIBES_TEST( vibes::setFigureProperties(vibesParams("x",0,"y",40,"width",150,"height",150)) );
 
         VIBES_TEST( vibes::newFigure("Megatest with boxes union") );
-        VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"[darkGreen]") );
+        VIBES_TEST(vibes::drawBox(5,15,5,15,"-khaki[black]"));
+        VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"darkGreen:[0,128,128,100]") );
         VIBES_TEST( vibes::setFigureProperties(vibesParams("x",150,"y",40,"width",150,"height",150)) );
     }
 

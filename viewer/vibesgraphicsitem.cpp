@@ -487,7 +487,7 @@ bool VibesGraphicsBoxes::computeProjection(int dimX, int dimY)
     const QJsonObject & json = this->_json;
 
     // Get shape color (or default if not specified)
-    QBrush brush = vibesDefaults.brush( jsonValue("FaceColor") );
+    const QBrush &brush = vibesDefaults.brush( jsonValue("FaceColor") );
     QPen pen = vibesDefaults.pen( jsonValue("EdgeColor") );
 
     // Now process shape-specific properties
@@ -605,10 +605,25 @@ bool VibesGraphicsBoxesUnion::parseJsonGraphics(const QJsonObject &json)
 
             // Compute dimension
             this->_nbDim = nbCols / 2;
-
+            
+            QPen pen = vibesDefaults.pen( jsonValue("EdgeColor"));
+            const QBrush &brush=vibesDefaults.brush( jsonValue("FaceColor"));
+        // Handle lineStyle
+        if(json.contains("LineStyle"))
+        {
+            Q_ASSERT(json["LineStyle"].isString());
+            string style=json["LineStyle"].toString().toStdString();
+            pen.setStyle(vibesDefaults.styleToPenStyle(style));
+        }
+        // Handle lineStyle
+        if(json.contains("LineWidth"))
+        {
+                    Q_ASSERT(json["LineWidth"].isDouble());
+            pen.setWidthF(std::fmax(json["LineWidth"].toDouble(0),0));
+        }
             // Set graphical properties
-            this->setPen( vibesDefaults.pen( jsonValue("EdgeColor") ) );
-            this->setBrush( vibesDefaults.brush( jsonValue("FaceColor") ) );
+            this->setPen( pen );
+            this->setBrush( brush );
 
             // Update successful
             return true;
@@ -626,7 +641,7 @@ bool VibesGraphicsBoxesUnion::computeProjection(int dimX, int dimY)
 
     // Get shape color (or default if not specified)
     const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor") );
-    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor") );
+    QPen pen = vibesDefaults.pen( jsonValue("EdgeColor") );
 
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
@@ -654,6 +669,19 @@ bool VibesGraphicsBoxesUnion::computeProjection(int dimX, int dimY)
     }
     this->setPath(path);
     // Set graphics properties
+    // Handle lineStyle
+        if(json.contains("LineStyle"))
+        {
+            Q_ASSERT(json["LineStyle"].isString());
+            string style=json["LineStyle"].toString().toStdString();
+            pen.setStyle(vibesDefaults.styleToPenStyle(style));
+        }
+        // Handle lineStyle
+        if(json.contains("LineWidth"))
+        {
+                    Q_ASSERT(json["LineWidth"].isDouble());
+            pen.setWidthF(std::fmax(json["LineWidth"].toDouble(0),0));
+        }
     this->setPen(pen);
     this->setBrush(brush);
 
