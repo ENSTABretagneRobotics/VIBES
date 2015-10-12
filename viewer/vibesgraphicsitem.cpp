@@ -1292,7 +1292,7 @@ bool VibesGraphicsArrow::computeProjection(int dimX, int dimY)
 
     // Get arrow color (or default if not specified)
     const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor"));
-    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor"));
+    QPen pen = vibesDefaults.pen(jsonValue("EdgeColor"));
 
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
@@ -1325,6 +1325,19 @@ bool VibesGraphicsArrow::computeProjection(int dimX, int dimY)
         QPainterPath path;
         path.addPolygon(line);
         QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
+        // Handle lineStyle
+        if (json.contains("LineStyle"))
+        {
+            Q_ASSERT(json["LineStyle"].isString());
+            string style = json["LineStyle"].toString().toStdString();
+            pen.setStyle(vibesDefaults.styleToPenStyle(style));
+        }
+        // Handle lineStyle
+        if (json.contains("LineWidth"))
+        {
+            Q_ASSERT(json["LineWidth"].isDouble());
+            pen.setWidthF(std::fmax(json["LineWidth"].toDouble(0), 0));
+        }
         graphics_path->setPen(pen);
         this->addToGroup(graphics_path);
     }
@@ -1355,6 +1368,19 @@ bool VibesGraphicsArrow::computeProjection(int dimX, int dimY)
                        y - sin(-tip_angle + arrow_angle) * tip_length);
 
         QGraphicsPolygonItem *graphics_tip = new QGraphicsPolygonItem(tip);
+        // Handle lineStyle
+        if (json.contains("LineStyle"))
+        {
+            Q_ASSERT(json["LineStyle"].isString());
+            string style = json["LineStyle"].toString().toStdString();
+            pen.setStyle(vibesDefaults.styleToPenStyle(style));
+        }
+        // Handle lineStyle
+        if (json.contains("LineWidth"))
+        {
+            Q_ASSERT(json["LineWidth"].isDouble());
+            pen.setWidthF(std::fmax(json["LineWidth"].toDouble(0), 0));
+        }
         graphics_tip->setPen(pen);
         graphics_tip->setBrush(brush);
         this->addToGroup(graphics_tip);
@@ -1409,7 +1435,7 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
 
     // Get arrow color (or default if not specified)
     const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor"));
-    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor"));
+    QPen pen = vibesDefaults.pen(jsonValue("EdgeColor"));
 
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
@@ -1452,6 +1478,21 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
         path.arcTo(QRectF(QPointF(cx - rho_m, cy - rho_m), QPointF(cx + rho_m, cy + rho_m)), theta_p, -dtheta);
 
         QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
+        
+        // Handle lineStyle
+        if (json.contains("LineStyle"))
+        {
+            Q_ASSERT(json["LineStyle"].isString());
+            string style = json["LineStyle"].toString().toStdString();
+            pen.setStyle(vibesDefaults.styleToPenStyle(style));
+        }
+        // Handle lineStyle
+        if (json.contains("LineWidth"))
+        {
+            Q_ASSERT(json["LineWidth"].isDouble());
+            pen.setWidthF(std::fmax(json["LineWidth"].toDouble(0), 0));
+        }
+
         graphics_path->setPen(pen);
         graphics_path->setBrush(brush);
         this->addToGroup(graphics_path);
