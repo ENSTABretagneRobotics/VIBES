@@ -17,6 +17,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_LIST_DIR}/../src/)
 
 ADD_EXECUTABLE(all_commands all_commands.cpp ${vibes_SOURCES})
 
+ADD_EXECUTABLE(newmain newmain.cpp ${vibes_SOURCES})
+
 INCLUDE_DIRECTORIES(interval)
 
 ADD_EXECUTABLE(sivia_simple sivia_simple.cpp ${interval_SOURCES} ${vibes_SOURCES})

@@ -13,10 +13,7 @@
 #include <QHash>
 #include <QPen>
 
-#include <iostream>
-using namespace std;
-
-// Singleton class to hold Vibes defaults and constants
+#// Singleton class to hold Vibes defaults and constants
 class VibesDefaults {
     QHash<QString, QBrush> _brushes;
     QHash<QString, QPen> _pens;
@@ -83,16 +80,35 @@ public:
             return QColor(r,g,b,a);
     }
     
-    const QBrush brush(const QJsonValue &value) const { 
+    static Qt::PenStyle styleToPenStyle(const std::string &style)
+    {
+        if(style=="--")
+        {
+            return Qt::DashLine;
+        }
+        if(style=="-.")
+        {
+            return Qt::DashDotLine;
+        }
+        if(style==":")
+        {
+            return Qt::DotLine;
+        }
+        if(style=="-..")
+        {
+            return Qt::DashDotDotLine;
+        }
+        return Qt::SolidLine;
+    }
+    
+    QBrush brush(const QJsonValue &value) const { 
         QString name;
         if(value.isArray())
         {
-            cout << "Brush isArray"<<endl;
             return QBrush(QJsonArrayToQColor(value.toArray()));
         }
         if(value.isString())
         {
-            cout << "brush is string: "<<value.toString().toStdString()<<endl;
             QString valString=value.toString();
             if(valString.contains(","))
             {
@@ -107,7 +123,7 @@ public:
         return _brushes[name]; 
     }
     
-    const QPen pen(const QJsonValue &value) const {
+    QPen pen(const QJsonValue &value) const {
         QString name;
         if(value.isArray())
         {
@@ -118,7 +134,6 @@ public:
             QString valString=value.toString();
             if(valString.contains(","))
             {
-                cout << valString.toStdString()<<"contains a ,"<<endl;
                 QStringList sl=value.toString().split(",");
             
                 return QPen(QJsonArrayToQColor(QJsonArray::fromStringList(sl)),0);
