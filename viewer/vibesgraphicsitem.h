@@ -120,6 +120,11 @@ public:
                 name=value.toString();
             }
         }
+        QColor c(name.toLower());
+        if(c.isValid())
+        {
+            return QBrush(c);
+        }
         return _brushes[name]; 
     }
     
@@ -142,6 +147,12 @@ public:
             {
                 name=value.toString();
             }
+        }
+        QColor c;
+        c.setNamedColor(name.toLower());
+        if(c.isValid())
+        {
+            return QPen(c,0);
         }
         return _pens[name];
     }

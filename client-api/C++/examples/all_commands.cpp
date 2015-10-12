@@ -142,6 +142,44 @@ int main()
         VIBES_TEST( vibes::axisLabels(labels) );
     }
 
+    cout << "plotting y=abs(cos(x)), y=abs(sin(x)), y=abs(sin(sin(x)))"<<endl;
+    {
+        const int nbPts = 1000;
+        const double xStep = 0.01;
+
+        std::vector< std::vector<double> > points;
+        std::vector<double> point(2);
+        std::vector< double > vect_x2;
+        std::vector< double > vect_y2;
+        
+        std::vector< double > vect_x3;
+        std::vector< double > vect_y3;
+        for (int i=0; i<nbPts; ++i)
+        {
+            const double x = xStep * i;
+            point[0] = x;
+            point[1] = fabs(cos(x));
+            points.push_back(point);
+            
+            vect_x2.push_back(x);
+            vect_y2.push_back(fabs(sin(x)));
+            
+            vect_x3.push_back(x);
+            vect_y3.push_back(sin(sin(x)));
+        }
+        VIBES_TEST( vibes::newFigure("abs(cos), abs(sin), sin(sin)") );
+        VIBES_TEST( vibes::drawLine(points,"tomato-..") );
+        VIBES_TEST(vibes::drawLine(vect_x2,vect_y2,vibesParams("LineWidth",0.07,"LineStyle",":","EdgeColor",(vibes::RGBA){255,255,255,255})));
+        VIBES_TEST(vibes::drawLine(vect_x3,vect_y3,vibesParams("LineWidth",0.0042,"LineStyle","--","EdgeColor",(vibes::RGBA){0,128,128,108})));
+
+        VIBES_TEST( vibes::axisAuto() );
+
+        VIBES_TEST( vibes::setFigureProperties("abs(cos)",
+                                                vibesParams("x",0,"y",220,"width",450,"height",100)) );
+        std::vector<std::string> labels;
+        labels.push_back("x"); labels.push_back("abs cos x"); labels.push_back("abs sin x"); labels.push_back("sin sin x");
+        VIBES_TEST( vibes::axisLabels(labels) );
+    }
 
     VIBES_TEST( vibes::newFigure("figureTest") );
 
@@ -182,7 +220,7 @@ int main()
         x.push_back(2);     y.push_back(7);
         x.push_back(0.5);   y.push_back(4);
         x.push_back(-0.5);  y.push_back(4);
-        VIBES_TEST( vibes::drawPolygon(x, y, "yellow[red]") );
+        VIBES_TEST( vibes::drawPolygon(x, y, "red--[yellowgreen]") );
     }
 
     cout << "drawVehicle" << std::endl;

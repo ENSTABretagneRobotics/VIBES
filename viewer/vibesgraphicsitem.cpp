@@ -884,7 +884,7 @@ bool VibesGraphicsLine::computeProjection(int dimX, int dimY)
 
     // Get line color (or default if not specified)
     //const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
-    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor") );
+    QPen pen = vibesDefaults.pen( jsonValue("EdgeColor") );
 
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
@@ -906,6 +906,19 @@ bool VibesGraphicsLine::computeProjection(int dimX, int dimY)
     path.addPolygon(polygon);
     this->setPath(path);
     // Set graphics properties
+    // Handle lineStyle
+    if(json.contains("LineStyle"))
+    {
+        Q_ASSERT(json["LineStyle"].isString());
+        string style=json["LineStyle"].toString().toStdString();
+        pen.setStyle(vibesDefaults.styleToPenStyle(style));
+    }
+    // Handle lineStyle
+    if(json.contains("LineWidth"))
+    {
+        Q_ASSERT(json["LineWidth"].isDouble());
+        pen.setWidthF(std::fmax(json["LineWidth"].toDouble(0),0));
+    }
     this->setPen(pen);
     //this->setBrush(brush);
 
@@ -954,8 +967,8 @@ bool VibesGraphicsPolygon::computeProjection(int dimX, int dimY)
     const QJsonObject & json = this->_json;
 
     // Get shape color (or default if not specified)
-    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor") );
-    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor") );
+    QBrush brush = vibesDefaults.brush( jsonValue("FaceColor") );
+    QPen pen = vibesDefaults.pen( jsonValue("EdgeColor") );
 
     Q_ASSERT(json.contains("type"));
     Q_ASSERT(json["type"].toString() == "polygon");
@@ -970,6 +983,21 @@ bool VibesGraphicsPolygon::computeProjection(int dimX, int dimY)
     this->setPolygon(polygon);
 
     // Update polygon color
+    
+    // Set graphics properties
+    // Handle lineStyle
+    if(json.contains("LineStyle"))
+    {
+        Q_ASSERT(json["LineStyle"].isString());
+        string style=json["LineStyle"].toString().toStdString();
+        pen.setStyle(vibesDefaults.styleToPenStyle(style));
+    }
+    // Handle lineStyle
+    if(json.contains("LineWidth"))
+    {
+        Q_ASSERT(json["LineWidth"].isDouble());
+        pen.setWidthF(std::fmax(json["LineWidth"].toDouble(0),0));
+    }
     this->setPen(pen);
     this->setBrush(brush);
 
