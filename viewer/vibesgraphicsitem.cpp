@@ -187,7 +187,7 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
         return new VibesGraphicsPie();
     }
     else if (type == "point") {
-        //! \todo Implement "point" type
+        return new VibesGraphicsPoint();
     }
     else if (type == "points") {
         //! \todo Implement "points" type
@@ -1298,6 +1298,67 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
         path.arcTo(QRectF(QPointF(cx-rho_p,cy-rho_p),QPointF(cx+rho_p, cy+rho_p)), theta_m, dtheta);
         path.arcTo(QRectF(QPointF(cx-rho_m,cy-rho_m),QPointF(cx+rho_m, cy+rho_m)), theta_p, -dtheta);
 
+        QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
+        graphics_path->setPen(pen);
+        graphics_path->setBrush(brush);
+        this->addToGroup(graphics_path);
+    }
+
+    // Update successful
+    return true;
+}
+
+bool VibesGraphicsPoint::parseJsonGraphics(const QJsonObject& json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsPoint has JSON type "point"
+        if (type == "point" && json.contains("point"))
+        {            
+            QJsonArray point = json["point"].toArray();
+            if (point.size() != 2) return false;
+            
+            // Compute dimension
+            this->_nbDim = point.size();
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsPoint::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get arrow color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush( jsonValue("FaceColor").toString() );
+    const QPen & pen = vibesDefaults.pen( jsonValue("EdgeColor").toString() );
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT (json.contains("type"));
+    // VibesGraphicsPie has JSON type "arrow"
+    Q_ASSERT ( json["type"].toString() == "point" );
+    // "bounds" is a matrix
+    QJsonArray point =  json["point"].toArray();
+
+    // Body
+    {
+
+        double cx = point[0].toDouble();
+        double cy = point[1].toDouble();
+
+        QPainterPath path(QPointF(cx, cy));
+        
         QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
         graphics_path->setPen(pen);
         graphics_path->setBrush(brush);

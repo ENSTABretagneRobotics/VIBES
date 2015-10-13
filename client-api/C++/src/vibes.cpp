@@ -297,6 +297,18 @@ namespace vibes
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
   }  
+  
+  void drawPoint(const double &cx, const double &cy, Params params)
+  {
+      Params msg;
+      msg["action"]="draw";
+      msg["figure"]=params.pop("figure",current_fig);
+      msg["shape"]=(params, "type","point",
+                            "point",(Vec2d){cx,cy});
+                            
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+      fflush(channel);
+  }
 
   void drawBoxes(const std::vector<std::vector<double> > &bounds, Params params)
   {

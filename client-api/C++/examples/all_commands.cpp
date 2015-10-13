@@ -235,6 +235,9 @@ int main()
         VIBES_TEST( vibes::drawBoxes(boxes_bounds,"red[y]") );
     }
 
+    cout << "drawPoint"<<endl;
+    VIBES_TEST(vibes::drawPoint(17,17,"red[black]"));
+    
     VIBES_TEST( vibes::axisAuto() );
     //  VIBES_TEST( vibes::axisLimits(-1,1, -3,2) );
 

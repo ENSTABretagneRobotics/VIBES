@@ -323,6 +323,10 @@ namespace vibes {
   VIBES_FUNC_COLOR_PARAM_6(drawPie, const double &,cx, const double &,cy, 
                                        const double &,r_min, const double &,r_max, 
                                        const double &,theta_min, const double &,theta_max)
+          
+  /// Draw a Point at position (cy, cy)
+  VIBES_FUNC_COLOR_PARAM_2(drawPoint, const double &,cx, const double &,cy)
+          
   /// @}
   /// @name Objects grouping and deletion
   /// @{
