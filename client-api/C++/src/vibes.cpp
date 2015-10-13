@@ -305,7 +305,29 @@ namespace vibes
       msg["figure"]=params.pop("figure",current_fig);
       msg["shape"]=(params, "type","point",
                             "point",(Vec2d){cx,cy});
-                            
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+      fflush(channel);
+  }
+  
+  void drawPoint(const double &cx, const double &cy, const double &radius, Params params)
+  {
+      Params msg;
+      msg["action"]="draw";
+      msg["figure"]=params.pop("figure",current_fig);
+      msg["shape"]=(params, "type","point",
+                            "point",(Vec2d){cx,cy},"Radius",radius);
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
+      fflush(channel);
+  }
+       
+  void drawRing(const double &cx, const double &cy, const double &r_min, const double &r_max, Params params)
+  {
+      Params msg;
+      msg["action"] = "draw";
+      msg["figure"] = params.pop("figure",current_fig);
+      msg["shape"] = (params, "type", "ring",
+                              "center", (Vec2d){cx,cy},
+                              "rho", (Vec2d){r_min,r_max});
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
   }

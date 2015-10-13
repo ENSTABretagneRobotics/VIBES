@@ -216,6 +216,9 @@ int main()
     VIBES_TEST( vibes::drawPie(0,-20,3,1,-20, -220, "black[red]") );
     VIBES_TEST( vibes::drawPie(10,-20,3,4,700, 800, "black[red]") );
     VIBES_TEST( vibes::drawPie(5,-20,3,3,20, 120, "black[red]") ); 
+    
+    cout << "drawRing"<< endl;
+    VIBES_TEST( vibes::drawRing(42,42,20,23,"black[red]"));
 
     cout << "drawBoxes with vector of vector of bounds" << std::endl;
     {
@@ -236,7 +239,8 @@ int main()
     }
 
     cout << "drawPoint"<<endl;
-    VIBES_TEST(vibes::drawPoint(17,17,"red[black]"));
+    VIBES_TEST(vibes::drawPoint(17,17,"red[darkyellow]"));
+    VIBES_TEST(vibes::drawPoint(27,27,2,vibesParams("FaceColor","magenta","EdgeColor","none","Draggable",true,"FixedScale",false)));
     
     VIBES_TEST( vibes::axisAuto() );
     //  VIBES_TEST( vibes::axisLimits(-1,1, -3,2) );
