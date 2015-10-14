@@ -249,7 +249,17 @@ int main()
     VIBES_TEST( vibes::saveImage("vibes_test.jpg") );
     VIBES_TEST( vibes::saveImage("vibes_test.bmp") );
     VIBES_TEST( vibes::saveImage("vibes_test.svg") );
-
+    
+    vibes::newFigure("Points");
+    vector<double> x,y;
+    for(unsigned int i=0;i<2000;i++)
+    {
+        x.push_back(25*rand()/RAND_MAX);
+        y.push_back(25*rand()/RAND_MAX);
+    }
+    
+    //vibes::drawPoints(x,y,vibesParams("FaceColor","red"));
+    vibes::drawPoints(x,y,"red[blue]");
     std::cout << "end drawing" << std::endl;
     VIBES_TEST( vibes::endDrawing() );
 

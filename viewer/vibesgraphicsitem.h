@@ -50,7 +50,6 @@ public:
            VibesGraphicsVehicleType,
            VibesGraphicsVehicleAUVType,
            // List based types
-           //VibesGraphicsPointsType,
            VibesGraphicsLineType,
            VibesGraphicsBoxesType,
            VibesGraphicsBoxesUnionType,
@@ -284,6 +283,16 @@ class VibesGraphicsPoint : public QGraphicsEllipseItem, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsPoint, QGraphicsEllipseItem)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("point");
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// A group of points
+class VibesGraphicsPoints : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsPoints, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("centers")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
