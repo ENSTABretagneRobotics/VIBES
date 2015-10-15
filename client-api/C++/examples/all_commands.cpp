@@ -213,7 +213,7 @@ int main()
 
     cout << "drawPie" << std::endl;
     VIBES_TEST( vibes::drawPie(0,-20,3,4,20, 120, "black[red]") );
-    VIBES_TEST( vibes::drawPie(0,-20,3,1,-20, -220, "black[red]") );
+    VIBES_TEST( vibes::drawPie(0,-20,3,7,-20, -220, "black[red]") );
     VIBES_TEST( vibes::drawPie(10,-20,3,4,700, 800, "black[red]") );
     VIBES_TEST( vibes::drawPie(5,-20,3,3,20, 120, "black[red]") ); 
     
@@ -252,7 +252,7 @@ int main()
     
     vibes::newFigure("Points");
     vector<double> x,y;
-    for(unsigned int i=0;i<2000;i++)
+    for(unsigned int i=0;i<2;i++)
     {
         x.push_back(25*rand()/RAND_MAX);
         y.push_back(25*rand()/RAND_MAX);
