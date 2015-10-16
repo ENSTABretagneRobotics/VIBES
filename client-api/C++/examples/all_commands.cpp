@@ -254,8 +254,8 @@ int main()
     vector<double> x,y;
     for(unsigned int i=0;i<2;i++)
     {
-        x.push_back(25*rand()/RAND_MAX);
-        y.push_back(25*rand()/RAND_MAX);
+        x.push_back(25.0*rand()/RAND_MAX);
+        y.push_back(25.0*rand()/RAND_MAX);
     }
     
     //vibes::drawPoints(x,y,vibesParams("FaceColor","red"));
