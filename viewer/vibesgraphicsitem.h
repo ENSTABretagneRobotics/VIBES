@@ -18,66 +18,64 @@ class VibesDefaults {
     QHash<QString, QBrush> _brushes;
     QHash<QString, QPen> _pens;
 public:
-    static const VibesDefaults & instance() { return _instance; }
+    static VibesDefaults & instance() { return _instance; }
     
-    static const QColor QJsonArrayToQColor(const QJsonArray &l)
+    static QString rgbaToString(const QJsonArray &array, double &r, double &g, double &b, double &a)
     {
-        double r=0,g=0,b=0,a=255;
-        
         bool ok;
-            if(l.size()>=1)
+        if(array.size()>=1)
+        {
+            if(array[0].isString())
             {
-                if(l[0].isString())
-                {
-                    r=l[0].toString().toDouble(&ok);
-                    r=ok?r:0;
-                }
-                else if(l[0].isDouble())
-                {
-                    r=l[0].toDouble(0);
-                }
+                r=array[0].toString().toDouble(&ok);
+                r=ok?r:0;
             }
+            else if(array[0].isDouble())
+            {
+                r=array[0].toDouble(0);
+            }
+        }
         
         
-            if(l.size()>=2)
+        if(array.size()>=2)
+        {
+            if(array[1].isString())
             {
-                if(l[1].isString())
-                {
-                    g=l[1].toString().toDouble(&ok);
-                    g=ok?g:0;
-                }
-                else if(l[1].isDouble())
-                {
-                    g=l[1].toDouble(0);
-                }
+                g=array[1].toString().toDouble(&ok);
+                g=ok?g:0;
             }
+            else if(array[1].isDouble())
+            {
+                g=array[1].toDouble(0);
+            }
+        }
         
-            if(l.size()>=3)
+        if(array.size()>=3)
+        {
+            if(array[2].isString())
             {
-                if(l[2].isString())
-                {
-                    b=l[2].toString().toDouble(&ok);
-                    b=ok?b:0;
-                }
-                else if(l[2].isDouble())
-                {
-                    r=l[2].toDouble(0);
-                }
+                b=array[2].toString().toDouble(&ok);
+                b=ok?b:0;
             }
+            else if(array[2].isDouble())
+            {
+                r=array[2].toDouble(0);
+            }
+        }
         
-            if(l.size()>=4)
+        if(array.size()>=4)
+        {
+            if(array[3].isString())
             {
-                if(l[3].isString())
-                {
-                    a=l[3].toString().toDouble(&ok);
-                    a=ok?a:255;
-                }
-                else if(l[3].isDouble())
-                {
-                    a=l[3].toDouble(255);
-                }
+                a=array[3].toString().toDouble(&ok);
+                a=ok?a:255;
             }
-            return QColor(r,g,b,a);
+            else if(array[3].isDouble())
+            {
+                a=array[3].toDouble(255);
+            }
+        }
+        return QString("%1,%2,%3,%4").arg(r).arg(g).arg(b).arg(a);
     }
     
     static Qt::PenStyle styleToPenStyle(const std::string &style)
@@ -101,60 +99,82 @@ public:
         return Qt::SolidLine;
     }
     
-    QBrush brush(const QJsonValue &value) const { 
+    const QBrush brush(const QJsonValue &value) { 
         QString name;
         if(value.isArray())
         {
-            return QBrush(QJsonArrayToQColor(value.toArray()));
+            double r=0,g=0,b=0,a=255;
+            
+            name=VibesDefaults::rgbaToString(value.toArray(),r,g,b,a);
+            if(!_brushes.contains(name))
+            {
+                QColor c(r,g,b,a);
+                _brushes[name]=QBrush(c);
+            }
         }
-        if(value.isString())
+        else if(value.isString())
         {
+        
             QString valString=value.toString();
-            if(valString.contains(","))
+            if( !_brushes.contains(valString))
             {
-                QStringList sl=value.toString().split(",");
-                return QBrush(QJsonArrayToQColor(QJsonArray::fromStringList(sl)));
+                _brushes[name] = QBrush(parseColorName(name));
             }
-            else
-            {
-                name=value.toString();
-            }
-        }
-        QColor c(name.toLower());
-        if(c.isValid())
-        {
-            return QBrush(c);
         }
         return _brushes[name]; 
     }
     
-    QPen pen(const QJsonValue &value) const {
+    const QPen pen(const QJsonValue &value) {
         QString name;
         if(value.isArray())
         {
-            return QPen(QJsonArrayToQColor(value.toArray()),0);
-        }
-        if(value.isString())
-        {
-            QString valString=value.toString();
-            if(valString.contains(","))
-            {
-                QStringList sl=value.toString().split(",");
+            double r=0,g=0,b=0,a=255;
             
-                return QPen(QJsonArrayToQColor(QJsonArray::fromStringList(sl)),0);
-            }
-            else
+            const QString parsedName=VibesDefaults::rgbaToString(value.toArray(),r,g,b,a);
+            name=parsedName;
+            if(!_pens.contains(name))
             {
-                name=value.toString();
+                _pens[parsedName]=QPen(QColor(r,g,b,a),0);
             }
         }
-        QColor c;
-        c.setNamedColor(name.toLower());
-        if(c.isValid())
+        else if(value.isString())
         {
-            return QPen(c,0);
+            const QString parsedName=value.toString();
+            name=parsedName;
+            if(!_pens.contains(parsedName))
+            {
+                _pens[parsedName]=QPen(parseColorName(name),0);
+            }
         }
         return _pens[name];
+    }
+    
+    static const QColor parseColorName(const QString& name){
+        if(name.contains(","))
+        {
+            QStringList sl=name.split(",");
+            double r=0,g=0,b=0,a=255;
+            rgbaToString(QJsonArray::fromStringList(sl),r,g,b,a);
+            return QColor(r,g,b,a);
+        }
+        else if(name.startsWith("#")&&(name.size()==7||name.size()==9))
+        {
+            Q_ASSERT(name.size() == 7 || name.size() == 9);
+            // Suported format #RRGGBB and #RRGGBBAA
+            QColor color;
+            color.setNamedColor(name.mid(0,7));
+            // if len of name > 7 the 2 last caracters are the alpha value
+            if(name.size() > 7)
+            {
+                color.setAlpha(name.mid(7,2).toUInt(0,16));
+            }
+            return color;
+        }
+        
+        QColor c(name.toLower());
+        //if(c.isValid())
+        //    return c;
+        return c;
     }
 private:
     VibesDefaults();
@@ -179,6 +199,8 @@ public:
            VibesGraphicsEllipseType,
            VibesGraphicsPolygonType,
            VibesGraphicsArrowType,
+           VibesGraphicsPieType,
+           VibesGraphicsRingType,
            // Complex types based on primitive types
            VibesGraphicsVehicleType,
            VibesGraphicsVehicleAUVType,
@@ -188,8 +210,7 @@ public:
            VibesGraphicsBoxesType,
            VibesGraphicsBoxesUnionType,
            // Do not remove the following value! It signals the end of VibesGraphicsItem types
-           VibesGraphicsLastType,
-           VibesGraphicsPieType
+           VibesGraphicsLastType
          };
     // Constructor
     VibesGraphicsItem(QGraphicsItem * qGraphicsItem);
@@ -407,6 +428,15 @@ class VibesGraphicsPie : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsPie, QGraphicsItemGroup)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("center","rho", "theta")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+class VibesGraphicsRing : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsRing, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("center","rho")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);

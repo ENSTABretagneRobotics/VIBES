@@ -42,6 +42,11 @@ int main()
     //VIBES_TEST( vibes::clearGroup("group") );
     VIBES_TEST( vibes::clearFigure() );
 
+    std::cout << "Testing Vibes Custom Colors ans Transparency" << std::endl;
+    VIBES_TEST( vibes::newFigure("CustomColor") );
+    VIBES_TEST( vibes::drawBox(-1,0,-2,-1, "[red]"));
+    VIBES_TEST( vibes::drawBox(0,1,0,1, "#FF3300AA[#00345678]"));
+    VIBES_TEST( vibes::drawBox(0.5,1.5,0.5,1.5, "#FF0022AA[#FF0056AA]"));
 
     cout << "Megatest Wayne!" << std::endl;
     {
@@ -260,6 +265,9 @@ int main()
     VIBES_TEST( vibes::drawPie(0,-20,3,1,-20, -220, "black[slateblue]") );
     VIBES_TEST( vibes::drawPie(10,-20,3,4,700, 800, "black:[red]") );
     VIBES_TEST( vibes::drawPie(5,-20,3,3,20, 120, "black[red]") ); 
+    
+    cout << "drawRing"<< endl;
+    VIBES_TEST( vibes::drawRing(42,42,20,23,"black[red]"));
 
     cout << "drawBoxes with vector of vector of bounds" << std::endl;
     {
@@ -325,5 +333,8 @@ int main()
 
     printf ("Classic draw took %d clicks (%f seconds).\n",t1,((float)t1)/CLOCKS_PER_SEC);
     printf ("Param based draw took %d clicks (%f seconds).\n",t2,((float)t2)/CLOCKS_PER_SEC);*/
+
+
+    
     return 0;
 }
