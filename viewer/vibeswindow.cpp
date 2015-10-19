@@ -321,6 +321,20 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         fig->setSceneRect(QRectF());
                         fig->fitInView(fig->sceneRect());
                     }
+                    // Auto-set the view rectangle with equal side size
+                    else if (it.value().toString() == "equal")
+                    {
+                        fig->setSceneRect(QRectF());
+                        QRectF sceneSize=fig->sceneRect();
+                        qreal x, y, w, h;
+                        sceneSize.getRect(&x,&y,&w,&h);
+                        qreal a = std::max(h,w);
+                        x += (w-a)/2;
+                        y += (h-a)/2;
+                        fig->setSceneRect(x,y,a,a);
+                        fig->fitInView(fig->sceneRect());
+                    }
+
                 }
                 else if (it.key() == "axislabels")
                 {
