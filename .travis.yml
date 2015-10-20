@@ -2,7 +2,7 @@ language: cpp
 
 compiler:
  - gcc
-# - clang
+ - clang
 
 before_install:
  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-add-repository --yes ppa:ubuntu-sdk-team/ppa; fi
@@ -30,3 +30,8 @@ script: make
 os:
  - linux
  - osx
+
+# Allow compilation failure with clang (Qt 5.0 headers generates errors with clang)
+matrix:
+  allow_failures:
+   - compiler: clang
