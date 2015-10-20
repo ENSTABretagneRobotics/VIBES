@@ -31,7 +31,8 @@ os:
  - linux
  - osx
 
-# Allow compilation failure with clang (Qt 5.0 headers generates errors with clang)
+# Exclude the clang on Linux combination: Qt 5.0 headers generates errors with clang
 matrix:
-  allow_failures:
+  exclude:
    - compiler: clang
+     os: linux
