@@ -3,8 +3,10 @@
 
 *.user
 *.user.*
+*nbproject/
 
 .SyncIgnore
+*.DS_Store
 
 /build
 /build-*
@@ -13,6 +15,11 @@
 /client-api/C++/examples/build/
 /viewer-build
 *-build/
+*CMakeCache.txt
+*CMakeFiles/
+*Makefile
+*.cmake
+*compile_commands.json
 
 doxygen
 *.pyc
