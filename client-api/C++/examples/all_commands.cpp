@@ -252,14 +252,25 @@ int main()
     
     vibes::newFigure("Points");
     vector<double> x,y;
-    for(unsigned int i=0;i<2;i++)
+    for(unsigned int i=0;i<500;i++)
     {
         x.push_back(25.0*rand()/RAND_MAX);
         y.push_back(25.0*rand()/RAND_MAX);
     }
     
-    //vibes::drawPoints(x,y,vibesParams("FaceColor","red"));
-    vibes::drawPoints(x,y,"red[blue]");
+    vibes::drawPoints(x,y,vibesParams("FaceColor","blue","EdgeColor","darkBlue","Draggable",true));
+    
+    x.clear();
+    y.clear();
+    
+    for(unsigned int i=0;i<500;i++)
+    {
+        x.push_back(34+25.0*rand()/RAND_MAX);
+        y.push_back(40+25.0*rand()/RAND_MAX);
+    }
+    
+    vibes::drawPoints(x,y,vibesParams("FaceColor","red","EdgeColor","darkRed","Radius",100));
+    
     std::cout << "end drawing" << std::endl;
     VIBES_TEST( vibes::endDrawing() );
 
