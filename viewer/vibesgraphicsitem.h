@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QJsonArray>
 
 //#include <QBitArray>
 #include "vibesscene2d.h"
@@ -18,30 +19,161 @@ class VibesDefaults {
     QHash<QString, QPen> _pens;
 public:
     static VibesDefaults & instance() { return _instance; }
-
-    const QColor parseColorName(const QString& name){
-        Q_ASSERT(name.size() == 7 || name.size() == 9);
-        // Suported format #RRGGBB and #RRGGBBAA
-        QColor color;
-        color.setNamedColor(name.mid(0,7));
-        // if len of name > 7 the 2 last caracters are the alpha value
-        if(name.size() > 7){
-            color.setAlpha(name.mid(7,2).toUInt(0,16));
+    
+    static QString rgbaToString(const QJsonArray &array, double &r, double &g, double &b, double &a)
+    {
+        bool ok;
+        if(array.size()>=1)
+        {
+            if(array[0].isString())
+            {
+                r=array[0].toString().toDouble(&ok);
+                r=ok?r:0;
+            }
+            else if(array[0].isDouble())
+            {
+                r=array[0].toDouble(0);
+            }
         }
-        return color;
-    }
-    const QBrush brush(const QString & name = QString()) {
-        if( !_brushes.contains(name)){
-            _brushes[name] = QBrush(parseColorName(name));
+        
+        
+        if(array.size()>=2)
+        {
+            if(array[1].isString())
+            {
+                g=array[1].toString().toDouble(&ok);
+                g=ok?g:0;
+            }
+            else if(array[1].isDouble())
+            {
+                g=array[1].toDouble(0);
+            }
         }
-        return _brushes[name];
+        
+        if(array.size()>=3)
+        {
+            if(array[2].isString())
+            {
+                b=array[2].toString().toDouble(&ok);
+                b=ok?b:0;
+            }
+            else if(array[2].isDouble())
+            {
+                r=array[2].toDouble(0);
+            }
+        }
+        
+        if(array.size()>=4)
+        {
+            if(array[3].isString())
+            {
+                a=array[3].toString().toDouble(&ok);
+                a=ok?a:255;
+            }
+            else if(array[3].isDouble())
+            {
+                a=array[3].toDouble(255);
+            }
+        }
+        return QString("%1,%2,%3,%4").arg(r).arg(g).arg(b).arg(a);
     }
-
-    const QPen pen(const QString & name = QString()) {
-        if( !_pens.contains(name)){
-            _pens[name] = QPen(parseColorName(name),0);
+    
+    static Qt::PenStyle styleToPenStyle(const std::string &style)
+    {
+        if(style=="--")
+        {
+            return Qt::DashLine;
+        }
+        if(style=="-.")
+        {
+            return Qt::DashDotLine;
+        }
+        if(style==":")
+        {
+            return Qt::DotLine;
+        }
+        if(style=="-..")
+        {
+            return Qt::DashDotDotLine;
+        }
+        return Qt::SolidLine;
+    }
+    
+    const QBrush brush(const QJsonValue &value) { 
+        QString name;
+        if(value.isArray())
+        {
+            double r=0,g=0,b=0,a=255;
+            
+            name=VibesDefaults::rgbaToString(value.toArray(),r,g,b,a);
+            if(!_brushes.contains(name))
+            {
+                QColor c(r,g,b,a);
+                _brushes[name]=QBrush(c);
+            }
+        }
+        else if(value.isString())
+        {
+            name=value.toString();
+            if( !_brushes.contains(name))
+            {
+                _brushes[name] = QBrush(parseColorName(name));
+            }
+        }
+        return _brushes[name]; 
+    }
+    
+    const QPen pen(const QJsonValue &value) {
+        QString name;
+        if(value.isArray())
+        {
+            double r=0,g=0,b=0,a=255;
+            
+            const QString parsedName=VibesDefaults::rgbaToString(value.toArray(),r,g,b,a);
+            name=parsedName;
+            if(!_pens.contains(name))
+            {
+                _pens[parsedName]=QPen(QColor(r,g,b,a),0);
+            }
+        }
+        else if(value.isString())
+        {
+            const QString parsedName=value.toString();
+            name=parsedName;
+            if(!_pens.contains(parsedName))
+            {
+                _pens[parsedName]=QPen(parseColorName(name),0);
+            }
         }
         return _pens[name];
+    }
+    
+    static const QColor parseColorName(const QString& name){
+        if(name.contains(","))
+        {
+            QStringList sl=name.split(",");
+            double r=0,g=0,b=0,a=255;
+            rgbaToString(QJsonArray::fromStringList(sl),r,g,b,a);
+            return QColor(r,g,b,a);
+        }
+        else if(name.startsWith("#")&&(name.size()==7||name.size()==9))
+        {
+            Q_ASSERT(name.size() == 7 || name.size() == 9);
+            // Suported format #RRGGBB and #RRGGBBAA
+            QColor color;
+            color.setNamedColor(name.mid(0,7));
+            // if len of name > 7 the 2 last caracters are the alpha value
+            if(name.size() > 7)
+            {
+                color.setAlpha(name.mid(7,2).toUInt(0,16));
+            }
+            return color;
+        }
+        
+        QColor c(name.toLower());
+        //if(c.isValid())
+        //    return c;
+        return c;
     }
 private:
     VibesDefaults();

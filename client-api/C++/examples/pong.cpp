@@ -1,5 +1,4 @@
 #include "pong.h"
-#include <iostream>
 
 using namespace std;
 
@@ -11,8 +10,8 @@ box rightBorder(interval(SCENE_WIDTH/2.0f,SCENE_WIDTH),interval(-SCENE_HEIGHT,SC
 box topBorder(interval(-SCENE_WIDTH,SCENE_WIDTH),interval(SCENE_HEIGHT/2.0f,SCENE_HEIGHT));
 box bottomBorder(interval(-SCENE_WIDTH,SCENE_WIDTH),interval(-SCENE_HEIGHT/2.0f,-SCENE_HEIGHT));
 
-std::vector<box> leftScore;
-std::vector<box> rightScore;
+vector<box> leftScore;
+vector<box> rightScore;
 
 int iterations;
 
@@ -53,7 +52,8 @@ void drawScene()
   }
   vibes::drawBox(leftPlayer[1].inf,leftPlayer[1].sup,leftPlayer[2].inf,leftPlayer[2].sup,"y");
   vibes::drawBox(rightPlayer[1].inf,rightPlayer[1].sup,rightPlayer[2].inf,rightPlayer[2].sup,"r");
-  vibes::drawBox(ball[1].inf,ball[1].sup,ball[2].inf,ball[2].sup,"k");
+  vibes::drawCircle(ball[1].inf/2+ball[1].sup/2,ball[2].inf/2+ball[2].sup/2,(ball[2].sup-ball[2].inf)/2,"k[k]");
+  vibes::axisLimits(-SCENE_WIDTH/2.0f,SCENE_WIDTH/2.0f,-SCENE_HEIGHT/2.0f,SCENE_HEIGHT/2.0f);
   crossSleepMs(SLEEP_MS);
 }
 
@@ -79,7 +79,6 @@ void checkState()
     timer=0;
     if(!Inter(ball,topBorder).IsEmpty())
     {
-      std::cout << "Collision top" << std::endl;
       if(angle<90&&angle>=0)
         angle=-angle;
       else if(angle>=90&&angle<180)
@@ -87,36 +86,25 @@ void checkState()
     }
     else if(!Inter(ball,bottomBorder).IsEmpty())
     {
-      cout << "Collision bottom" << endl;
       if(angle>=180&&angle<270){
         angle=360-angle;
-        cout << "cas 1 " << endl;
         }
       else if(angle>=270&&angle<360)
       {
-       cout << "cas 2"<<endl;
-       cout << "angle: " << angle << endl;
         angle=(360-angle);
-        cout << "angle apres: " << angle << endl;
-        }
-        else{
-        cout << "pb, angle: " << angle << endl;
         }
     }
     else if(!Inter(ball,leftBorder).IsEmpty())
     {
-      cout << "Collision left" << endl;
       loseAnimation();
     }
     else if(!Inter(ball,rightBorder).IsEmpty())
     {
-      cout << "Collision right" << endl;
       loseAnimation();
     }
   }
   else if(!Inter(ball,leftPlayer).IsEmpty())
   {
-    cout << "Collision leftPlayer" << endl;
     timer=0;
     if(angle<180)
       angle=(180-angle);
@@ -125,7 +113,6 @@ void checkState()
   }
   else if(!Inter(ball,rightPlayer).IsEmpty())
   {
-    cout << "Collision rightPlayer" << endl;
     if(angle<90)
       angle=180-angle;
     else if(angle<360)

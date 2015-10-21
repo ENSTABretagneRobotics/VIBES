@@ -42,9 +42,10 @@ int main()
     //VIBES_TEST( vibes::clearGroup("group") );
     VIBES_TEST( vibes::clearFigure() );
 
-    std::cout << "Testing Vibes Custom Colors ans Transparency" << std::endl;
+    std::cout << "Testing Vibes Custom Colors and Transparency" << std::endl;
     VIBES_TEST( vibes::newFigure("CustomColor") );
     VIBES_TEST( vibes::drawBox(-1,0,-2,-1, "[red]"));
+    VIBES_TEST( vibes::drawBox(-0.1,0.9,-1.1,-0.1, "pink[10,100,200,100]"));
     VIBES_TEST( vibes::drawBox(0,1,0,1, "#FF3300AA[#00345678]"));
     VIBES_TEST( vibes::drawBox(0.5,1.5,0.5,1.5, "#FF0022AA[#FF0056AA]"));
 
@@ -67,11 +68,17 @@ int main()
             boxes_bounds.push_back(box_bounds);
         }
         VIBES_TEST( vibes::newFigure("Megatest with boxes") );
-        VIBES_TEST( vibes::drawBoxes(boxes_bounds,"[darkYellow]") );
+        VIBES_TEST( vibes::drawBoxes(boxes_bounds,"darkYellow-.[128,128,0,40]") );
         VIBES_TEST( vibes::setFigureProperties(vibesParams("x",0,"y",40,"width",150,"height",150)) );
 
         VIBES_TEST( vibes::newFigure("Megatest with boxes union") );
-        VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"[darkGreen]") );
+        VIBES_TEST(vibes::drawBox(5,15,5,15,"-khaki[black]"));
+        VIBES_TEST(vibes::drawBox(0,10,0,10,"red-..[green]"));
+    VIBES_TEST(vibes::drawBox(10,20,10,20,vibesParams("FaceColor","red","EdgeColor",(vibes::RGBA){128,0,249,128})));
+    VIBES_TEST(vibes::drawBox(20,30,20,30,vibesParams("FaceColor",(vibes::RGBA){0,255,0,128},"EdgeColor","blue","LineStyle","-..","LineWidth",0.1)));
+    VIBES_TEST(vibes::drawBox(25,40,25,40,"255,255,255,129--[128,128,128,100]"));
+    
+        VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"darkGreen:[0,128,128,100]") );
         VIBES_TEST( vibes::setFigureProperties(vibesParams("x",150,"y",40,"width",150,"height",150)) );
     }
 
@@ -147,6 +154,44 @@ int main()
         VIBES_TEST( vibes::axisLabels(labels) );
     }
 
+    cout << "plotting y=abs(cos(x)), y=abs(sin(x)), y=abs(sin(sin(x)))"<<endl;
+    {
+        const int nbPts = 1000;
+        const double xStep = 0.01;
+
+        std::vector< std::vector<double> > points;
+        std::vector<double> point(2);
+        std::vector< double > vect_x2;
+        std::vector< double > vect_y2;
+        
+        std::vector< double > vect_x3;
+        std::vector< double > vect_y3;
+        for (int i=0; i<nbPts; ++i)
+        {
+            const double x = xStep * i;
+            point[0] = x;
+            point[1] = fabs(cos(x));
+            points.push_back(point);
+            
+            vect_x2.push_back(x);
+            vect_y2.push_back(fabs(sin(x)));
+            
+            vect_x3.push_back(x);
+            vect_y3.push_back(sin(sin(x)));
+        }
+        VIBES_TEST( vibes::newFigure("abs(cos), abs(sin), sin(sin)") );
+        VIBES_TEST( vibes::drawLine(points,"tomato-..") );
+        VIBES_TEST(vibes::drawLine(vect_x2,vect_y2,vibesParams("LineWidth",0.07,"LineStyle",":","EdgeColor",(vibes::RGBA){255,255,255,255})));
+        VIBES_TEST(vibes::drawLine(vect_x3,vect_y3,vibesParams("LineWidth",0.0042,"LineStyle","--","EdgeColor",(vibes::RGBA){0,128,128,108})));
+
+        VIBES_TEST( vibes::axisAuto() );
+
+        VIBES_TEST( vibes::setFigureProperties("abs(cos)",
+                                                vibesParams("x",0,"y",220,"width",450,"height",100)) );
+        std::vector<std::string> labels;
+        labels.push_back("x"); labels.push_back("abs cos x"); labels.push_back("abs sin x"); labels.push_back("sin sin x");
+        VIBES_TEST( vibes::axisLabels(labels) );
+    }
 
     VIBES_TEST( vibes::newFigure("figureTest") );
 
@@ -175,7 +220,7 @@ int main()
 
     VIBES_TEST( vibesDrawEllipse(-1,-1,1.5,2,30.0, "parent",0.1, "g") );
 
-    VIBES_TEST( vibes::drawEllipse(0,-4.75,4,0.25,0.0, "darkGray") );
+    VIBES_TEST( vibes::drawEllipse(0,-4.75,4,0.25,0.0, "darkGray-..[255,10,10,128]") );
 
     cout << "drawPolygon with vector of bounds" << std::endl;
     {
@@ -187,7 +232,7 @@ int main()
         x.push_back(2);     y.push_back(7);
         x.push_back(0.5);   y.push_back(4);
         x.push_back(-0.5);  y.push_back(4);
-        VIBES_TEST( vibes::drawPolygon(x, y, "yellow[red]") );
+        VIBES_TEST( vibes::drawPolygon(x, y, "red--[yellowgreen]") );
     }
 
     cout << "drawVehicle" << std::endl;
@@ -204,8 +249,8 @@ int main()
     VIBES_TEST( vibes::drawArrow(20., 20., 40., 40., 3., "black[yellow]") );
     VIBES_TEST( vibes::drawArrow(40., 50., 20., 30., 4., "black[yellow]") );
 
-    VIBES_TEST( vibes::drawArrow(20., 65., 40., 65., 2., "black[red]") );
-    VIBES_TEST( vibes::drawArrow(40., 62., 20., 62., 2., "black[red]") );
+    VIBES_TEST( vibes::drawArrow(20., 65., 40., 65., 2., "black:[indigo]") );
+    VIBES_TEST( vibes::drawArrow(40., 62., 20., 62., 2., "black--[0,0,0,100]") );
 
     VIBES_TEST( vibes::drawArrow(65., 70., 65., 50., 2., "black[red]") );
     VIBES_TEST( vibes::drawArrow(62., 50., 62., 70., 2., "black[red]") );
@@ -217,9 +262,9 @@ int main()
     VIBES_TEST( vibes::drawSector(0,0,3,3,20, 120, "black[red]") ); 
 
     cout << "drawPie" << std::endl;
-    VIBES_TEST( vibes::drawPie(0,-20,3,4,20, 120, "black[red]") );
-    VIBES_TEST( vibes::drawPie(0,-20,3,1,-20, -220, "black[red]") );
-    VIBES_TEST( vibes::drawPie(10,-20,3,4,700, 800, "black[red]") );
+    VIBES_TEST( vibes::drawPie(0,-20,3,4,20, 120, "springgreen:[teal]") );
+    VIBES_TEST( vibes::drawPie(0,-20,3,1,-20, -220, "black[slateblue]") );
+    VIBES_TEST( vibes::drawPie(10,-20,3,4,700, 800, "black:[red]") );
     VIBES_TEST( vibes::drawPie(5,-20,3,3,20, 120, "black[red]") ); 
     
     cout << "drawRing"<< endl;
