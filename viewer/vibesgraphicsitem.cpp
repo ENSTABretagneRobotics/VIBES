@@ -15,6 +15,7 @@
 #include <QJsonValue>
 
 #include <cmath>
+using namespace std;
 
 // The only instance of VibesDefaults
 VibesDefaults VibesDefaults::_instance;
@@ -200,7 +201,7 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     }
     else if (type == "points")
     {
-        //! \todo Implement "points" type
+        return new VibesGraphicsPoints();
     }
     else if (type == "line")
     {
@@ -1296,10 +1297,9 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
     QJsonArray center = json["center"].toArray();
     QJsonArray rho = json["rho"].toArray();
     QJsonArray theta = json["theta"].toArray();
-
+    
     Q_ASSERT(rho[0].toDouble() >= 0);
     Q_ASSERT(rho[1].toDouble() >= rho[0].toDouble());
-    Q_ASSERT(theta[1].toDouble() >= theta[0].toDouble());
 
 
     // Body
@@ -1354,6 +1354,7 @@ bool VibesGraphicsPoint::parseJsonGraphics(const QJsonObject& json)
             // Compute dimension
             this->_nbDim = point.size();
 
+            this->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
             if (json.contains("FixedScale"))
             {
                 // Default behaviour for points is true
@@ -1365,9 +1366,9 @@ bool VibesGraphicsPoint::parseJsonGraphics(const QJsonObject& json)
                 {
                     this->setFlag(QGraphicsItem::ItemIsMovable, json["Draggable"].toBool(false));
                 }
-                else if(json["Draggable"].isDouble())
+                else if (json["Draggable"].isDouble())
                 {
-                    this->setFlag(QGraphicsItem::ItemIsMovable, ((int)json["Draggable"].toDouble(0))==1);
+                    this->setFlag(QGraphicsItem::ItemIsMovable, ((int) json["Draggable"].toDouble(0)) == 1);
                 }
             }
             // Update successful
@@ -1407,13 +1408,127 @@ bool VibesGraphicsPoint::computeProjection(int dimX, int dimY)
         {
             rad = json["Radius"].toDouble(0.01);
         }
-        
+
         this->setRect(0, 0, 2 * rad, 2 * rad);
-        
+
         this->setPos(cx, cy);
 
         this->setPen(pen);
         this->setBrush(brush);
+    }
+
+    // Update successful
+    return true;
+}
+
+//
+// VibesGraphicsPoints
+//
+
+bool VibesGraphicsPoints::parseJsonGraphics(const QJsonObject& json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsPie has JSON type "arrow"
+        if (type == "points")
+        {
+            QJsonArray centers = json["centers"].toArray();
+            this->_nbDim=centers[0].toArray().size();
+            
+            if (json.contains("Draggable"))
+            {
+                if (json["Draggable"].isBool())
+                {
+                    this->setFlag(QGraphicsItem::ItemIsMovable, json["Draggable"].toBool(false));
+                }
+                else if (json["Draggable"].isDouble())
+                {
+                    this->setFlag(QGraphicsItem::ItemIsMovable, ((int) json["Draggable"].toDouble(0)) == 1);
+                }
+            }
+            QList<QGraphicsItem*> pts = this->childItems();
+
+            foreach(QGraphicsItem* item, pts)
+            {
+                QGraphicsEllipseItem * disk = qgraphicsitem_cast<QGraphicsEllipseItem*>(item);
+                if (!disk) continue;
+                disk->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString()));
+                disk->setBrush(vibesDefaults.brush(jsonValue("FaceColor").toString()));
+            }
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsPoints::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+    // Get points color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString());
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT(json.contains("type"));
+    // VibesGraphicsRing has JSON type "ring"
+    Q_ASSERT(json["type"].toString() == "points");
+
+    // Before update, we first remove all existing points
+    {
+        QList<QGraphicsItem*> disks = this->childItems();
+        foreach(QGraphicsItem* disk, disks) delete disk;
+    }
+
+    QJsonArray levels, radiuses;
+    double radius = 0.01;
+    bool levelsExist = false;//json.contains("ColorLevels");
+    if (levelsExist)levels = json["ColorLevels"].toArray();
+    bool radiusesExist = json.contains("Radiuses");
+    if (radiusesExist)radiuses = json["Radiuses"].toArray();
+    if (!radiusesExist)
+    {
+        if (json.contains("Radius"))
+        {
+            radius = json["Radius"].toDouble(0.01);
+        }
+    }
+    QJsonArray centers = json["centers"].toArray();
+
+    for (unsigned int i = 0; i < centers.size(); i++)
+    {
+        const QJsonArray point = centers[i].toArray();
+        double x = point[dimX].toDouble();
+        double y = point[dimY].toDouble();
+
+        double r = radiusesExist ? radiuses[i].toDouble() : radius;
+        
+        QGraphicsEllipseItem * disk = new QGraphicsEllipseItem(0, 0, 2 * r, 2 * r);
+        disk->setPos(x, y);
+
+        disk->setPen(pen);
+        disk->setBrush(brush);
+
+        disk->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+        if (json.contains("FixedScale"))
+        {
+            // Default behaviour for points is true
+            disk->setFlag(QGraphicsItem::ItemIgnoresTransformations, json["FixedScale"].toBool(true));
+        }
+        this->addToGroup(disk);
+
+        //if(levelsExist)
+        //{
+        // TODO: apply colormap
+        //}
     }
 
     // Update successful
