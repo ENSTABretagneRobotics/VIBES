@@ -13,7 +13,7 @@
 #include <QHash>
 #include <QPen>
 
-#// Singleton class to hold Vibes defaults and constants
+// Singleton class to hold Vibes defaults and constants
 class VibesDefaults {
     QHash<QString, QBrush> _brushes;
     QHash<QString, QPen> _pens;
@@ -114,9 +114,8 @@ public:
         }
         else if(value.isString())
         {
-        
-            QString valString=value.toString();
-            if( !_brushes.contains(valString))
+            name=value.toString();
+            if( !_brushes.contains(name))
             {
                 _brushes[name] = QBrush(parseColorName(name));
             }
