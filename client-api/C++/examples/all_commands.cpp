@@ -42,9 +42,10 @@ int main()
     //VIBES_TEST( vibes::clearGroup("group") );
     VIBES_TEST( vibes::clearFigure() );
 
-    std::cout << "Testing Vibes Custom Colors ans Transparency" << std::endl;
+    std::cout << "Testing Vibes Custom Colors and Transparency" << std::endl;
     VIBES_TEST( vibes::newFigure("CustomColor") );
     VIBES_TEST( vibes::drawBox(-1,0,-2,-1, "[red]"));
+    VIBES_TEST( vibes::drawBox(-0.1,0.9,-1.1,-0.1, "pink[10,100,200,100]"));
     VIBES_TEST( vibes::drawBox(0,1,0,1, "#FF3300AA[#00345678]"));
     VIBES_TEST( vibes::drawBox(0.5,1.5,0.5,1.5, "#FF0022AA[#FF0056AA]"));
 

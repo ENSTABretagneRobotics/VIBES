@@ -15,7 +15,6 @@
 #include <QJsonValue>
 
 #include <cmath>
-#include <iostream>
 using namespace std;
 
 // The only instance of VibesDefaults
@@ -471,7 +470,7 @@ bool VibesGraphicsBoxes::parseJsonGraphics(const QJsonObject &json)
                 if (!rect) continue;
 
                 QPen pen = vibesDefaults.pen(jsonValue("EdgeColor"));
-                QBrush brush = vibesDefaults.brush(jsonValue("EdgeColor"));
+                QBrush brush = vibesDefaults.brush(jsonValue("FaceColor"));
                 // Handle lineStyle
                 if (json.contains("LineStyle"))
                 {
