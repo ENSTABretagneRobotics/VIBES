@@ -27,6 +27,10 @@ vibes.drawPie([5,2], [1,2], [160, 220], 'g[y]')
 
 
 vibes.newFigure("test2")
+vibes.setFigureProperties({'x':0, 'y':0, 'width':600, 'height':600})
+
+# vibes.axisLimits(10,20,10,20)
+vibes.axisLabels("titi", "toto")
 # vibes.drawBox(-1,0,-4,-6,color='[r]', figure='test2')
 
 # vibes.selectFigure("test")
@@ -35,6 +39,15 @@ vibes.newFigure("test2")
 # vibes.saveImage('./test.svg', "test")
 # vibes.closeFigure("test2")
 
-vibes.test()
+# vibes.drawBoxDiff([11, 13, 11, 24], [12,12.5, 11, 13], 'b[r]')
+
+vibes.drawArrow([9, 9], [9, 10], 0.3, '[r]')
+vibes.drawArrow([9, 9], [10, 9], 0.3, '[r]')
+
+vibes.drawPolygon([[1,1], [1,4], [5,2], [5, 1]])
+vibes.drawRing(2,2,3,4)
+vibes.drawPoint(2,2)
+vibes.axisEqual()
+# vibes.test()
 vibes.endDrawing()
 
