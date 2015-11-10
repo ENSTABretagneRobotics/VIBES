@@ -411,7 +411,7 @@ namespace vibes {
   #endif //#ifdef _IBEX_INTERVAL_H_
   #ifdef __IBEX_INTERVAL_VECTOR_H__
     VIBES_FUNC_COLOR_PARAM_1(drawBox,const ibex::IntervalVector &,box);
-	  VIBES_FUNC_COLOR_PARAM_1(drawBoxes, const std::vector<ibex::IntervalVector> &, boxes);
+    VIBES_FUNC_COLOR_PARAM_1(drawBoxes, const std::vector<ibex::IntervalVector> &, boxes);
   #endif //#ifdef __IBEX_INTERVAL_VECTOR_H__
 
 
@@ -476,18 +476,18 @@ namespace vibes {
         drawBox(box[0], box[1], params);
     }
     inline void drawBoxes(const std::vector<ibex::IntervalVector> &boxes, Params params){
-		  std::vector<std::vector<double> > bounds;
-		  for(unsigned int i=0;i<boxes.size();i++)
-		  {
-		  	std::vector<double> boundsI;
-		  	boundsI.push_back(boxes[i][0].lb());
-		  	boundsI.push_back(boxes[i][0].ub());
-		  	boundsI.push_back(boxes[i][1].lb());
-		  	boundsI.push_back(boxes[i][1].ub());
-		  	bounds.push_back(boundsI);
-		  }
-		  vibes::drawBoxes(bounds, params);
-	  }
+        std::vector<std::vector<double> > bounds;
+        for(unsigned int i=0;i<boxes.size();i++)
+	{
+	    std::vector<double> boundsI;
+	    boundsI.push_back(boxes[i][0].lb());
+	    boundsI.push_back(boxes[i][0].ub());
+	    boundsI.push_back(boxes[i][1].lb());
+	    boundsI.push_back(boxes[i][1].ub());
+	    bounds.push_back(boundsI);
+	}
+	vibes::drawBoxes(bounds, params);
+    }
   #endif //#ifdef __IBEX_INTERVAL_VECTOR_H__
 }
 
