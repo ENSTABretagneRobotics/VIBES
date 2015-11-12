@@ -115,7 +115,7 @@ run: $(INSTALLED_PACKAGE)
 .PHONY: clean
 
 clean:
-	rm -f \
+	rm -rf \
 		"$(PACKAGE)-*.tar" \
 		"$(PACKAGE)-*.tar.gz" \
 		"$(HTML_DIR)" \

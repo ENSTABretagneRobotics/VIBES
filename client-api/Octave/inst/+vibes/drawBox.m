@@ -19,9 +19,12 @@
 ## -*- texinfo -*-
 ## @documentencoding UTF-8
 ## @deftypefn  {Function File} {} vibes.drawBox (@var{box})
-## Plot a single box with pairs of lower bounds and upper bounds.  The matrix
-## @var{box} must be of size either @option{[2 @var{n}]} or
+## Plot a single box with pairs of lower bounds and upper bounds.
+##
+## The matrix @var{box} must be of size either @option{[2 @var{n}]} or
 ## @option{[@var{n} 2]}, where @var{n} is the number of axes.
+##
+## Alternatively @var{box} may be an interval vector.
 ## @end deftypefn
 ##
 ## @deftypefn  {Function File} {} vibes.drawBox (@var{x_lb}, @var{x_ub}, @var{y_lb}, @var{y_ub})
@@ -40,6 +43,22 @@ function drawBox (varargin)
 
 if (nargin == 0)
     print_usage ();
+endif
+
+if (any (isa (varargin{1}, {'infsup', 'intval'})))
+    varargin{1} = horzcat (vec (inf (varargin{1})), ...
+                           vec (sup (varargin{1})));
+    ## Stack multiple intervals into a common box
+    for i = 2 : nargin
+        if (any (isa (varargin{2}, {'infsup', 'intval'})))
+            varargin = {vertcat(varargin{1}, ...
+                                horzcat (vec (inf (varargin{2})), ...
+                                         vec (sup (varargin{2})))), ...
+                        varargin{3:end}};
+        else
+            break
+        endif
+    endfor
 endif
 
 __vibes__ ('drawBox', varargin{:});

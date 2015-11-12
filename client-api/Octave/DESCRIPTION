@@ -17,6 +17,7 @@ Description: VIBes is a visualization system that aims at providing people
  program to communicate with the viewer in order to draw figures.
  
  This package integrates the VIBes API into Octave. The VIBes application
- is required for operation and must be installed seperately.
+ is required for operation and must be installed seperately. Data types from
+ third-party interval arithmetic libraries for Octave are also supportd.
 Depends: octave (>= 4.0.0)
 License: GPLv3+
