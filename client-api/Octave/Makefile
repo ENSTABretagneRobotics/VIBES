@@ -43,8 +43,8 @@ $(RELEASE_TARBALL): ../../.git/index
 	@# The C++ API must be bundled
 	@(cd ../C++/; git archive --output="$(shell pwd)/$(PACKAGE)-deps.tar" --prefix="$(PACKAGE)-$(VERSION)/" HEAD src)
 	@tar --concatenate --file="$(PACKAGE)-$(VERSION).tar" "$(PACKAGE)-deps.tar"
-	@$(GZIP) --best -f -k "$(PACKAGE)-$(VERSION).tar"
-	@rm "$(PACKAGE)-$(VERSION).tar" "$(PACKAGE)-deps.tar"
+	@$(GZIP) --best -f "$(PACKAGE)-$(VERSION).tar"
+	@rm -f "$(PACKAGE)-$(VERSION).tar" "$(PACKAGE)-deps.tar"
 
 ##
 ## Local Install Process
