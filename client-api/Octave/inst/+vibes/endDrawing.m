@@ -26,6 +26,7 @@
 ## vibes.endDrawing
 ## @end group
 ## @end example
+## @end deftypefn
 function endDrawing ()
 
 if (nargin != 0)

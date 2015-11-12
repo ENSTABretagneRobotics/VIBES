@@ -21,10 +21,10 @@
 ## @deftypefn  {Function File} {} vibes.axisLabels (@var{label1}, @var{label2}, @dots{})
 ## @deftypefnx  {Function File} {} vibes.axisLabels (@{@var{label1}, @var{label2}, @dots{}@})
 ## Set axis labels for the current VIBes figure.
+## @end deftypefn
 ##
-## @deftypefnx  {Function File} {} vibes.axisLabels (@{@var{label1}, @var{label2}, @dots{}@}, @var{figure})
+## @deftypefn  {Function File} {} vibes.axisLabels (@{@var{label1}, @var{label2}, @dots{}@}, @var{figure})
 ## Set axis labels for given VIBes figure.
-##
 ## @end deftypefn
 function axisLabels (varargin)
 

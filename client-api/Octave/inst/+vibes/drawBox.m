@@ -22,15 +22,18 @@
 ## Plot a single box with pairs of lower bounds and upper bounds.  The matrix
 ## @var{box} must be of size either @option{[2 @var{n}]} or
 ## @option{[@var{n} 2]}, where @var{n} is the number of axes.
+## @end deftypefn
 ##
-## @deftypefnx  {Function File} {} vibes.drawBox (@var{x_lb}, @var{x_ub}, @var{y_lb}, @var{y_ub})
-## @deftypefnx  {Function File} {} vibes.drawBox (@var{x_lb}, @var{x_ub}, @var{y_lb}, @var{y_ub}, @var{z_lb}, @var{z_ub})
+## @deftypefn  {Function File} {} vibes.drawBox (@var{x_lb}, @var{x_ub}, @var{y_lb}, @var{y_ub})
+## @deftypefnx {Function File} {} vibes.drawBox (@var{x_lb}, @var{x_ub}, @var{y_lb}, @var{y_ub}, @var{z_lb}, @var{z_ub})
 ## Plot a single box.
+## @end deftypefn
 ##
-## @deftypefnx  {Function File} {} vibes.drawBox (@dots{}, 'figure', @var{name})
+## @deftypefn  {Function File} {} vibes.drawBox (@dots{}, 'figure', @var{name})
 ## Do the plotting inside a given VIBes figure
+## @end deftypefn
 ##
-## @deftypefnx  {Function File} {} vibes.drawBox (@dots{}, @var{format})
+## @deftypefn  {Function File} {} vibes.drawBox (@dots{}, @var{format})
 ## Customize the plotting using VIBes format strings.
 ## @end deftypefn
 function drawBox (varargin)

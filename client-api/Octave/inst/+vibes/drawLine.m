@@ -20,11 +20,13 @@
 ## @documentencoding UTF-8
 ## @deftypefn  {Function File} {} vibes.drawLine (@var{points})
 ## Plot a line with coordinate points given as rows of a matrix.
+## @end deftypefn
 ##
 ## @deftypefn  {Function File} {} vibes.drawLine (@dots{}, 'figure', @var{name})
 ## Do the plotting inside a given VIBes figure
+## @end deftypefn
 ##
-## @deftypefnx  {Function File} {} vibes.drawLine (@dots{}, @var{format})
+## @deftypefn   {Function File} {} vibes.drawLine (@dots{}, @var{format})
 ## Customize the plotting using VIBes format strings.
 ## @end deftypefn
 function drawLine (varargin)
