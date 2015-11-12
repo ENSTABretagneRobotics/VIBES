@@ -19,13 +19,13 @@ install:
  - if [ $TRAVIS_OS_NAME == linux ]; then sudo sh /tmp/cmake-2.8.12.1-Linux-i386.sh --prefix=/usr/local/ --exclude-subdir --skip-license; fi
 
 before_script:
- - cd viewer
- - mkdir build
- - cd build
+ - mkdir -p viewer/build
  - cmake --version
- - cmake ../
+ - (cd viewer/build && cmake ..)
 
-script: make
+script:
+ - make -C viewer/build
+ - make -C client-api/Octave
 
 os:
  - linux
