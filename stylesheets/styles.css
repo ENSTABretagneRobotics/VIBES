@@ -99,6 +99,11 @@ header {
   width:270px;
   float:left;
   position:fixed;
+  
+  background-image: url(vibes_128.png);
+  background-position: right top;
+  background-repeat: no-repeat;
+  background-size: 96px;
 }
 
 header ul {
@@ -198,6 +203,9 @@ footer {
   
   header {
     padding-right:320px;
+    
+    background-position: right bottom;
+	background-size: 128px;
   }
   
   section {
@@ -225,6 +233,9 @@ footer {
   
   header {
     padding:0;
+    
+    background-position: right top;
+	background-size: 96px;
   }
   
   header ul, header p.view {
