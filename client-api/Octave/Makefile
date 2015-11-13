@@ -20,8 +20,8 @@ SHELL = /bin/sh
 
 CUT ?= cut
 PACKAGE = $(shell grep "^Name: " DESCRIPTION | $(CUT) -f2 -d" ")
-VERSION = $(shell grep "^Version: " DESCRIPTION | $(CUT) -f2 -d" ")
-DATE = $(shell grep "^Date: " DESCRIPTION | $(CUT) -f2 -d" ")
+VERSION = $(shell grep "^/// \\\\version " ../C++/src/vibes.h | $(CUT) -f3 -d" " | sed -e "s/[^0-9.]//g")
+DATE = $(shell date "+%Y-%m-%d")
 
 ##
 ## Release Process
@@ -44,6 +44,8 @@ $(RELEASE_TARBALL): ../../.git/index
 		(cd "$(PACKAGE)-bundle" && tar xf -)
 	@(cd ../C++/; git archive --format=tar --prefix="$(PACKAGE)-$(VERSION)/" HEAD src) | \
 		(cd "$(PACKAGE)-bundle" && tar xf -)
+	@sed -i -e "s/%VERSION%/$(VERSION)/" "$(PACKAGE)-bundle/$(PACKAGE)-$(VERSION)/DESCRIPTION"
+	@sed -i -e "s/%DATE%/$(DATE)/" "$(PACKAGE)-bundle/$(PACKAGE)-$(VERSION)/DESCRIPTION"
 	@(cd "$(PACKAGE)-bundle" && tar czf "../$@" "$(PACKAGE)-$(VERSION)")
 
 ##
