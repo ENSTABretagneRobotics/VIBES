@@ -37,14 +37,14 @@ dist: $(RELEASE_TARBALL)
 
 $(RELEASE_TARBALL): ../../.git/index
 	@echo "Creating package release ..."
-	@# Export the current subdir of the source repository
-	@# This is only the Octave API
-	@git archive --output="$(PACKAGE)-$(VERSION).tar" --prefix="$(PACKAGE)-$(VERSION)/" HEAD
 	@# The C++ API must be bundled
-	@(cd ../C++/; git archive --output="$(shell pwd)/$(PACKAGE)-deps.tar" --prefix="$(PACKAGE)-$(VERSION)/" HEAD src)
-	@tar --concatenate --file="$(PACKAGE)-$(VERSION).tar" "$(PACKAGE)-deps.tar"
-	@$(GZIP) --best -f "$(PACKAGE)-$(VERSION).tar"
-	@rm -f "$(PACKAGE)-$(VERSION).tar" "$(PACKAGE)-deps.tar"
+	@rm -rf "$(PACKAGE)-bundle"
+	@mkdir -p "$(PACKAGE)-bundle"
+	@git archive --format=tar --prefix="$(PACKAGE)-$(VERSION)/" HEAD | \
+		(cd "$(PACKAGE)-bundle" && tar xf -)
+	@(cd ../C++/; git archive --format=tar --prefix="$(PACKAGE)-$(VERSION)/" HEAD src) | \
+		(cd "$(PACKAGE)-bundle" && tar xf -)
+	@(cd "$(PACKAGE)-bundle" && tar czf "../$@" "$(PACKAGE)-$(VERSION)")
 
 ##
 ## Local Install Process
@@ -116,10 +116,10 @@ run: $(INSTALLED_PACKAGE)
 
 clean:
 	rm -rf \
-		"$(PACKAGE)-*.tar" \
-		"$(PACKAGE)-*.tar.gz" \
+		$(PACKAGE)-*.tar.gz \
+		"$(PACKAGE)-bundle" \
 		"$(HTML_DIR)" \
 		"$(HTML_TARBALL)" \
 		"fntests.log" \
-		"octave-*"
+		octave-*
 

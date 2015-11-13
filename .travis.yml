@@ -28,6 +28,7 @@ before_script:
 
 script:
  - make -C viewer/build
+ - make -C client-api/Octave
  - if [ $TRAVIS_OS_NAME == linux ]; then make -C client-api/Octave install; fi
 
 after_success:
