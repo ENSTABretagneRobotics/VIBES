@@ -88,8 +88,13 @@ $(HTML_TARBALL): $(INSTALLED_PACKAGE)
 		--eval "end_try_catch;"
 	@$(OCTAVE) --no-gui --silent \
 		--eval "pkg load generate_html;" \
-		--eval "options = get_html_options ('octave-forge');" \
+		--eval "options = get_html_options ('octave');" \
+		--eval "options.overview_title = 'VIBes Client API for Octave';" \
+		--eval "options.css = '/sylesheets/style.css';" \
+		--eval "options.header = '<!DOCTYPE html><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=%charset\"/><title>VIBes Client API for Octave - %title</title><link rel=\"stylesheet\" href=\"%css\"/><style type=\"text/css\">h3.category {margin-top: 2em}</style></head><body><h1>%title</h1>';" \
+		--eval "options.footer = '</body></html>';" \
 		--eval "generate_package_html ('$(PACKAGE)', '$(HTML_DIR)', options)"
+	@mv "$(HTML_DIR)/$(PACKAGE)" "$(HTML_DIR)/octave-api"
 	@tar --create --auto-compress --file "$@" "$(HTML_DIR)"
 
 md5:  $(RELEASE_TARBALL) $(HTML_TARBALL)
