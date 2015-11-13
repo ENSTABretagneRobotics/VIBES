@@ -38,3 +38,16 @@ endif
 __vibes__ ('drawLine', varargin{:});
 
 endfunction
+
+%!shared x
+%! vibes.beginDrawing
+%! x = [ 0 0 ; ...
+%!       1 1 ; ...
+%!       2 2 ];
+%!test vibes.drawLine (x)
+%!test vibes.drawLine (x, 'figure', 'foo')
+%!test vibes.drawLine (x, 'red')
+%!test vibes.drawLine (x, 'figure', 'bar', 'blue')
+%!test vibes.drawLine (x, 'green', 'figure', 'baz')
+%!shared
+%! vibes.endDrawing

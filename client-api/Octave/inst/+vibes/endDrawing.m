@@ -36,3 +36,8 @@ endif
 __vibes__ ('endDrawing');
 
 endfunction
+
+%!test
+%! vibes.beginDrawing
+%! vibes.endDrawing
+%!warning vibes.endDrawing

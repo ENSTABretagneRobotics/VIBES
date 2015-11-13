@@ -60,3 +60,13 @@ switch (nargin)
 endswitch
 
 endfunction
+
+%!test
+%! vibes.beginDrawing
+%! vibes.endDrawing
+%!warning vibes.beginDrawing; vibes.beginDrawing; vibes.endDrawing
+%!test
+%! vibes.beginDrawing ('.vibes-custom.json')
+%! assert (exist ('.vibes-custom.json', 'file'))
+%! vibes.endDrawing
+%! delete ('.vibes-custom.json')

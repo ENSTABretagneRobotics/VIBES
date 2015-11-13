@@ -1,6 +1,6 @@
 vibes-*.tar.gz
 vibes-bundle/**
 vibes-html/**
-fntest.log
+fntests.log
 octave-*
 

@@ -34,3 +34,11 @@ switch (nargin)
 endswitch
 
 endfunction
+
+%!shared
+%! vibes.beginDrawing
+%!test vibes.newFigure
+%!test vibes.newFigure ('Foobar')
+%!test vibes.newFigure
+%!shared
+%! vibes.endDrawing

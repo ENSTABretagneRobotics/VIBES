@@ -35,3 +35,11 @@ endif
 __vibes__ ('axisLabels', varargin{:});
 
 endfunction
+
+%!shared
+%! vibes.beginDrawing
+%!test vibes.axisLabels ('x', 'y', 'z')
+%!test vibes.axisLabels ({'x', 'y', 'z'})
+%!test vibes.axisLabels ({'a', 'b', 'c'}, 'alphabet')
+%!shared
+%! vibes.endDrawing

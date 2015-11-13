@@ -64,3 +64,53 @@ endif
 __vibes__ ('drawBox', varargin{:});
 
 endfunction
+
+%!shared x,y,z
+%! vibes.beginDrawing
+%! x = [ 0  2 ; ...
+%!       7 22 ];
+%! y = [ 1 2 3 4 ; ...
+%!       2 3 4 5 ];
+%! z = [ 1 2 ; ...
+%!       3 4 ; ...
+%!       5 6 ; ...
+%!       7 8 ];
+%!test vibes.drawBox (x)
+%!test vibes.drawBox (y)
+%!test vibes.drawBox (z)
+%!test vibes.drawBox (-1, 0, 1, 2)
+%!test vibes.drawBox (-1, 0, 1, 2, 4, 5)
+%!shared
+%! vibes.endDrawing
+
+%!shared ix,iy,iz,dx,dy,dz,rx,ry,rz
+%! pkg load interval
+%! vibes.beginDrawing
+%! x = [ 0  2 ; ...
+%!       7 22 ];
+%! y = [ 1 2 3 4 ; ...
+%!       2 3 4 5 ];
+%! z = [ 1 2 ; ...
+%!       3 4 ; ...
+%!       5 6 ; ...
+%!       7 8 ];
+%! ix = infsup (x)
+%! iy = infsup (y)
+%! iz = infsup (z)
+%! dx = infsupdec (x)
+%! dy = infsupdec (y)
+%! dz = infsupdec (z)
+%! rx = infsup (x, x + 100)
+%! ry = infsup (y, y + 100)
+%! rz = infsup (z, z + 100)
+%!test vibes.drawBox (ix)
+%!test vibes.drawBox (iy)
+%!test vibes.drawBox (iz)
+%!test vibes.drawBox (dx)
+%!test vibes.drawBox (dy)
+%!test vibes.drawBox (dz)
+%!test vibes.drawBox (rx)
+%!test vibes.drawBox (ry)
+%!test vibes.drawBox (rz)
+%!shared
+%! vibes.endDrawing

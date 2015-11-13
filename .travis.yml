@@ -15,7 +15,7 @@ install:
 # 32 bit compatibility (since CMake is a 32 bit bin)
  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install -qq libc6:i386; fi
 # Install Octave for test of client API
- - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install -qq octave liboctave-dev; fi
+ - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install -qq octave liboctave-dev libmpfr-dev; fi
 # Install CMake bin (32 bit)
  - if [ $TRAVIS_OS_NAME == linux ]; then wget --no-check-certificate -P /tmp http://www.cmake.org/files/v2.8/cmake-2.8.12.1-Linux-i386.sh; fi
  - if [ $TRAVIS_OS_NAME == linux ]; then chmod +rx /tmp/cmake-2.8.12.1-Linux-i386.sh; fi
@@ -29,7 +29,7 @@ before_script:
 script:
  - make -C viewer/build
  - make -C client-api/Octave
- - if [ $TRAVIS_OS_NAME == linux ]; then make -C client-api/Octave install; fi
+ - if [ $TRAVIS_OS_NAME == linux ]; then make -C client-api/Octave check; fi
 
 after_success:
  - if [ $TRAVIS_OS_NAME == linux ]; then make -C client-api/Octave html; fi

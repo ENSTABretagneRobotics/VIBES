@@ -30,3 +30,8 @@ endif
 __vibes__ ('axisAuto');
 
 endfunction
+
+%!test
+%! vibes.beginDrawing
+%! vibes.axisAuto
+%! vibes.endDrawing

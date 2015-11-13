@@ -105,15 +105,38 @@ md5:  $(RELEASE_TARBALL) $(HTML_TARBALL)
 ##
 ## Testing Process
 ##
-## Interactive shell with the package installed and loaded
+## Interactive shell with the package installed and loaded /
+## Non-interactive processing of integrated unit tests
 ##
 
-.PHONY: run
+.PHONY: run check
+PUBLIC_FUNCTIONS = $(patsubst inst/%.m,%,$(wildcard inst/+vibes/*.m))
 
 run: $(INSTALLED_PACKAGE)
 	@echo "Run GNU Octave with the development version of the package"
 	@$(OCTAVE) --no-gui --silent --eval "pkg load $(PACKAGE)" --persist
 	@echo
+
+check: $(INSTALLED_PACKAGE)
+	@echo "Testing package in GNU Octave ..."
+	@# Make sure that the interval package is present, some tests depend on this
+	@$(OCTAVE) --no-gui --silent \
+		--eval "try;" \
+		--eval "temp = pkg ('describe', 'interval');" \
+		--eval "catch;" \
+		--eval "pkg ('install', '-forge', 'interval');" \
+		--eval "end_try_catch;"
+	@rm -f ~/.vibes.json
+	@$(OCTAVE) --no-gui --silent \
+		--eval "pkg load $(PACKAGE);" \
+		--eval "success = true;" \
+		--eval "targets = strsplit ('$(PUBLIC_FUNCTIONS)', ' ');" \
+		--eval "for target = targets;" \
+		--eval "[n, nmax] = test (target{1}, 'verbose');" \
+		--eval "success &= (n == nmax);" \
+		--eval "endfor;" \
+		--eval "exit (not (success));"
+	@cat ~/.vibes.json
 
 ##
 ## Cleanup
