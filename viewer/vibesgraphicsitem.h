@@ -17,9 +17,32 @@ class VibesDefaults {
     QHash<QString, QBrush> _brushes;
     QHash<QString, QPen> _pens;
 public:
-    static const VibesDefaults & instance() { return _instance; }
-    const QBrush brush(const QString & name = QString()) const { return _brushes[name]; }
-    const QPen pen(const QString & name = QString()) const { return _pens[name]; }
+    static VibesDefaults & instance() { return _instance; }
+
+    const QColor parseColorName(const QString& name){
+        Q_ASSERT(name.size() == 7 || name.size() == 9);
+        // Suported format #RRGGBB and #RRGGBBAA
+        QColor color;
+        color.setNamedColor(name.mid(0,7));
+        // if len of name > 7 the 2 last caracters are the alpha value
+        if(name.size() > 7){
+            color.setAlpha(name.mid(7,2).toUInt(0,16));
+        }
+        return color;
+    }
+    const QBrush brush(const QString & name = QString()) {
+        if( !_brushes.contains(name)){
+            _brushes[name] = QBrush(parseColorName(name));
+        }
+        return _brushes[name];
+    }
+
+    const QPen pen(const QString & name = QString()) {
+        if( !_pens.contains(name)){
+            _pens[name] = QPen(parseColorName(name),0);
+        }
+        return _pens[name];
+    }
 private:
     VibesDefaults();
     static VibesDefaults _instance;
@@ -43,17 +66,19 @@ public:
            VibesGraphicsEllipseType,
            VibesGraphicsPolygonType,
            VibesGraphicsArrowType,
+           VibesGraphicsPointType,
+           VibesGraphicsPieType,
+           VibesGraphicsRingType,
            // Complex types based on primitive types
            VibesGraphicsVehicleType,
            VibesGraphicsVehicleAUVType,
            // List based types
-           //VibesGraphicsPointsType,
            VibesGraphicsLineType,
            VibesGraphicsBoxesType,
            VibesGraphicsBoxesUnionType,
+           VibesGraphicsPointsType,
            // Do not remove the following value! It signals the end of VibesGraphicsItem types
-           VibesGraphicsLastType,
-           VibesGraphicsPieType
+           VibesGraphicsLastType
          };
     // Constructor
     VibesGraphicsItem(QGraphicsItem * qGraphicsItem);
@@ -271,6 +296,35 @@ class VibesGraphicsPie : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsPie, QGraphicsItemGroup)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("center","rho", "theta")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// A Point
+class VibesGraphicsPoint : public QGraphicsEllipseItem, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsPoint, QGraphicsEllipseItem)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("point");
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// A group of points
+class VibesGraphicsPoints : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsPoints, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("centers")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+class VibesGraphicsRing : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsRing, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("center","rho")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);

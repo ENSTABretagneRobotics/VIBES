@@ -297,6 +297,14 @@ namespace vibes {
   /// Draw a 2-D line from the list of abscissae \a x and the list of ordinates \a y
   VIBES_FUNC_COLOR_PARAM_2(drawLine,const std::vector<double> &,x, const std::vector<double> &,y)
   
+  // Draw a N-D set of points
+  //VIBES_FUNC_COLOR_PARAM_1(drawPoints,const std::vector< std::vector<double> > &,points)
+  //VIBES_FUNC_COLOR_PARAM_2(drawPoints,const std::vector< std::vector<double> > &,points, const std::vector<double> &,colorLevels)
+  //VIBES_FUNC_COLOR_PARAM_3(drawPoints,const std::vector< std::vector<double> > &,points, const std::vector<double> &,colorLevels, const std::vector<double>&,radiuses)
+  VIBES_FUNC_COLOR_PARAM_2(drawPoints,const std::vector<double> &,x, const std::vector<double> &,y)
+  //VIBES_FUNC_COLOR_PARAM_3(drawPoints,const std::vector<double> &,x, const std::vector<double> &,y, const std::vector<double> &,colorLevels)          
+  //VIBES_FUNC_COLOR_PARAM_4(drawPoints,const std::vector<double> &,x, const std::vector<double> &,y, const std::vector<double> &,colorLevels, const std::vector<double>&,radiuses)          
+          
   /// Draw a 2-D arrow from (xA,yA) to (xB,yB)
   VIBES_FUNC_COLOR_PARAM_5(drawArrow,const double &,xA, const double &,yA, const double &,xB, const double &,yB, const double &,tip_length)
   /// Draw a N-D arrow from the list of coordinates \a points in the form ((x_1, y_1, z_1, ...), (x_2, y_2, z_2, ...), ...)
@@ -323,6 +331,17 @@ namespace vibes {
   VIBES_FUNC_COLOR_PARAM_6(drawPie, const double &,cx, const double &,cy, 
                                        const double &,r_min, const double &,r_max, 
                                        const double &,theta_min, const double &,theta_max)
+          
+  /// Draw a Point at position (cy, cy)
+  VIBES_FUNC_COLOR_PARAM_2(drawPoint, const double &,cx, const double &,cy)
+          
+  /// Draw a Point at position (cy, cy)
+  VIBES_FUNC_COLOR_PARAM_3(drawPoint, const double &,cx, const double &,cy, const double &,radius)
+          
+  /// Draw a ring at position (cx, cy) with radius between (r_min, r_max)
+  VIBES_FUNC_COLOR_PARAM_4(drawRing, const double &,cx, const double &,cy,
+                                        const double &,r_min, const double &,r_max)
+          
   /// @}
   /// @name Objects grouping and deletion
   /// @{
@@ -392,6 +411,7 @@ namespace vibes {
   #endif //#ifdef _IBEX_INTERVAL_H_
   #ifdef __IBEX_INTERVAL_VECTOR_H__
     VIBES_FUNC_COLOR_PARAM_1(drawBox,const ibex::IntervalVector &,box);
+    VIBES_FUNC_COLOR_PARAM_1(drawBoxes, const std::vector<ibex::IntervalVector> &, boxes);
   #endif //#ifdef __IBEX_INTERVAL_VECTOR_H__
 
 
@@ -454,6 +474,19 @@ namespace vibes {
   /// \todo N-dimensionanl Ibex Inteval vector support
     inline void drawBox(const ibex::IntervalVector &box, Params params) {
         drawBox(box[0], box[1], params);
+    }
+    inline void drawBoxes(const std::vector<ibex::IntervalVector> &boxes, Params params){
+        std::vector<std::vector<double> > bounds;
+        for(unsigned int i=0;i<boxes.size();i++)
+	{
+	    std::vector<double> boundsI;
+	    boundsI.push_back(boxes[i][0].lb());
+	    boundsI.push_back(boxes[i][0].ub());
+	    boundsI.push_back(boxes[i][1].lb());
+	    boundsI.push_back(boxes[i][1].ub());
+	    bounds.push_back(boundsI);
+	}
+	vibes::drawBoxes(bounds, params);
     }
   #endif //#ifdef __IBEX_INTERVAL_VECTOR_H__
 }
