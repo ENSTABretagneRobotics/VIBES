@@ -215,6 +215,13 @@ class vibes(object):
 
     @classmethod
     def drawLine(cls, points, color='r', **kwargs):
+        """
+        Draw a N-D line from the list of coordinates 
+        Parameters
+        ----------
+            points : list of list 
+                [[x_1, y_1, z_1, ...], [x_2, y_2, z_2, ...], ...]
+        """
         msg = {'action': 'draw',
                'shape': {'type': 'line',
                          'points': points,
@@ -225,6 +232,20 @@ class vibes(object):
 
     @classmethod
     def drawEllipse(cls, cx, cy, a, b, rot, angles=[0, 360], color='r', **kwargs):
+        """
+        Draw an ellipse centered at (cx, cy), with semi-major and minor axes a and b, 
+        and rotated by \a rot degrees
+        Parameters
+        ----------
+            cx,cy : double
+                center of the ellipse
+            a, b : double
+                semi-major and minar axes
+            rot : double !!! need to be in degree !!!
+                direction of the semi-major axis
+            angles: [ double, double]
+                starting and ending angle of the Ellispe 
+        """
         msg = {'action': 'draw',
                'shape': {'type': 'ellipse',
                          'center': [cx, cy],
@@ -238,10 +259,30 @@ class vibes(object):
 
     @classmethod
     def drawCircle(cls, cx, cy, R, color='r', **kwargs):
+        """
+        Draw a circle centered at (cx, cy), with radius r
+        Parameters
+        ---------
+            cx, cy : double
+                center of the circle
+            r : double
+                raduis
+        """
         cls.drawEllipse(cx, cy, R, R, 0, color=color, **kwargs)
 
     @classmethod
     def drawVehicle(cls, cx, cy, length, oritentation, color='r', **kwargs):
+        """
+        Draw a vehicle centered at (cx, cy) with heading <heading> and size length
+        Parameters
+        ----------
+            cx, cy : double
+                position of the vehicle
+            heading : double !!! need to be in degree !!!
+                heading of the vehicle
+            lenght: double
+                length of the vehicle
+        """
         msg = {'action': 'draw',
                'shape': {'type': 'vehicle',
                          'center': [cx, cy],
@@ -254,6 +295,17 @@ class vibes(object):
 
     @classmethod
     def drawAUV(cls, cx, cy, oritentation, length, color='r', **kwargs):
+        """
+        Draw a AUV centered at (cx, cy) with heading <heading> and size length
+        Parameters
+        ----------
+            cx, cy : double
+                position of the AUV
+            heading : double !!! need to be in degree !!!
+                heading of the vehicle
+            lenght: double
+                length of the vehicle
+        """
         msg = {'action': 'draw',
                'shape': {'type': 'vehicle_auv',
                          'center': [cx, cy],
@@ -266,6 +318,19 @@ class vibes(object):
 
     @classmethod
     def drawPie(cls, center, rho, theta, color='r', use_radian=False, **kwargs):
+        """
+        Draw a Pie centered at <center> with raduis in <rho> and angle in <theta>
+        Parameters
+        ----------
+            center: [double, double]
+                center of the Pie
+            rho : [double, double]
+                minimal and maximal radius
+            theta: [double, double] (in degree)
+                minimal and maximal angle
+            use_radian : boolean
+                if True theta is in radian
+        """
         msg = {'action': 'draw',
                'shape': {'type': 'pie',
                          'center': [center[0], center[1]],
@@ -278,6 +343,17 @@ class vibes(object):
 
     @classmethod
     def drawArrow(cls, A, B, tip_length, color='r', **kwargs):
+        """
+        Draw an Arrow between A and B
+        Parameters
+        ----------
+            A : [double, double]
+                starting point (ax, ay)
+            B : [double, double]
+                ending point (bx, by)
+            tip_length:
+                length of the tip
+        """
         msg = {'action': 'draw',
                'shape': {'type': 'arrow',
                          'points': [A, B],
@@ -289,7 +365,7 @@ class vibes(object):
 
     @classmethod
     def drawPolygon(cls, points, color='r', **kwargs):
-        '''
+        """
         Draw a Polygon defined by <points>
         Parameters
         ----------
@@ -299,11 +375,46 @@ class vibes(object):
                 color used for drawing
             figure: string, optional
                 figure on which the shape will be draw
-    	  '''
+    	  """
         msg = {'action': 'draw',
                'shape': {'type': 'polygon',
                          'bounds': points,
                          'format': color
                          }
               }
+        cls.write(msg, **kwargs)
+
+    @classmethod
+    def drawPoint(cls, cx, cy, color='r', **kwargs):
+        """
+        Draw a Point at position (cy, cy)
+        """
+        msg = json.dumps({'action': 'draw',
+                          'figure': '%s' % (figure if figure != None else cls.current_fig),
+                          'shape': {'type': 'point',
+                                    'point': [cx, cy],
+                                    'radius' : 3,
+                                    'format': color
+                                    }
+                          },  sort_keys=False)  # indent=4, separators=(',', ': '),)
+        cls.write(msg, **kwargs)
+    @classmethod
+    def drawRing(cls, cx, cy, r_min, r_max, color='r', **kwargs):
+        """
+        Draw a ring at position (cx, cy) with radius between (r_min, r_max)
+        Parameters
+        ----------
+            cx, cy : double
+                center if the ring
+            r_min, r_max: double
+                bound of the radius in degree
+        """
+        msg = json.dumps({'action': 'draw',
+                          'figure': '%s' % (figure if figure != None else cls.current_fig),
+                          'shape': {'type': 'ring',
+                                    'center': [cx, cy],
+                                    'rho': [r_min, r_max],
+                                    'format': color
+                                    }
+                          },  sort_keys=False)  # indent=4, separators=(',', ': '),)
         cls.write(msg, **kwargs)
