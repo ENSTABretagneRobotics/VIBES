@@ -24,7 +24,7 @@ class vibes(object):
             msg = json.dumps(msg)
             cls.channel.write(msg + '\n\n')
             cls.channel.flush()
-        print(msg)
+        # print(msg)
 
     ##########################################################################
     ##				Management of connection to the Vibes server			##
@@ -190,7 +190,7 @@ class vibes(object):
                         'format': color
                         }
                }
-        cls.write(msg,kwargs)
+        cls.write(msg,**kwargs)
 
     @classmethod
     def drawBoxesUnion(cls, boxes_bounds, color='r', **kwargs):
