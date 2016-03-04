@@ -69,7 +69,7 @@ class vibes(object):
         msg = {'action': 'set',
                'properties': properties
               }
-        cls.write(msg, kwargs)
+        cls.write(msg, **kwargs)
 
     @classmethod
     def clearFigure(cls, **kwargs):
@@ -314,7 +314,7 @@ class vibes(object):
                          'format': color
                          }
               }
-        cls.write(msg, kwargs)
+        cls.write(msg, **kwargs)
 
     @classmethod
     def drawPie(cls, center, rho, theta, color='r', use_radian=False, **kwargs):
