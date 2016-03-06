@@ -5,12 +5,17 @@
 #include <QJsonObject>
 #include <QJsonValue>
 
+#include <QGraphicsSceneContextMenuEvent>
+
 //#include <QBitArray>
 #include "vibesscene2d.h"
 
 // VibesDefaults includes
 #include <QHash>
 #include <QPen>
+
+//
+#include <QGraphicsSimpleTextItem>
 
 // Singleton class to hold Vibes defaults and constants
 class VibesDefaults {
@@ -77,6 +82,7 @@ public:
            VibesGraphicsBoxesType,
            VibesGraphicsBoxesUnionType,
            VibesGraphicsPointsType,
+           VibesGraphicsTextType,
            // Do not remove the following value! It signals the end of VibesGraphicsItem types
            VibesGraphicsLastType
          };
@@ -328,6 +334,16 @@ class VibesGraphicsRing : public QGraphicsItemGroup, public VibesGraphicsItem
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
+};
+
+class VibesGraphicsText : public QGraphicsSimpleTextItem, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsText, QGraphicsSimpleTextItem)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("position","text")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 };
 
 #endif // VIBESGRAPHICSITEM_H
