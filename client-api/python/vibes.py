@@ -17,7 +17,7 @@ class vibes(object):
         else:
             print(kwargs.pop('figure', cls.current_fig))
             msg['figure'] = kwargs.pop('figure', cls.current_fig)
-            print(msg)
+            # print(msg)
             if 'shape' in msg:
                 # print("found shape", kwargs)
                 for k, v in kwargs.items():    
@@ -98,12 +98,12 @@ class vibes(object):
     ##########################################################################
 
     @classmethod
-    def axisAuto(cls, figure=''):
-        cls.setFigureProperties({"viewbox": "auto"}, figure=figure)
+    def axisAuto(cls, **kwargs):
+        cls.setFigureProperties({"viewbox": "auto"}, **kwargs)
 
     @classmethod
-    def axisEqual(cls, figure=''):
-        cls.setFigureProperties({"viewbox": "equal"}, figure=figure)
+    def axisEqual(cls, **kwargs):
+        cls.setFigureProperties({"viewbox": "equal"}, **kwargs)
 
     @classmethod
     def axisLimits(cls, x_lb, x_ub, y_lb, y_ub, **kwargs):
@@ -113,7 +113,7 @@ class vibes(object):
           axisLimits(x_lb, x_ub, y_lb, y_ub, figure='')
         """
         cls.setFigureProperties(
-            {'viewbox': [x_lb, x_ub, y_lb, y_ub]}, figure=figure)
+            {'viewbox': [x_lb, x_ub, y_lb, y_ub]}, **kwargs)
 
     @classmethod
     def axisLabels(cls, x_label, y_label, **kwargs):
