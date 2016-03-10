@@ -1304,7 +1304,7 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
     QJsonArray center = json["center"].toArray();
     QJsonArray rho = json["rho"].toArray();
     QJsonArray theta = json["theta"].toArray();
-    
+
     Q_ASSERT(rho[0].toDouble() >= 0);
     Q_ASSERT(rho[1].toDouble() >= rho[0].toDouble());
 
@@ -1446,7 +1446,7 @@ bool VibesGraphicsPoints::parseJsonGraphics(const QJsonObject& json)
         {
             QJsonArray centers = json["centers"].toArray();
             this->_nbDim=centers[0].toArray().size();
-            
+
             if (json.contains("Draggable"))
             {
                 if (json["Draggable"].isBool())
@@ -1517,7 +1517,7 @@ bool VibesGraphicsPoints::computeProjection(int dimX, int dimY)
         double y = point[dimY].toDouble();
 
         double r = radiusesExist ? radiuses[i].toDouble() : radius;
-        
+
         QGraphicsEllipseItem * disk = new QGraphicsEllipseItem(0, 0, 2 * r, 2 * r);
         disk->setPos(x, y);
 
@@ -1636,8 +1636,8 @@ bool VibesGraphicsText::parseJsonGraphics(const QJsonObject& json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "arrow"
-        if (type == "text" && json.contains("position") && json.contains("scale"))
+        // VibesGraphicsPie has JSON type "position"
+        if (type == "text" && json.contains("position") && json.contains("text"))
         {
             QJsonArray position = json["position"].toArray();
             if (position.size() != 2) return false;
@@ -1652,7 +1652,8 @@ bool VibesGraphicsText::parseJsonGraphics(const QJsonObject& json)
     // Unknown or empty JSON, update failed
     return false;
 }
-
+// #define GET_WITH_DEFAULT(dict,key,type,default_value) \
+// 	dict.contains[key] ? dict[key].type
 bool VibesGraphicsText::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
@@ -1667,18 +1668,17 @@ bool VibesGraphicsText::computeProjection(int dimX, int dimY)
     Q_ASSERT(json["type"].toString() == "text");
 
     QString text = json["text"].toString();
-
-    double scale = json["scale"].toDouble();
+		// Get property with default value
+    double scale = json.contains("scale") ?  json["scale"].toDouble() : 1. ;
+		QString fontName = json.contains("fontName") ? json["fontName"].toString() : "Helvetica" ;
+		int fontSize = json.contains("fontSize") ? json["fontSize"].toInt() : 1 ;
 
     QJsonArray pos = json["position"].toArray();
     Q_ASSERT(pos.size() == 2);
 
     // Body
     {
-        QFont textFont("Helvetica", 11);
-        if (json.contains("FontName")){
-            textFont.setFamily(json["FontName"].toString());
-        }
+        QFont textFont(fontName, fontSize);
         this->setFont(textFont);
         this->setTransform(QTransform(1, 0, 0, -1, pos[0].toDouble(), pos[1].toDouble()));
         this->setText(text);
@@ -1690,12 +1690,12 @@ bool VibesGraphicsText::computeProjection(int dimX, int dimY)
     // Update successful
     return true;
 }
-
-void VibesGraphicsText::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
-{
-    QMenu menu;
-    QAction *removeAction = menu.addAction("Remove");
-    QAction *markAction = menu.addAction("Mark");
-    QAction *selectedAction = menu.exec(event->screenPos());
-    // ...
-}
+//
+// void VibesGraphicsText::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+// {
+//     QMenu menu;
+//     QAction *removeAction = menu.addAction("Remove");
+//     QAction *markAction = menu.addAction("Mark");
+//     QAction *selectedAction = menu.exec(event->screenPos());
+//     // ...
+// }

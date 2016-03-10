@@ -343,7 +343,7 @@ class VibesGraphicsText : public QGraphicsSimpleTextItem, public VibesGraphicsIt
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+    // void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 };
 
 #endif // VIBESGRAPHICSITEM_H
