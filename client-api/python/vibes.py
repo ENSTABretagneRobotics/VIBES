@@ -15,7 +15,9 @@ class vibes(object):
         if(cls.channel == ''):
             print('beginDrawing need to be called first')
         else:
+            print(kwargs.pop('figure', cls.current_fig))
             msg['figure'] = kwargs.pop('figure', cls.current_fig)
+            # print(msg)
             if 'shape' in msg:
                 # print("found shape", kwargs)
                 for k, v in kwargs.items():    
@@ -96,12 +98,12 @@ class vibes(object):
     ##########################################################################
 
     @classmethod
-    def axisAuto(cls, figure=''):
-        cls.setFigureProperties({"viewbox": "auto"}, figure=figure)
+    def axisAuto(cls, **kwargs):
+        cls.setFigureProperties({"viewbox": "auto"}, **kwargs)
 
     @classmethod
-    def axisEqual(cls, figure=''):
-        cls.setFigureProperties({"viewbox": "equal"}, figure=figure)
+    def axisEqual(cls, **kwargs):
+        cls.setFigureProperties({"viewbox": "equal"}, **kwargs)
 
     @classmethod
     def axisLimits(cls, x_lb, x_ub, y_lb, y_ub, **kwargs):
@@ -111,7 +113,7 @@ class vibes(object):
           axisLimits(x_lb, x_ub, y_lb, y_ub, figure='')
         """
         cls.setFigureProperties(
-            {'viewbox': [x_lb, x_ub, y_lb, y_ub]}, figure=figure)
+            {'viewbox': [x_lb, x_ub, y_lb, y_ub]}, **kwargs)
 
     @classmethod
     def axisLabels(cls, x_label, y_label, **kwargs):
@@ -144,7 +146,7 @@ class vibes(object):
         cls.write(msg, **kwargs)
 
     ##########################################################################
-    ##                          Group Management                            ##
+    ##                         Object Management                            ##
     ##########################################################################
     @classmethod
     def removeObject(cls, objectName, **kwargs):
@@ -389,14 +391,13 @@ class vibes(object):
         """
         Draw a Point at position (cy, cy)
         """
-        msg = json.dumps({'action': 'draw',
-                          'figure': '%s' % (figure if figure != None else cls.current_fig),
-                          'shape': {'type': 'point',
-                                    'point': [cx, cy],
-                                    'radius' : 3,
-                                    'format': color
-                                    }
-                          },  sort_keys=False)  # indent=4, separators=(',', ': '),)
+        msg = {'action': 'draw',
+                'shape': {'type': 'point',
+                          'point': [cx, cy],
+                          'radius' : 3,
+                          'format': color
+                          }
+              }
         cls.write(msg, **kwargs)
     @classmethod
     def drawRing(cls, cx, cy, r_min, r_max, color='r', **kwargs):
@@ -409,12 +410,33 @@ class vibes(object):
             r_min, r_max: double
                 bound of the radius in degree
         """
-        msg = json.dumps({'action': 'draw',
-                          'figure': '%s' % (figure if figure != None else cls.current_fig),
-                          'shape': {'type': 'ring',
-                                    'center': [cx, cy],
-                                    'rho': [r_min, r_max],
-                                    'format': color
-                                    }
-                          },  sort_keys=False)  # indent=4, separators=(',', ': '),)
+        msg = {'action': 'draw',
+                'shape': {'type': 'ring',
+                          'center': [cx, cy],
+                          'rho': [r_min, r_max],
+                          'format': color
+                          }
+              }
         cls.write(msg, **kwargs)
+    
+    @classmethod
+    def drawText(cls, cx, cy, text, scale, color='r', **kwargs):
+        """
+        Draw a text <text> at position (cx, cy) 
+        Parameters
+        ----------
+            cx, cy : double
+                position of the text
+            text: string
+                text to draw
+        """
+        msg = {'action': 'draw',
+                'shape': {'type': 'text',
+                          'text' : text,
+                          'position': [cx, cy],
+                          'scale' : scale,
+                          'format': color
+                          }
+              }
+        cls.write(msg, **kwargs)
+
