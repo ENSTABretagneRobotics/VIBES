@@ -214,14 +214,14 @@ int main()
     VIBES_TEST( vibes::drawSector(0,0,3,3,20, 120, "black[red]") );
     VIBES_TEST( vibes::drawSector(0,0,3,1,-20, -220, "black[red]") );
     VIBES_TEST( vibes::drawSector(10,-3,3,3,700, 800, "black[red]") );
-    VIBES_TEST( vibes::drawSector(0,0,3,3,20, 120, "black[red]") ); 
+    VIBES_TEST( vibes::drawSector(0,0,3,3,20, 120, "black[red]") );
 
     cout << "drawPie" << std::endl;
     VIBES_TEST( vibes::drawPie(0,-20,3,4,20, 120, "black[red]") );
     VIBES_TEST( vibes::drawPie(0,-20,3,7,-20, -220, "black[red]") );
     VIBES_TEST( vibes::drawPie(10,-20,3,4,700, 800, "black[red]") );
-    VIBES_TEST( vibes::drawPie(5,-20,3,3,20, 120, "black[red]") ); 
-    
+    VIBES_TEST( vibes::drawPie(5,-20,3,3,20, 120, "black[red]") );
+
     cout << "drawRing"<< endl;
     VIBES_TEST( vibes::drawRing(42,42,20,23,"black[red]"));
 
@@ -246,7 +246,7 @@ int main()
     cout << "drawPoint"<<endl;
     VIBES_TEST(vibes::drawPoint(17,17,"red[darkyellow]"));
     VIBES_TEST(vibes::drawPoint(27,27,2,vibesParams("FaceColor","magenta","EdgeColor","none","Draggable",true,"FixedScale",false)));
-    
+
     VIBES_TEST( vibes::axisAuto() );
     //  VIBES_TEST( vibes::axisLimits(-1,1, -3,2) );
 
@@ -254,7 +254,7 @@ int main()
     VIBES_TEST( vibes::saveImage("vibes_test.jpg") );
     VIBES_TEST( vibes::saveImage("vibes_test.bmp") );
     VIBES_TEST( vibes::saveImage("vibes_test.svg") );
-    
+
     vibes::newFigure("Points");
     vector<double> x,y;
     for(unsigned int i=0;i<500;i++)
@@ -262,22 +262,30 @@ int main()
         x.push_back(25.0*rand()/RAND_MAX);
         y.push_back(25.0*rand()/RAND_MAX);
     }
-    
+
     vibes::drawPoints(x,y,vibesParams("FaceColor","blue","EdgeColor","darkBlue","Draggable",true));
-    
+
     x.clear();
     y.clear();
-    
+
     for(unsigned int i=0;i<500;i++)
     {
         x.push_back(34+25.0*rand()/RAND_MAX);
         y.push_back(40+25.0*rand()/RAND_MAX);
     }
-    
+
     vibes::drawPoints(x,y,vibesParams("FaceColor","red","EdgeColor","darkRed","Radius",100));
-    
+
+		// Testing VIbes drawText function
+		VIBES_TEST( vibes::newFigure("drawText") );
+		VIBES_TEST( vibes::drawText(2,2,"My Text") );
+		VIBES_TEST( vibes::drawText(2,2,"My Text", 0.1 , "b[k]") );
+		VIBES_TEST( vibes::drawText(2,6,"My Text", "r[r]",vibesParams("fontSize",15,"fontName","Cursive") ) );
+
     std::cout << "end drawing" << std::endl;
     VIBES_TEST( vibes::endDrawing() );
+
+
 
     // Testing Vibes params system
     cout << "Testing Vibes params system" << endl;
@@ -316,6 +324,6 @@ int main()
     printf ("Param based draw took %d clicks (%f seconds).\n",t2,((float)t2)/CLOCKS_PER_SEC);*/
 
 
-    
+
     return 0;
 }
