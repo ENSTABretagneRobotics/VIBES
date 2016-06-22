@@ -1,3 +1,26 @@
+// This file is part of VIBes' C++ API
+//
+// Copyright (c) 2013-2015 Vincent Drevelle, Jeremy Nicola, Simon Rohou, 
+//                         Benoit Desrochers
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 #include "vibes.h"
 #include <sstream>
 #include <cstdlib>
@@ -270,13 +293,16 @@ namespace vibes
   {
       // Angle need to be in degree
       Params msg;
+      Vec2d cxy={ cx, cy };
+      Vec2d cab = { a, b };
+      Vec2d startEnd = { startAngle, endAngle };
       msg["action"] = "draw";
       msg["figure"] = params.pop("figure",current_fig);      
       msg["shape"] = (params, "type", "ellipse",
-                              "center", (Vec2d){cx,cy},
-                              "axis", (Vec2d){a,b},
+                              "center", cxy,
+                              "axis", cab,
                               "orientation", 0,
-                              "angles", (Vec2d){startAngle, endAngle});
+                              "angles", startEnd);
 
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
@@ -287,12 +313,15 @@ namespace vibes
   {
       // Angle need to be in degree
       Params msg;
+      Vec2d cxy = { cx, cy };
+      Vec2d rMinMax = { r_min, r_max };
+      Vec2d thetaMinMax = { theta_min, theta_max };
       msg["action"] = "draw";
       msg["figure"] = params.pop("figure",current_fig);
       msg["shape"] = (params, "type", "pie",
-                              "center", (Vec2d){cx,cy},
-                              "rho", (Vec2d){r_min,r_max},
-                              "theta", (Vec2d){theta_min, theta_max});
+                              "center", cxy,
+                              "rho", rMinMax,
+                              "theta", thetaMinMax);
 
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
@@ -301,10 +330,11 @@ namespace vibes
   void drawPoint(const double &cx, const double &cy, Params params)
   {
       Params msg;
+      Vec2d cxy = { cx, cy };
       msg["action"]="draw";
       msg["figure"]=params.pop("figure",current_fig);
       msg["shape"]=(params, "type","point",
-                            "point",(Vec2d){cx,cy});
+                            "point",cxy);
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
   }
@@ -312,10 +342,11 @@ namespace vibes
   void drawPoint(const double &cx, const double &cy, const double &radius, Params params)
   {
       Params msg;
+      Vec2d cxy = { cx, cy };
       msg["action"]="draw";
       msg["figure"]=params.pop("figure",current_fig);
       msg["shape"]=(params, "type","point",
-                            "point",(Vec2d){cx,cy},"Radius",radius);
+                            "point",cxy,"Radius",radius);
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
   }
@@ -323,11 +354,13 @@ namespace vibes
   void drawRing(const double &cx, const double &cy, const double &r_min, const double &r_max, Params params)
   {
       Params msg;
+      Vec2d cxy = { cx, cy };
+      Vec2d rMinMax = { r_min, r_max };
       msg["action"] = "draw";
       msg["figure"] = params.pop("figure",current_fig);
       msg["shape"] = (params, "type", "ring",
-                              "center", (Vec2d){cx,cy},
-                              "rho", (Vec2d){r_min,r_max});
+                              "center", cxy,
+                              "rho", rMinMax);
       fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel);
       fflush(channel);
   }
