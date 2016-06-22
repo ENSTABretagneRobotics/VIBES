@@ -1,4 +1,4 @@
-## Copyright 2015 Oliver Heimlich
+## Copyright 2015-2016 Oliver Heimlich
 ##
 ## This file is part of VIBes' API for Octave.
 ##
