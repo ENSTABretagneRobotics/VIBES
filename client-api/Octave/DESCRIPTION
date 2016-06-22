@@ -15,4 +15,4 @@ Description: The VIBes API allows one to easily display results (boxes, pavings)
  is required for operation and must be installed seperately. Data types from
  third-party interval arithmetic libraries for Octave are also supported.
 Depends: octave (>= 4.0.0)
-License: GPLv3+
+License: GPL-3.0+, MIT
