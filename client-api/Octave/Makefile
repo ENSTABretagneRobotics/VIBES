@@ -74,13 +74,16 @@ $(INSTALLED_PACKAGE): $(RELEASE_TARBALL)
 
 HTML_DIR = $(PACKAGE)-html
 HTML_TARBALL = $(HTML_DIR).tar.gz
+FORGE_HTML_TARBALL = $(HTML_DIR)-forge.tar.gz
 
-.PHONY: html release md5
+.PHONY: forge-html html release md5
+forge-html: $(FORGE_HTML_TARBALL)
 html: $(HTML_TARBALL)
-release: $(RELEASE_TARBALL) $(HTML_TARBALL) md5
+release: $(RELEASE_TARBALL) $(FORGE_HTML_TARBALL) $(HTML_TARBALL) md5
 
 $(HTML_TARBALL): $(INSTALLED_PACKAGE)
-	@echo "Generating HTML documentation for the package ..."
+	@echo "Generating HTML documentation for the package (GitHub) ..."
+	@$(RM) -r "$(HTML_DIR)"
 	@# Make sure that the generate_html package is present
 	@$(OCTAVE) --no-gui --silent \
 		--eval "try;" \
@@ -99,7 +102,23 @@ $(HTML_TARBALL): $(INSTALLED_PACKAGE)
 	@mv "$(HTML_DIR)/$(PACKAGE)" "$(HTML_DIR)/octave-api"
 	@tar --create --auto-compress --file "$@" "$(HTML_DIR)"
 
-md5:  $(RELEASE_TARBALL) $(HTML_TARBALL)
+$(FORGE_HTML_TARBALL): $(INSTALLED_PACKAGE)
+	@echo "Generating HTML documentation for the package (Octave Forge) ..."
+	@$(RM) -r "$(HTML_DIR)"
+	@# Make sure that the generate_html package is present
+	@$(OCTAVE) --no-gui --silent \
+		--eval "try;" \
+		--eval "temp = pkg ('describe', 'generate_html');" \
+		--eval "catch;" \
+		--eval "pkg ('install', '-forge', 'generate_html');" \
+		--eval "end_try_catch;"
+	@$(OCTAVE) --no-gui --silent \
+		--eval "pkg load generate_html;" \
+		--eval "options = get_html_options ('octave-forge');" \
+		--eval "generate_package_html ('$(PACKAGE)', '$(HTML_DIR)', options)"
+	@tar --create --auto-compress --file "$@" "$(HTML_DIR)"
+
+md5: $(RELEASE_TARBALL) $(HTML_TARBALL) $(FORGE_HTML_TARBALL)
 	@md5sum $^
 
 ##
