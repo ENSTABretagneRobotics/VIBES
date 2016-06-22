@@ -1,4 +1,4 @@
-// Copyright 2015 Oliver Heimlich
+// Copyright 2015-2016 Oliver Heimlich
 //
 // This file is part of VIBes' API for Octave.
 //
@@ -253,6 +253,43 @@ void drawBox (const octave_value_list args)
   vibes::drawBox(coordinates, format, params);
 }
 
+void drawBoxes (const octave_value_list args)
+{
+  if (args.length () == 0)
+    {
+      error ("drawBoxes: Not enough arguments");
+      return;
+    }
+  
+  __assertDrawing__ ();
+  if (args(0).is_string ())
+    {
+      error ("drawBoxes: First argument must contain numeric boundaries");
+      return;
+    }
+
+  const Matrix lb = args(0).matrix_value ();
+  const Matrix ub = args(1).matrix_value ();
+  
+  std::vector< std::vector<double> > boxes;
+  const octave_idx_type n = lb.columns (); // TODO broadcasting
+  const octave_idx_type m = lb.rows ();
+  boxes.reserve (n);
+  for (octave_idx_type i = 0; i < n; i ++)
+    {
+      std::vector<double> coordinates;
+      coordinates.reserve (2 * m);
+      for (octave_idx_type j = 0; j < m; j ++)
+        {
+          coordinates.push_back (lb.elem (j, i));
+          coordinates.push_back (ub.elem (j, i));
+        }
+      boxes.push_back (coordinates);
+    }
+  
+  vibes::drawBoxes(boxes);
+}
+
 void drawLine (const octave_value_list args)
 {
   if (args.length () == 0)
@@ -340,6 +377,8 @@ DEFUN_DLD (__vibes__, args, nargout,
     {
       if      (f_name == "drawBox")
         drawBox (f_args);
+      else if (f_name == "drawBoxes")
+        drawBoxes (f_args);
       else if (f_name == "drawLine")
         drawLine (f_args);
       else if (f_name == "axisAuto")
