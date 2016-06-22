@@ -1,0 +1,11 @@
+vibes >> VIBes' API for Octave
+Connection - Starting and ending VIBes
+ vibes.beginDrawing
+ vibes.endDrawing
+Figure and view management
+ vibes.newFigure
+ vibes.axisAuto
+ vibes.axisLabels
+Drawing and editing functions
+ vibes.drawBox
+ vibes.drawLine

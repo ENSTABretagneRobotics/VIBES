@@ -1,0 +1,8 @@
+                    VIBes' Client API for Octave
+               Summary of important user-visible changes
+
+Version 0.2.0 2016-06-22
+========================
+
+   • Initial release with compatibility for the Matlab client API
+   • New function drawBoxes to draw a list of many boxes

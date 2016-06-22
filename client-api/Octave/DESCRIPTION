@@ -1,0 +1,18 @@
+Name: vibes
+Version: %VERSION%
+Date: %DATE%
+Author: Oliver Heimlich <oheim@posteo.de>
+Maintainer: ENSTA Bretagne Robotics
+Title: Interface to VIBes, Visualizer for Intervals and Boxes
+Description: The VIBes API allows one to easily display results (boxes, pavings)
+ from interval methods.
+ 
+ VIBes consists in two parts: (1) the VIBes application that features viewing,
+ annotating and exporting figures, and (2) the VIBes API that enables your
+ program to communicate with the viewer in order to draw figures.
+ 
+ This package integrates the VIBes API into Octave. The VIBes application
+ is required for operation and must be installed seperately. Data types from
+ third-party interval arithmetic libraries for Octave are also supported.
+Depends: octave (>= 4.0.0)
+License: GPL-3.0+, MIT

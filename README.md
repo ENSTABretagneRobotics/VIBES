@@ -12,7 +12,7 @@ The main design goal of VIBes is to be cross-platform, available from different 
 
 VIBes consists in two parts:
 - the VIBes application that features viewing, annotating and exporting figures
-- the VIBes API that enables your program to communicate with the viewer in order to draw figures from C, C++, Python, Matlab...
+- the VIBes API that enables your program to communicate with the viewer in order to draw figures from C, C++, Python, Octave, Matlab...
 
 The use of a separate viewer application enables an easy set-up on every system. First, pre-built binaries of the VIBes viewer are provided for Windows, MacOS and Linux platforms (but you are free to build the viewer from sources). Then, the API consists only of a few files that have to be included in your program.
 
