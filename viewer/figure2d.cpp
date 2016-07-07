@@ -169,22 +169,24 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
     QFont axisTicksFont("Helvetica", 11);
     axisTicksFont.setStyleHint(QFont::Helvetica);
     painter->setFont(axisTicksFont);
+    painter->setPen(QColor(0,0,0));
 
     for (double xtick=x0; xtick<rect.right(); xtick+=scale_x)
     {
         double x_wnd = mapFromScene(xtick,0).x();
 
         painter->drawLine(x_wnd,0,x_wnd,5);
-        painter->drawText(x_wnd+4,12, QString("%1").arg(xtick));
+        double xtick_temp = fabs(xtick) < 1.0e-12 ? 0. : xtick; // avoiding over-precision around zero
+        painter->drawText(x_wnd+4,12, QString::number(xtick_temp));
     }
 
     for (double ytick=y0; ytick<qMax(rect.top(),rect.bottom()); ytick+=scale_y)
     {
         double y_wnd = mapFromScene(0,ytick).y();
 
-        painter->setPen(QColor(0,0,0));
         painter->drawLine(0,y_wnd,5,y_wnd);
-        painter->drawText(2, y_wnd+12, QString("%1").arg(ytick));
+        double ytick_temp = fabs(ytick) < 1.0e-12 ? 0. : ytick; // avoiding over-precision around zero
+        painter->drawText(2, y_wnd+12, QString::number(ytick_temp));
     }
 }
 
