@@ -9,16 +9,8 @@ compiler:
 before_install:
  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-add-repository --yes ppa:ubuntu-sdk-team/ppa; fi
  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get update -qq > output; fi
+ - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install -qq qt5-default libqt5svg5-dev cmake > output; fi
  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install qt5 && export PATH=/usr/local/opt/qt5/bin:$PATH; fi
-
-install:
- - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install -qq qt5-default libqt5svg5-dev > output; fi
-# 32 bit compatibility (since CMake is a 32 bit bin)
- - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install -qq libc6:i386; fi
-# Install CMake bin (32 bit)
- - if [ $TRAVIS_OS_NAME == linux ]; then wget --no-check-certificate -P /tmp http://www.cmake.org/files/v2.8/cmake-2.8.12.1-Linux-i386.sh; fi
- - if [ $TRAVIS_OS_NAME == linux ]; then chmod +rx /tmp/cmake-2.8.12.1-Linux-i386.sh; fi
- - if [ $TRAVIS_OS_NAME == linux ]; then sudo sh /tmp/cmake-2.8.12.1-Linux-i386.sh --prefix=/usr/local/ --exclude-subdir --skip-license; fi
 
 before_script:
  - cd viewer
