@@ -176,8 +176,12 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
         double x_wnd = mapFromScene(xtick,0).x();
 
         painter->drawLine(x_wnd,0,x_wnd,5);
-        double xtick_temp = fabs(xtick) < 1.0e-12 ? 0. : xtick; // avoiding over-precision around zero
-        painter->drawText(x_wnd+4,12, QString::number(xtick_temp));
+        QString xtick_txt;
+        if (fabs(xtick) < 1.0e-12)
+            xtick_txt.setNum(xtick, 'f', 0);
+        else
+            xtick_txt.setNum(xtick, 'g', 2);
+        painter->drawText(x_wnd+4,12, xtick_txt);
     }
 
     for (double ytick=y0; ytick<qMax(rect.top(),rect.bottom()); ytick+=scale_y)
@@ -185,8 +189,12 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
         double y_wnd = mapFromScene(0,ytick).y();
 
         painter->drawLine(0,y_wnd,5,y_wnd);
-        double ytick_temp = fabs(ytick) < 1.0e-12 ? 0. : ytick; // avoiding over-precision around zero
-        painter->drawText(2, y_wnd+12, QString::number(ytick_temp));
+        QString xtick_txt;
+        if (fabs(xtick) < 1.0e-12)
+            xtick_txt.setNum(xtick, 'f', 0);
+        else
+            xtick_txt.setNum(xtick, 'g', 2);
+        painter->drawText(2, y_wnd+12, xtick_txt);
     }
 }
 
