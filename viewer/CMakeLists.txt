@@ -29,6 +29,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
 
+
 # Find Qt5 Modules
 FIND_PACKAGE(Qt5Core REQUIRED)
 FIND_PACKAGE(Qt5Widgets REQUIRED)
@@ -36,6 +37,7 @@ FIND_PACKAGE(Qt5Gui REQUIRED)
 FIND_PACKAGE(Qt5Network REQUIRED)
 FIND_PACKAGE(Qt5Svg REQUIRED)
 
+add_definitions(-D_USE_STATIC_BUILDS_)
 # Source files
 SET(VIBes_viewer_SOURCES main.cpp
                          vibesgraphicsitem.cpp

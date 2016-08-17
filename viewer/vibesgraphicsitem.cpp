@@ -397,6 +397,9 @@ bool VibesGraphicsBox::computeProjection(int dimX, int dimY)
     // Update rectangle color
     this->setPen(pen);
     this->setBrush(brush);
+    QString msg;// = QString("[%1, %2]x[%3, %4]").arg(lb_x).arg(ub_x).arg(lb_y).arg(ub_y);
+    msg.sprintf("x: [%f ; %f]\ny: [%f ; %f]\n %f x %f", lb_x, ub_x, lb_y, ub_y, ub_x - lb_x, ub_y - lb_y);
+    this->setToolTip(msg);
 
     // Update successful
     return true;
@@ -1297,7 +1300,7 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
     QJsonArray center = json["center"].toArray();
     QJsonArray rho = json["rho"].toArray();
     QJsonArray theta = json["theta"].toArray();
-    
+
     Q_ASSERT(rho[0].toDouble() >= 0);
     Q_ASSERT(rho[1].toDouble() >= rho[0].toDouble());
 
@@ -1439,7 +1442,7 @@ bool VibesGraphicsPoints::parseJsonGraphics(const QJsonObject& json)
         {
             QJsonArray centers = json["centers"].toArray();
             this->_nbDim=centers[0].toArray().size();
-            
+
             if (json.contains("Draggable"))
             {
                 if (json["Draggable"].isBool())
@@ -1510,7 +1513,7 @@ bool VibesGraphicsPoints::computeProjection(int dimX, int dimY)
         double y = point[dimY].toDouble();
 
         double r = radiusesExist ? radiuses[i].toDouble() : radius;
-        
+
         QGraphicsEllipseItem * disk = new QGraphicsEllipseItem(0, 0, 2 * r, 2 * r);
         disk->setPos(x, y);
 
