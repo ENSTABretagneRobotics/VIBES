@@ -15,12 +15,12 @@ class vibes(object):
         if(cls.channel == ''):
             print('beginDrawing need to be called first')
         else:
-            print(kwargs.pop('figure', cls.current_fig))
+            #print(kwargs.pop('figure', cls.current_fig))
             msg['figure'] = kwargs.pop('figure', cls.current_fig)
             # print(msg)
             if 'shape' in msg:
                 # print("found shape", kwargs)
-                for k, v in kwargs.items():    
+                for k, v in kwargs.items():
                     # print(k,v)
                     msg['shape'][k] = v
             msg = json.dumps(msg)
@@ -55,10 +55,14 @@ class vibes(object):
     def endDrawing(cls):
         cls.channel.close()
 
+    @classmethod
+    def update(cls):
+      cls.channel.flush()
+
     ##########################################################################
     ##							Figure Management							##
     ##########################################################################
-    
+
     @classmethod
     def newFigure(cls, figure=''):
         if not figure == '':
@@ -79,7 +83,7 @@ class vibes(object):
 
     @classmethod
     def closeFigure(cls, **kwargs):
-        
+
         cls.write({'action': 'close'}, **kwargs)
 
     @classmethod
@@ -108,8 +112,8 @@ class vibes(object):
     @classmethod
     def axisLimits(cls, x_lb, x_ub, y_lb, y_ub, **kwargs):
         """
-        axisLimits : set axisLimits 
-        example : 
+        axisLimits : set axisLimits
+        example :
           axisLimits(x_lb, x_ub, y_lb, y_ub, figure='')
         """
         cls.setFigureProperties(
@@ -137,7 +141,7 @@ class vibes(object):
           msg['shape']['format'] = kwargs.pop('format')
 
         cls.write(msg,  **kwargs)
-    
+
     @classmethod
     def clearGroup(cls, groupName, **kwargs):
         msg = {'action': 'clear',
@@ -155,7 +159,7 @@ class vibes(object):
                'object': '%s' % objectName
               }
         cls.write(msg, **kwargs)
-  
+
     @classmethod
     def setObjectProperties(cls, objectName, properties, **kwargs):
         msg = {'action': 'set',
@@ -164,7 +168,7 @@ class vibes(object):
                'properties' : properties
               }
         cls.write(msg, **kwargs)
-  
+
     ##########################################################################
     ##							Drawing functions							##
     ##########################################################################
@@ -176,12 +180,12 @@ class vibes(object):
         parameters
         ----------
         	x_lb : double
-        		x lower bound 
-        	x_ub : double	
+        		x lower bound
+        	x_ub : double
         		x upper bound
         	y_lb : double
-        		y lower bound 
-        	y_ub : double	
+        		y lower bound
+        	y_ub : double
         		y upper bound
         	figure : string, optional
         		name of the figure where the box will be draw
@@ -218,16 +222,16 @@ class vibes(object):
     @classmethod
     def drawLine(cls, points, color='r', **kwargs):
         """
-        Draw a N-D line from the list of coordinates 
+        Draw a N-D line from the list of coordinates
         Parameters
         ----------
-            points : list of list 
+            points : list of list
                 [[x_1, y_1, z_1, ...], [x_2, y_2, z_2, ...], ...]
         """
         msg = {'action': 'draw',
                'shape': {'type': 'line',
                          'points': points,
-                         'format': color           
+                         'format': color
                         }
               }
         cls.write(msg, **kwargs)
@@ -235,7 +239,7 @@ class vibes(object):
     @classmethod
     def drawEllipse(cls, cx, cy, a, b, rot, angles=[0, 360], color='r', **kwargs):
         """
-        Draw an ellipse centered at (cx, cy), with semi-major and minor axes a and b, 
+        Draw an ellipse centered at (cx, cy), with semi-major and minor axes a and b,
         and rotated by \a rot degrees
         Parameters
         ----------
@@ -246,7 +250,7 @@ class vibes(object):
             rot : double !!! need to be in degree !!!
                 direction of the semi-major axis
             angles: [ double, double]
-                starting and ending angle of the Ellispe 
+                starting and ending angle of the Ellispe
         """
         msg = {'action': 'draw',
                'shape': {'type': 'ellipse',
@@ -418,11 +422,11 @@ class vibes(object):
                           }
               }
         cls.write(msg, **kwargs)
-    
+
     @classmethod
     def drawText(cls, cx, cy, text, scale, color='r', **kwargs):
         """
-        Draw a text <text> at position (cx, cy) 
+        Draw a text <text> at position (cx, cy)
         Parameters
         ----------
             cx, cy : double
@@ -439,4 +443,3 @@ class vibes(object):
                           }
               }
         cls.write(msg, **kwargs)
-
