@@ -95,7 +95,6 @@ class vibes(object):
     @classmethod
     def closeFigure(cls, **kwargs):
         """Close the figure named figureName, or the current figure if no argument is given.
-
         """
         cls._write({'action': 'close'}, **kwargs)
 
@@ -130,6 +129,12 @@ class vibes(object):
 
         """
         cls.setFigureProperties({"x": x, "y":y})
+    @classmethod
+    def showAxis(cls, is_visible):
+      """Display axis if is_visible is True
+
+      """
+      cls.setFigureProperties({"showAxis":is_visible})
 
     ##########################################################################
     ##							View settings								##

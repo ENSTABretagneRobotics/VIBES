@@ -75,6 +75,10 @@ ADD_EXECUTABLE(${VIBES_viewer_EXE} WIN32 MACOSX_BUNDLE ${VIBes_viewer_SOURCES} $
 # Qt5 Modules
 QT5_USE_MODULES(${VIBES_viewer_EXE} Widgets Gui Core Network Svg)
 
+IF(UNIX)
+		INSTALL(TARGETS ${VIBES_viewer_EXE} DESTINATION bin)
+ENDIF(UNIX)
+
 # Packaging
 IF(APPLE)
     IF(NOT QT_BINARY_DIR)
