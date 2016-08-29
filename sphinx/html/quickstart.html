@@ -1,0 +1,441 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting Started &mdash; vibes-python 0.2rc2 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="vibes-python 0.2rc2 documentation" href="index.html"/>
+        <link rel="next" title="Vibes API" href="api.html"/>
+        <link rel="prev" title="Welcome to vibes-python’s documentation!" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> vibes-python
+          
+
+          
+            
+            <img src="_static/vibes_256.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2rc2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-the-viewer">Install the viewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install">Install</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#basic-usage">Basic usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#first-example">First example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#shape">Shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#colors">Colors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-colors">Basic colors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-colors-and-transparency">Custom colors and transparency</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#figure-and-view-management">Figure and view management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#figures-management">Figures management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#axis-management">Axis management</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#groups">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Vibes API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">vibes-python</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Getting Started</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/quickstart.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started">
+<span id="getting-started"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="install-the-viewer">
+<span id="install-the-viewer"></span><h2>Install the viewer<a class="headerlink" href="#install-the-viewer" title="Permalink to this headline">¶</a></h2>
+<p>the viewer can be installed with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>conda install -c benensta vibes-bin
+</pre></div>
+</div>
+</div>
+<div class="section" id="install">
+<span id="install"></span><h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<p>Install python api of vibes with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>  <span class="c1"># using pip</span>
+  pip install vibes
+  <span class="c1"># or using conda</span>
+  conda install -b benensta vibes
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="basic-usage">
+<span id="basic-usage"></span><h1>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="first-example">
+<span id="first-example"></span><h2>First example<a class="headerlink" href="#first-example" title="Permalink to this headline">¶</a></h2>
+<p>The following example shows how to draw your first figure with vibes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>  <span class="kn">from</span> <span class="nn">vibes</span> <span class="kn">import</span> <span class="n">vibes</span>
+  <span class="c1"># initiate the connection with the viewer</span>
+  <span class="n">vibes</span><span class="o">.</span><span class="n">beginDrawing</span><span class="p">()</span>
+
+  <span class="c1"># create a new figure</span>
+  <span class="n">vibes</span><span class="o">.</span><span class="n">newFigure</span><span class="p">(</span><span class="s2">&quot;myfig&quot;</span><span class="p">)</span>
+
+  <span class="c1"># draw a circle at (0,0) with radius 2</span>
+  <span class="n">vibes</span><span class="o">.</span><span class="n">drawCircle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+  <span class="c1"># end the connection with the viewer</span>
+  <span class="n">vibes</span><span class="o">.</span><span class="n">endDrawing</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="shape">
+<span id="shape"></span><h2>Shape<a class="headerlink" href="#shape" title="Permalink to this headline">¶</a></h2>
+<p>Available shapes are:</p>
+<ul class="simple">
+<li>Arrow</li>
+<li>AUV</li>
+<li>Box</li>
+<li>BoxesUnion</li>
+<li>Circle</li>
+<li>Ellipse</li>
+<li>Line</li>
+<li>Pie</li>
+<li>Polygon</li>
+<li>Ring</li>
+<li>Vehicle</li>
+<li>Point</li>
+</ul>
+<p><img alt="alt text" src="_images/vibes_figs.png" /></p>
+<!--
+| drawArrow   | drawAUV  | drawBox     | drawBoxesUnion | drawCircle  |
+|-------------|----------|-------------|----------------|-------------|
+| drawEllipse | drawLine | drawPie     | drawPoint      | drawPolygon |
+| drawRing    | drawText | drawVehicle |                |             |
+|             |          |             |                |             | --></div>
+<div class="section" id="colors">
+<span id="colors"></span><h2>Colors<a class="headerlink" href="#colors" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="basic-colors">
+<span id="basic-colors"></span><h3>Basic colors<a class="headerlink" href="#basic-colors" title="Permalink to this headline">¶</a></h3>
+<p>Color can be set using the <strong>color</strong> keyword with a string like <strong>XXX[YYY]</strong>, where</p>
+<ul class="simple">
+<li>XXX is color of the border (default value is <em>black</em>).</li>
+<li>YYY is the color to fill the shape (default is <em>transparent</em>).</li>
+</ul>
+<p>Available colors are:</p>
+<p><img alt="alt text" src="_images/qt-colors.png" /></p>
+<p>Shortcuts exist for:</p>
+<ul class="simple">
+<li>blue :b</li>
+<li>red: r</li>
+<li>yellow: y</li>
+<li>magenta: m</li>
+<li>green: g</li>
+<li>black: k</li>
+<li>white: w</li>
+</ul>
+<p>For instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># draw a blue square with a red border</span>
+<span class="n">vibes</span><span class="o">.</span><span class="n">drawBox</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red[blue]&#39;</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="n">vibes</span><span class="o">.</span><span class="n">drawBox</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r[b]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="custom-colors-and-transparency">
+<span id="custom-colors-and-transparency"></span><h3>Custom colors and transparency<a class="headerlink" href="#custom-colors-and-transparency" title="Permalink to this headline">¶</a></h3>
+<p>Custom color can be set by passing an RGB string (such as &#8220;#112233&#8221;), or an RGBA string (such as &#8220;#112233ff&#8221;)</p>
+<p>For instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">drawBox</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;[#22449977]&#39;</span><span class="p">)</span>
+<span class="n">vibes</span><span class="o">.</span><span class="n">drawBox</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;[#AAAA2277]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="alt text" src="_images/transparency.png" /></p>
+</div>
+</div>
+<div class="section" id="figure-and-view-management">
+<span id="figure-and-view-management"></span><h2>Figure and view management<a class="headerlink" href="#figure-and-view-management" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="figures-management">
+<span id="figures-management"></span><h3>Figures management<a class="headerlink" href="#figures-management" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Create a new figure named <em>figureName</em>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">newFigure</span><span class="p">(</span><span class="s1">&#39;figureName&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Select <em>figureName</em> as the current figure. Drawing operations will then apply to <em>figureName</em>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">selectFigure</span><span class="p">(</span><span class="s1">&#39;figureName&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Close the figure named <em>figureName</em>, or the current figure if no argument is given</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">closeFigure</span><span class="p">(</span><span class="s1">&#39;figureName&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Clears the contents of the figure <em>figureName</em>, or the current figure if argument is given</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">clearFigure</span><span class="p">(</span><span class="s1">&#39;figureName&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Save the figure <em>figureName</em>, or the current figure if no argument is given as an image.
+Available format are: png, jpeg, bmp and svg</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">saveImage</span><span class="p">(</span><span class="s2">&quot;myImage.png&quot;</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="s1">&#39;figureName&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Set properties (position,size,viewbox,...) of <em>figureName</em>, or of the current figure if argument is given.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># create a dictionnay of promerties</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="c1"># new x position</span>
+           <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="c1"># new y positon</span>
+           <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="c1"># new width</span>
+           <span class="s2">&quot;height&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="c1">#new height</span>
+<span class="p">}</span>
+<span class="n">vibes</span><span class="o">.</span><span class="n">setFigureProperties</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="s2">&quot;myfig&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Set the size of the figure</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">setFigureSize</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="s2">&quot;myfig&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Set the position of the figure</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">setFigurePos</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="s2">&quot;myfig&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="axis-management">
+<span id="axis-management"></span><h3>Axis management<a class="headerlink" href="#axis-management" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Set axes limits to the bounding box of the drawing.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">axisAuto</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Same as <em>axisAuto</em> but with the same ratio on the two axis.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">axisEqual</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Specify the rectangle to be displayed: Lower-left corner (x_lb, y_lb) and a upper-right corner (x_ub, y_ub).</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">axisLimits</span><span class="p">(</span><span class="n">x_lb</span><span class="p">,</span> <span class="n">y_lb</span><span class="p">,</span> <span class="n">x_ub</span><span class="p">,</span> <span class="n">y_ub</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Set axis labels</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">axisLabels</span><span class="p">(</span><span class="s2">&quot;xlabel&quot;</span><span class="p">,</span> <span class="s2">&quot;ylabel&quot;</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="s2">&quot;optional&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="groups">
+<span id="groups"></span><h2>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h2>
+<p>Groups can be created to gather objects which shared common properties (color, ...)</p>
+<ul>
+<li><p class="first">Create a new group with the specified <em>groupName</em> and parameters.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">newGroup</span><span class="p">(</span><span class="s2">&quot;groupName&quot;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+<span class="n">vibes</span><span class="o">.</span><span class="n">newGroup</span><span class="p">(</span><span class="s2">&quot;groupName&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="n">format</span><span class="p">:</span><span class="s2">&quot;r[darkblue]&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Clear the contents of the group <em>groupName</em> in figure <em>figureName</em> or the current figure if no argument is given.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">clearGroup</span><span class="p">(</span><span class="s2">&quot;groupName&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Objects can be added to group by using the keyword <em>group</em></p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">drawCircle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;groupName&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">vibes</span><span class="o">.</span><span class="n">newFigure</span><span class="p">(</span><span class="s2">&quot;myfig&quot;</span><span class="p">)</span>
+<span class="c1"># Create a new group with specific format.</span>
+<span class="c1"># Elements of this group are filled in cyan</span>
+<span class="n">vibes</span><span class="o">.</span><span class="n">newGroup</span><span class="p">(</span><span class="s2">&quot;myGroup&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;r[cyan]&quot;</span><span class="p">)</span>
+<span class="n">vibes</span><span class="o">.</span><span class="n">drawCircle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;myGroup&quot;</span><span class="p">)</span>
+<span class="n">vibes</span><span class="o">.</span><span class="n">drawBox</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;myGroup&quot;</span><span class="p">)</span>
+<span class="n">vibes</span><span class="o">.</span><span class="n">drawPie</span><span class="p">(</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span><span class="mi">60</span><span class="p">],</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;myGroup&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api.html" class="btn btn-neutral float-right" title="Vibes API" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to vibes-python’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Benoit Desrochers.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2rc2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

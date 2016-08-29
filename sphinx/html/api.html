@@ -1,0 +1,585 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Vibes API &mdash; vibes-python 0.2rc2 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="vibes-python 0.2rc2 documentation" href="index.html"/>
+        <link rel="prev" title="Getting Started" href="quickstart.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> vibes-python
+          
+
+          
+            
+            <img src="_static/vibes_256.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2rc2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html#basic-usage">Basic usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Vibes API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#drawing-functions">Drawing functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#figure-and-view-management">Figure and view management</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">vibes-python</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Vibes API</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/api.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="vibes-api">
+<span id="api-rst"></span><h1>Vibes API<a class="headerlink" href="#vibes-api" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="vibes.vibes">
+<em class="property">class </em><code class="descclassname">vibes.</code><code class="descname">vibes</code><a class="headerlink" href="#vibes.vibes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="section" id="drawing-functions">
+<h2>Drawing functions<a class="headerlink" href="#drawing-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="classmethod">
+<dt id="vibes.vibes.drawArrow">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawArrow</code><span class="sig-paren">(</span><em>A</em>, <em>B</em>, <em>tip_length</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawArrow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw an arrow between starting at point A and ending at point B</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>A</strong> (<em>double, double</em>) &#8211; starting point (ax, ay)</li>
+<li><strong>B</strong> (<em>double, double</em>) &#8211; ending point (bx, by)</li>
+<li><strong>tip_length</strong> (<em>double</em>) &#8211; length of the tip</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawAUV">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawAUV</code><span class="sig-paren">(</span><em>cx</em>, <em>cy</em>, <em>oritentation</em>, <em>length</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawAUV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a AUV centered at (cx, cy) with heading &lt;heading&gt; and size length</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cx,cy</strong> (<em>double</em>) &#8211; position of the AUV</li>
+<li><strong>heading</strong> (<em>double</em>) &#8211; heading of the vehicle in degree</li>
+<li><strong>lenght</strong> (<em>double</em>) &#8211; length of the vehicle</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawBox">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawBox</code><span class="sig-paren">(</span><em>x_lb</em>, <em>x_ub</em>, <em>y_lb</em>, <em>y_ub</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a box defined by its corners in figure named &lt;figure&gt;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x_lb</strong> (<em>double</em>) &#8211; x lower bound</li>
+<li><strong>x_ub</strong> (<em>double</em>) &#8211; x upper bound</li>
+<li><strong>y_lb</strong> (<em>double</em>) &#8211; y lower bound</li>
+<li><strong>y_ub</strong> (<em>double</em>) &#8211; y upper bound</li>
+<li><strong>figure</strong> (<em>string</em>) &#8211; optional, name of the figure where the box will be drawn</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawBoxesUnion">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawBoxesUnion</code><span class="sig-paren">(</span><em>boxes_bounds</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawBoxesUnion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes and draw the union of a list of N-D rectangles, from a
+list of list of bounds</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>box_bounds</strong> (<em>list&lt;list&lt;float&gt;&gt;</em>) &#8211; list of list of bounds in the form ((x_lb_1, x_ub_1, y_lb_1, ...), (x_lb_2, x_ub_2, y_lb_2, ...), ...)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawCircle">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawCircle</code><span class="sig-paren">(</span><em>cx</em>, <em>cy</em>, <em>R</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawCircle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a circle centered at (cx, cy), with radius r</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cx,cy</strong> (<em>double</em>) &#8211; center of the circle</li>
+<li><strong>r</strong> (<em>double</em>) &#8211; raduis</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawEllipse">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawEllipse</code><span class="sig-paren">(</span><em>cx, cy, a, b, rot, angles=[0, 360], color='r', **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawEllipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw an ellipse centered at (cx, cy), with semi-major and minor axes a and b,
+and rotated by rot (degrees)</p>
+<p>Partial ellipse can be drawn using the angles argument.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cx,cy</strong> (<em>double</em>) &#8211; center of the ellipse</li>
+<li><strong>a,b</strong> (<em>double</em>) &#8211; semi-major and minor axes</li>
+<li><strong>rot</strong> (<em>double</em>) &#8211; direction of the semi-major axis !!! need to be in degree !!!</li>
+<li><strong>angles</strong> (<em>double, double</em>) &#8211; starting and ending angle of the Ellispe</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># full ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vibes</span><span class="o">.</span><span class="n">drawEllipse</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">45</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># half ellipse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vibes</span><span class="o">.</span><span class="n">drawEllipse</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">45</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawLine">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawLine</code><span class="sig-paren">(</span><em>points</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a N-D line from the list of coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>points</strong> (<em>list&lt;list&lt;float&gt;&gt;</em>) &#8211; [[x_1, y_1, z_1, ...], [x_2, y_2, z_2, ...], ...]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawPie">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawPie</code><span class="sig-paren">(</span><em>center</em>, <em>rho</em>, <em>theta</em>, <em>color='r'</em>, <em>use_radian=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawPie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a Pie centered at &lt;center&gt; with raduis in &lt;rho&gt; and angle in &lt;theta&gt;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>center</strong> (<em>double, double</em>) &#8211; center of the Pie</li>
+<li><strong>rho</strong> (<em>double, double</em>) &#8211; minimal and maximal radius</li>
+<li><strong>theta</strong> (<em>double, double</em>) &#8211; minimal and maximal angle (in degree)</li>
+<li><strong>boolean</strong> (<em>use_radian</em>) &#8211; if True theta is in radian</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawPoint">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawPoint</code><span class="sig-paren">(</span><em>cx</em>, <em>cy</em>, <em>radius=3</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a Point at position (cy, cy)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cx,cy</strong> (<em>double</em>) &#8211; location of the point</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawPolygon">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawPolygon</code><span class="sig-paren">(</span><em>points</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawPolygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a Polygon defined by &lt;points&gt;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>points</strong> (<em>list of lists</em>) &#8211; list of points. ex [ [p1x, p1y] ,  [p2x, p2y], ..., [pnx, pny]]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawRing">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawRing</code><span class="sig-paren">(</span><em>cx</em>, <em>cy</em>, <em>r_min</em>, <em>r_max</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawRing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a ring at position (cx, cy) with radius between (r_min, r_max)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cx,cy</strong> (<em>double</em>) &#8211; center if the ring</li>
+<li><strong>r_max</strong> (<em>r_min,</em>) &#8211; bound of the radius in degree</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawText">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawText</code><span class="sig-paren">(</span><em>cx</em>, <em>cy</em>, <em>text</em>, <em>scale</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a text &lt;text&gt; at position (cx, cy)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cx,cy</strong> (<em>double</em>) &#8211; position of the text</li>
+<li><strong>text</strong> (<em>string</em>) &#8211; text to draw</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Experimental feature</p>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.drawVehicle">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">drawVehicle</code><span class="sig-paren">(</span><em>cx</em>, <em>cy</em>, <em>heading</em>, <em>length</em>, <em>color='r'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.drawVehicle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a vehicle centered at (cx, cy) with heading &lt;heading&gt; and size length</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cx,cy</strong> (<em>double</em>) &#8211; position of the vehicle</li>
+<li><strong>heading</strong> (<em>double</em>) &#8211; heading of the vehicle in degree</li>
+<li><strong>lenght</strong> (<em>double</em>) &#8211; length of the vehicle</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="figure-and-view-management">
+<h2>Figure and view management<a class="headerlink" href="#figure-and-view-management" title="Permalink to this headline">¶</a></h2>
+<dl class="classmethod">
+<dt id="vibes.vibes.newFigure">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">newFigure</code><span class="sig-paren">(</span><em>figure=''</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.newFigure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new figure named figureName.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>figure</strong> (<em>string</em>) &#8211; name of the new figure</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.selectFigure">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">selectFigure</code><span class="sig-paren">(</span><em>figure=''</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.selectFigure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select figureName as the current figure. Drawing operations will then apply to figureName.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.closeFigure">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">closeFigure</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.closeFigure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the figure named figureName, or the current figure if no argument is given.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.clearFigure">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">clearFigure</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.clearFigure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the contents of the figure figureName, or the current figure if argument is given.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.saveImage">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">saveImage</code><span class="sig-paren">(</span><em>fileName</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.saveImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the figure <em>figureName</em>, or the current figure if no argument is given as an image.
+:param filName: name of the output image
+:type filName: string</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.setFigureProperties">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">setFigureProperties</code><span class="sig-paren">(</span><em>properties</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.setFigureProperties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the property key to the provided value for current figure.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.setFigureSize">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">setFigureSize</code><span class="sig-paren">(</span><em>width</em>, <em>height</em>, <em>figure=''</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.setFigureSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the size of the window</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.setFigurePos">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">setFigurePos</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>figure=''</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.setFigurePos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the position of the window</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.axisAuto">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">axisAuto</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.axisAuto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set axes limits to the bounding box of the drawing.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.axisEqual">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">axisEqual</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.axisEqual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as axisAuto but with the same ratio</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.axisLimits">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">axisLimits</code><span class="sig-paren">(</span><em>x_lb</em>, <em>x_ub</em>, <em>y_lb</em>, <em>y_ub</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.axisLimits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the rectangle to be displayed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x_lb,y_lb</strong> (<em>float</em>) &#8211; lower-left corner</li>
+<li><strong>x_ub,y_ub</strong> (<em>float</em>) &#8211; upper-right corner</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Example :</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">axisLimits</span><span class="p">(</span><span class="n">x_lb</span><span class="p">,</span> <span class="n">x_ub</span><span class="p">,</span> <span class="n">y_lb</span><span class="p">,</span> <span class="n">y_ub</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.axisLabels">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">axisLabels</code><span class="sig-paren">(</span><em>x_label</em>, <em>y_label</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.axisLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set axis Labels
+.. rubric:: example</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">axisLabels</span><span class="p">(</span> <span class="n">x_label</span><span class="p">,</span> <span class="n">y_label</span><span class="p">,</span> <span class="n">figur</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.newGroup">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">newGroup</code><span class="sig-paren">(</span><em>groupName</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.newGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new group with the specified name.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">newGroup</code><span class="sig-paren">(</span><em>groupName</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>Create a new group with the specified name.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="vibes.vibes.clearGroup">
+<em class="property">classmethod </em><code class="descclassname">vibes.</code><code class="descname">clearGroup</code><span class="sig-paren">(</span><em>groupName</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vibes.vibes.clearGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the contents of the group groupName in figure figureName.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="quickstart.html" class="btn btn-neutral" title="Getting Started" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Benoit Desrochers.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2rc2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
