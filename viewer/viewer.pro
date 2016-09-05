@@ -26,3 +26,5 @@ contains(CONFIG, static): {
            DEFINES += _USE_qsvg
        }
    }
+target.path = $$PREFIX/bin
+INSTALLS += target
