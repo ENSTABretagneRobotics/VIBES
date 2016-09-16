@@ -30,15 +30,18 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void closeEvent(QCloseEvent *event);
     void resizeEvent(QResizeEvent *event);
-    
+
+    // bool to indicate if axis needs to be drawn or not
+    bool showAxis;
 signals:
-    
+
 public slots:
     void exportGraphics(QString fileName = QString());
+    void setShowAxis(bool value) { showAxis = value;}
 
 protected slots:
     void refreshProjectionSelectors();
-    
+
 };
 
 #endif // FIGURE2D_H

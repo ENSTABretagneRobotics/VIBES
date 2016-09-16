@@ -342,6 +342,12 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                     for (int i=0; i<labels.size(); i++)
                         fig->scene()->setDimName(i, labels[i].toString());
                 }
+                else if (it.key() == "showAxis"){
+                    bool value = it.value().toBool();
+                    fig->setShowAxis(value);
+                }
+
+
             }
         }
     }
@@ -370,7 +376,7 @@ void VibesWindow::exportCurrentFigureGraphics()
         pfig = figures.values().at(selectId.row());
     else
         pfig = static_cast<Figure2D*> (selectId.internalPointer());
-    
+
     if (figures.values().contains(pfig))
     {
         pfig->exportGraphics();

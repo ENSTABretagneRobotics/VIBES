@@ -14,7 +14,8 @@
 Figure2D::Figure2D(QWidget *parent) :
     QGraphicsView(parent),
     lbProjX(new QLabel("xlabelhere",this)),
-    lbProjY(new QLabel("ylabelhere",this))
+    lbProjY(new QLabel("ylabelhere",this)),
+    showAxis(true)
 {
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
@@ -133,6 +134,8 @@ void Figure2D::mouseMoveEvent(QMouseEvent * event)
 
 void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
 {
+    // if axis is disable
+    if (!showAxis) return;
     // Black pen and empty brush for drawing axis
     painter->setPen(QPen(Qt::black, 0));//, Qt::DashDotLine, Qt::RoundCap, Qt::RoundJoin));
     painter->setBrush(Qt::NoBrush);
@@ -223,6 +226,10 @@ void Figure2D::keyPressEvent(QKeyEvent *event)
 {
     switch(event->key())
     {
+    case Qt::Key_A:
+      this->showAxis = !this->showAxis;
+      this->scene()->update();
+      break;
     case Qt::Key_Plus:
     case Qt::Key_Q:
         this->scale(1.25,1.25);
