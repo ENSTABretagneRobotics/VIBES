@@ -38,6 +38,8 @@ vibes.setFigureProperties({'x':0, 'y':0, 'width':600, 'height':600})
 
 # vibes.axisLimits(10,20,10,20)
 vibes.axisLabels("titi", "toto")
+
+vibes.showAxis(False)
 # vibes.drawBox(-1,0,-4,-6,color='[r]', figure='test2')
 
 
