@@ -491,3 +491,25 @@ class vibes(object):
                           }
               }
         cls._write(msg, **kwargs)
+
+    @classmethod
+    def drawRaster(cls, filename, xlb, yub, xres, yres, **kwargs):
+      """Draw raster from <filename> on the screen with upper left corner at <xlb, yub>
+         with pixels size of <xres, yres>.
+
+        Args:
+            filename (string): image filename of the input data
+            xlb, yub (double): coordinate of the upper left pixel
+            xres, yres (double): x and y pixel resolution
+            color (optional, string): color to used for transparency
+      """
+      msg = {'action': 'draw',
+              'shape': {'type': 'raster',
+                        'filename' : filename,
+                        'ul_corner':  [xlb, yub],
+                        'scale' : [xres, yres],
+                        }
+            }
+      if "color" in kwargs:
+        msg["shape"]["format"] = kwargs['color']
+      cls._write(msg, **kwargs)

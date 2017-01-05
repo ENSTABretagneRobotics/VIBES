@@ -8,12 +8,14 @@
 #include <QGraphicsItemGroup>
 #include <QGraphicsPathItem>
 #include <QPainterPath>
-
-
+#include <QGraphicsPixmapItem>
+#include <QPixmap>
+#include <QBitmap>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
 
+#include <QDebug>
 #include <cmath>
 using namespace std;
 
@@ -222,6 +224,10 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     else if (type == "vehicle_auv")
     {
         return new VibesGraphicsVehicleAUV();
+    }
+    else if (type == "raster")
+    {
+        return new VibesGraphicsRaster();
     }
     return 0;
 }
@@ -1612,6 +1618,73 @@ bool VibesGraphicsRing::computeProjection(int dimX, int dimY)
         graphics_path->setPen(pen);
         graphics_path->setBrush(brush);
         this->addToGroup(graphics_path);
+    }
+
+    // Update successful
+    return true;
+}
+
+bool VibesGraphicsRaster::parseJsonGraphics(const QJsonObject& json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsPie has JSON type "arrow"
+        if (type == "raster" && json.contains("filename") && json.contains("ul_corner") && json.contains("scale"))
+        {
+            if (json["ul_corner"].toArray().size() != 2) return false;
+            if (json["scale"].toArray().size() != 2) return false;
+            // Compute dimension
+            this->_nbDim = 2; //center.size();
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+#include <iostream>
+bool VibesGraphicsRaster::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT(json.contains("type"));
+    // VibesGraphicsRing has JSON type "ring"
+    Q_ASSERT(json["type"].toString() == "raster");
+
+
+    // Body
+    {
+        QString filename = json["filename"].toString();
+        QJsonArray ul_corner = json["ul_corner"].toArray();
+        QJsonArray scale = json["scale"].toArray();
+        double xlb = ul_corner[0].toDouble();
+        double yub = ul_corner[1].toDouble();
+        double xres = scale[0].toDouble();
+        double yres = scale[1].toDouble();
+
+        QImage image(filename);
+        QPixmap pixmap = QPixmap::fromImage(image);
+        if (json.contains("EdgeColor")) {
+          const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString());
+          pixmap.setMask(pixmap.createMaskFromColor(pen.color().rgb()));
+
+        }
+
+        QTransform transform(xres, 0, 0, -yres, xlb, yub);
+        QGraphicsPixmapItem *pixmap_item = new QGraphicsPixmapItem(pixmap);
+
+        pixmap_item->setShapeMode(QGraphicsPixmapItem::MaskShape);
+        pixmap_item->setTransform(transform);
+
+        this->addToGroup(pixmap_item);
     }
 
     // Update successful

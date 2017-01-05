@@ -57,6 +57,7 @@ Available shapes are:
 + Ring
 + Vehicle
 + Point
++ Raster (image)
 
 ![alt text](imgs/vibes_figs.png "All figures")
 
@@ -108,6 +109,7 @@ vibes.drawBox(0,2, 0,3, color='[#22449977]')
 vibes.drawBox(1,5, 2,4, color='[#AAAA2277]')
 ```
 ![alt text](imgs/transparency.png "Example")
+
 
 ## Figure and view management
 

@@ -20,6 +20,7 @@ Drawing functions
 .. automethod:: vibes.vibes.drawRing
 .. automethod:: vibes.vibes.drawText
 .. automethod:: vibes.vibes.drawVehicle
+.. automethod:: vibes.vibes.drawRaster
 
 
 
