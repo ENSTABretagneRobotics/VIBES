@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = Vibes-viewer
+TARGET = VIBes_viewer
 INCLUDEPATH += .
 
 QT += widgets svg concurrent network
