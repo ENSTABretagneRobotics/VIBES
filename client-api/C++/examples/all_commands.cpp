@@ -8,19 +8,19 @@
 
 // This file is part of VIBes' C++ API examples
 //
-// Copyright (c) 2013-2015 Vincent Drevelle, Jeremy Nicola, Simon Rohou, 
+// Copyright (c) 2013-2015 Vincent Drevelle, Jeremy Nicola, Simon Rohou,
 //                         Benoit Desrochers
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -237,14 +237,14 @@ int main()
     VIBES_TEST( vibes::drawSector(0,0,3,3,20, 120, "black[red]") );
     VIBES_TEST( vibes::drawSector(0,0,3,1,-20, -220, "black[red]") );
     VIBES_TEST( vibes::drawSector(10,-3,3,3,700, 800, "black[red]") );
-    VIBES_TEST( vibes::drawSector(0,0,3,3,20, 120, "black[red]") ); 
+    VIBES_TEST( vibes::drawSector(0,0,3,3,20, 120, "black[red]") );
 
     cout << "drawPie" << std::endl;
     VIBES_TEST( vibes::drawPie(0,-20,3,4,20, 120, "black[red]") );
     VIBES_TEST( vibes::drawPie(0,-20,3,7,-20, -220, "black[red]") );
     VIBES_TEST( vibes::drawPie(10,-20,3,4,700, 800, "black[red]") );
-    VIBES_TEST( vibes::drawPie(5,-20,3,3,20, 120, "black[red]") ); 
-    
+    VIBES_TEST( vibes::drawPie(5,-20,3,3,20, 120, "black[red]") );
+
     cout << "drawRing"<< endl;
     VIBES_TEST( vibes::drawRing(42,42,20,23,"black[red]"));
 
@@ -269,7 +269,7 @@ int main()
     cout << "drawPoint"<<endl;
     VIBES_TEST(vibes::drawPoint(17,17,"red[darkyellow]"));
     VIBES_TEST(vibes::drawPoint(27,27,2,vibesParams("FaceColor","magenta","EdgeColor","none","Draggable",true,"FixedScale",false)));
-    
+
     VIBES_TEST( vibes::axisAuto() );
     //  VIBES_TEST( vibes::axisLimits(-1,1, -3,2) );
 
@@ -277,7 +277,7 @@ int main()
     VIBES_TEST( vibes::saveImage("vibes_test.jpg") );
     VIBES_TEST( vibes::saveImage("vibes_test.bmp") );
     VIBES_TEST( vibes::saveImage("vibes_test.svg") );
-    
+
     vibes::newFigure("Points");
     vector<double> x,y;
     for(unsigned int i=0;i<500;i++)
@@ -285,20 +285,23 @@ int main()
         x.push_back(25.0*rand()/RAND_MAX);
         y.push_back(25.0*rand()/RAND_MAX);
     }
-    
+
     vibes::drawPoints(x,y,vibesParams("FaceColor","blue","EdgeColor","darkBlue","Draggable",true));
-    
+
     x.clear();
     y.clear();
-    
+
     for(unsigned int i=0;i<500;i++)
     {
         x.push_back(34+25.0*rand()/RAND_MAX);
         y.push_back(40+25.0*rand()/RAND_MAX);
     }
-    
+
     vibes::drawPoints(x,y,vibesParams("FaceColor","red","EdgeColor","darkRed","Radius",100));
-    
+
+    // vibes::newFigure("test Raster");
+    // vibes::drawRaster("./raster_example.png", 10, 5, 0.1, 0.1);
+
     std::cout << "end drawing" << std::endl;
     VIBES_TEST( vibes::endDrawing() );
 
@@ -312,6 +315,8 @@ int main()
     cout << (vibesParams("LineWidth",6, "Yes",1) & p1).toJSON() << endl;
 
     cout << "3." << endl;
+
+
     /*  vibes::Params p2 = vibesParams("action", "draw",
                            "figure", "fig_name",
                            "shape", vibesParams("LineWidth",5,
@@ -339,6 +344,6 @@ int main()
     printf ("Param based draw took %d clicks (%f seconds).\n",t2,((float)t2)/CLOCKS_PER_SEC);*/
 
 
-    
+
     return 0;
 }

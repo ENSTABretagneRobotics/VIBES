@@ -62,5 +62,4 @@ vibes.newFigure("raster")
 vibes.drawArrow((0,0), (1,1), 0.1)
 
 
-
 vibes.endDrawing()
