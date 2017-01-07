@@ -78,7 +78,8 @@ public:
            VibesGraphicsBoxesUnionType,
            VibesGraphicsPointsType,
            // Do not remove the following value! It signals the end of VibesGraphicsItem types
-           VibesGraphicsLastType
+           VibesGraphicsLastType,
+           VibesGraphicsRasterType
          };
     // Constructor
     VibesGraphicsItem(QGraphicsItem * qGraphicsItem);
@@ -325,6 +326,15 @@ class VibesGraphicsRing : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsRing, QGraphicsItemGroup)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("center","rho")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+/// An Image Rasters VibesGraphicsRasterType
+class VibesGraphicsRaster : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsRaster, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("x","y")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);

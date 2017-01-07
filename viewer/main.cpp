@@ -17,7 +17,8 @@ int main(int argc, char *argv[])
             return 1; // Exit already a process running
     }
     // Start a local server to signal the application is running
-    QLocalServer * m_localServer = new QLocalServer();
+    // parent is set to <a> in order to destroy cleanly the socket at the end.
+    QLocalServer * m_localServer = new QLocalServer(&a);
     m_localServer->listen(serverName);
 
     // Process command line arguments

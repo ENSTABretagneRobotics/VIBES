@@ -58,4 +58,8 @@ vibes.drawArrow([9, 9], [10, 9], 0.3, '[r]')
 vibes.drawPolygon([[1,1], [1,4], [5,2], [5, 1]])
 vibes.setFigureProperties({'viewbox':'equal'})
 
+vibes.newFigure("raster")
+vibes.drawArrow((0,0), (1,1), 0.1)
+
+
 vibes.endDrawing()

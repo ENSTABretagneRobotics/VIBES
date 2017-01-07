@@ -4,15 +4,16 @@ import json
 import os
 import math
 import sys
+import subprocess
 
 
 class vibes(object):
-    channel = ''
+    channel = None
     current_fig = 'default'
 
     @classmethod
     def _write(cls, msg, figure=None, **kwargs):
-        if(cls.channel == ''):
+        if(cls.channel is None):
             print('beginDrawing need to be called first')
         else:
             #print(kwargs.pop('figure', cls.current_fig))
@@ -33,7 +34,8 @@ class vibes(object):
     ##########################################################################
 
     @classmethod
-    def beginDrawing(cls):
+    def beginDrawing(cls, runVibesInstance=True):
+
         vibes_json = 'vibes.json'
         # Retrieve user-profile directory from envirnment variable
         user_dir = os.getenv("USERPROFILE")  # Windows
@@ -46,6 +48,7 @@ class vibes(object):
             vibes_json = user_dir + '/.vibes.json'
 
         try:
+            cls.channel = None
             cls.channel = open(vibes_json, 'a')
         except IOError:
             print('cannot open', vibes_json)
@@ -53,11 +56,14 @@ class vibes(object):
 
     @classmethod
     def endDrawing(cls):
-        cls.channel.close()
+        if not (cls.channel is None):
+            cls.channel.close()
+            cls.channel = None
 
     @classmethod
     def update(cls):
-      cls.channel.flush()
+        if not (cls.channel is None):
+            cls.channel.flush()
 
     ##########################################################################
     ##							Figure Management							##
@@ -491,3 +497,25 @@ class vibes(object):
                           }
               }
         cls._write(msg, **kwargs)
+
+    @classmethod
+    def drawRaster(cls, filename, xlb, yub, xres, yres, **kwargs):
+      """Draw raster from <filename> on the screen with upper left corner at <xlb, yub>
+         with pixels size of <xres, yres>.
+
+        Args:
+            filename (string): image filename of the input data
+            xlb, yub (double): coordinate of the upper left pixel
+            xres, yres (double): x and y pixel resolution
+            color (optional, string): color to used for transparency
+      """
+      msg = {'action': 'draw',
+              'shape': {'type': 'raster',
+                        'filename' : filename,
+                        'ul_corner':  [xlb, yub],
+                        'scale' : [xres, yres],
+                        }
+            }
+      if "color" in kwargs:
+        msg["shape"]["format"] = kwargs['color']
+      cls._write(msg, **kwargs)
