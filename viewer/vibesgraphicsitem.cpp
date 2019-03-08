@@ -225,6 +225,10 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     {
         return new VibesGraphicsVehicleAUV();
     }
+    else if (type == "vehicle_tank")
+    {
+        return new VibesGraphicsVehicleTank();
+    }
     else if (type == "raster")
     {
         return new VibesGraphicsRaster();
@@ -1127,6 +1131,100 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
         graphics_propunit->setRotation(orientation);
         graphics_propunit->setScale(length / 7.); // initial vehicle's length is 7
         this->addToGroup(graphics_propunit);
+    }
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsVehicleTank
+//
+
+bool VibesGraphicsVehicleTank::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // JSON type for VibesGraphicsVehicleTank is "vehicle_tank"
+        if (type == "vehicle_tank")
+        {
+            if (json.contains("center") && json.contains("length") && json.contains("orientation"))
+            {
+                int center_size = json["center"].toArray().size();
+                if (center_size == 2 && json["length"].toDouble() > 0.)
+                {
+                    // Set dimension
+                    this->_nbDim = center_size;
+
+                    // Update successful
+                    return true;
+                }
+            }
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+#include <iostream>
+bool VibesGraphicsVehicleTank::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString());
+
+    Q_ASSERT(json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "vehicle_tank");
+
+    QJsonArray center = json["center"].toArray();
+    double length = json["length"].toDouble();
+    double orientation = json["orientation"].toDouble();
+
+    Q_ASSERT(center.size() == 2);
+    Q_ASSERT(this->_nbDim == center.size());
+    Q_ASSERT(length > 0.);
+
+    // Get center
+    const QPointF & centerPoint = QPointF(center[dimX].toDouble(), center[dimY].toDouble());
+
+    /*  This shape is inspired by Luc Jaulin   */
+
+    // Set body shape
+    {
+        QPolygonF body;
+        body << QPointF(1., -1.5) + centerPoint;
+        body << QPointF(-1., -1.5) + centerPoint;
+        body << QPointF(0., -1.5) + centerPoint;
+        body << QPointF(0., -1.) + centerPoint;
+        body << QPointF(-1., -1.) + centerPoint;
+        body << QPointF(-1., 1.) + centerPoint;
+        body << QPointF(0., 1.) + centerPoint;
+        body << QPointF(0., 1.5) + centerPoint;
+        body << QPointF(-1., 1.5) + centerPoint;
+        body << QPointF(1., 1.5) + centerPoint;
+        body << QPointF(0., 1.5) + centerPoint;
+        body << QPointF(0., 1.) + centerPoint;
+        body << QPointF(3., 0.5) + centerPoint;
+        body << QPointF(3., -0.5) + centerPoint;
+        body << QPointF(0., -1.) + centerPoint;
+        body << QPointF(0., -1.5) + centerPoint;
+
+        QGraphicsPolygonItem *graphics_body = new QGraphicsPolygonItem(body);
+        graphics_body->setPen(pen);
+        graphics_body->setBrush(brush);
+        graphics_body->setTransformOriginPoint(centerPoint);
+        graphics_body->setRotation(orientation);
+
+        graphics_body->setScale(length/4.); // initial vehicle's length is 4
+        this->addToGroup(graphics_body);
     }
 
     // Update successful

@@ -343,6 +343,9 @@ namespace vibes {
   /// Draw a 2-D submarine (type AUV) at position (cx,cy)
   VIBES_FUNC_COLOR_PARAM_4(drawAUV,const double &,cx, const double &,cy, const double &,rot, const double &,length)
 
+  /// Draw a 2-D tank at position (cx,cy)
+  VIBES_FUNC_COLOR_PARAM_4(drawTank,const double &,cx, const double &,cy, const double &,rot, const double &,length)
+
   /// Draw a sector (part of an ellipse) at position (cx, cy) with axis (a, b) and angular bounds (startAngle, endAngle)
   VIBES_FUNC_COLOR_PARAM_6(drawSector, const double &,cx, const double &,cy,
                                        const double &,a, const double &,b,
