@@ -81,9 +81,6 @@ namespace vibes {
      * A class to hold any type supported by vibes properties system, an to provide JSON serialization
      */
     class Value {
-        enum value_type_enum{
-            vt_none, vt_integer, vt_string, vt_decimal, vt_array, vt_object
-        } _type;
 
         union {
         int _integer;
@@ -93,6 +90,10 @@ namespace vibes {
         std::string _string;
         std::vector<Value> _array;
 
+        enum value_type_enum{
+            vt_none, vt_integer, vt_string, vt_decimal, vt_array, vt_object
+        } _type;
+        
     public:
         Value() : _type(vt_none) {}
         Value(int i) : _integer(i), _type(vt_integer) {}
