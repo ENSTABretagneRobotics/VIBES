@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QPen>
 #include <QBrush>
+#include <QMessageBox>
 
 class Figure2D;
 
@@ -28,6 +29,13 @@ public slots:
     void readFile();
     bool processMessage(const QByteArray &msg);
     void exportCurrentFigureGraphics();
+    void hideAllGraphics();
+    void closeAllGraphics();
+    void closeSingleGraphic();
+    void hideSingleGraphic();
+    void showSingleGraphic();
+    void editProperties();
+    void openHelpDialog();
 
 private slots:
     void removeFigureFromList(QObject *fig);

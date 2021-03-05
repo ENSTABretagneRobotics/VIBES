@@ -8,6 +8,7 @@
 
 #include "vibesscene2d.h"
 #include "vibesgraphicsitem.h"
+#include "treeview.h"
 
 #include <QFileDialog>
 
@@ -28,7 +29,7 @@ bRemoveFileOnExit(false)
     ui->treeView->setModel(new VibesTreeModel(figures, this));
 
     // When its name is double clicked in the list, the corresponding figure is brought to front
-    connect(ui->treeView, &QTreeView::doubleClicked,
+    /*connect(ui->treeView, &QTreeView::doubleClicked,
             [this](const QModelIndex& mi){//Figure2D* fig = static_cast<Figure2D*>( mi.internalPointer() );
                                       Figure2D* fig = 0;
                                       if (mi.internalPointer() == 0) { fig = this->figures.values().at(mi.row()); }
@@ -36,8 +37,9 @@ bRemoveFileOnExit(false)
                                                  fig->activateWindow();
                                                  fig->raise(); }
                                      } );
+                                     */
     // When a object name is double clicked in the list, the property editor is shown
-    connect(ui->treeView, &QTreeView::doubleClicked,
+    /*connect(ui->treeView, &QTreeView::doubleClicked,
             [](const QModelIndex& mi){Figure2D* fig = static_cast<Figure2D*>( mi.internalPointer() );
                                       if (fig) { VibesScene2D * scene = fig->scene();
                                                  VibesGraphicsItem * item = scene->itemByName(scene->namedItems().at(mi.row()));
@@ -45,7 +47,15 @@ bRemoveFileOnExit(false)
                                                  item->setJsonValues(json);
                                                }
                                      } );
-
+    */
+    // When DEL is pressed, remove the corresponding figure
+    connect(ui->treeView, SIGNAL(deleteFigureEvent()),this,SLOT(closeSingleGraphic()));
+    //When H is pressed, hide the corresponding figure
+    connect(ui->treeView, SIGNAL(hideFigureEvent()),this,SLOT(hideSingleGraphic()));
+    //When S is pressed or when its name is double left clicked in the list , show the corresponding figure
+    connect(ui->treeView, SIGNAL(showFigureEvent()),this,SLOT(showSingleGraphic()));
+    //When P is pressed, the property editor is shown
+    connect(ui->treeView, SIGNAL(propertiesEvent()),this,SLOT(editProperties()));
     /// \todo Put platform dependent code here for named pipe creation and opening
     if (showFileOpenDlg)
     {
@@ -363,6 +373,86 @@ VibesWindow::processMessage(const QByteArray &msg_data)
     return true;
 }
 
+void VibesWindow::editProperties()
+{
+    //Edit properties of a group
+    const QModelIndex index = ui->treeView->selectionModel()->currentIndex();
+    QString selectedFigure = index.parent().data(Qt::DisplayRole).toString();
+    if(figures.find(selectedFigure) != figures.end()) //Check if the parent of the selection is a figure
+    {
+        VibesScene2D * scene = figures[selectedFigure]->scene();
+        QString selectedGroup = index.data(Qt::DisplayRole).toString();
+        if(scene->namedItems().indexOf(selectedGroup) != -1)
+        {
+            VibesGraphicsItem * item = scene->itemByName(selectedGroup);
+            QJsonObject json = PropertyEditDialog::showEditorForJson(item->json());
+            item->setJsonValues(json);
+        }
+        
+    }
+
+}
+
+void VibesWindow::closeSingleGraphic()
+{
+    //Close selected figure
+    //Find figure's name
+    const QModelIndex index = ui->treeView->selectionModel()->currentIndex();
+    QString selectedFigure = index.data(Qt::DisplayRole).toString();
+    if(figures.find(selectedFigure) != figures.end()) //Check if a figure is selected (and not a group)
+    {
+        delete figures[selectedFigure];
+        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
+    }
+}
+
+void VibesWindow::hideSingleGraphic()
+{
+    //Hide selected figure
+    //Find figure's name
+    const QModelIndex index = ui->treeView->selectionModel()->currentIndex();
+    QString selectedFigure = index.data(Qt::DisplayRole).toString();
+    if(figures.find(selectedFigure) != figures.end()) //Check if a figure is selected (and not a group)
+    {
+        figures[selectedFigure]->hide();
+    }
+}
+
+void VibesWindow::showSingleGraphic()
+{
+    //Show selected figure
+    //Find figure's name
+    const QModelIndex index = ui->treeView->selectionModel()->currentIndex();
+    QString selectedFigure = index.data(Qt::DisplayRole).toString();
+    if(figures.find(selectedFigure) != figures.end()) //Check if a figure is selected (and not a group)
+    {
+      figures[selectedFigure]->show();
+    }    
+}
+
+void VibesWindow::closeAllGraphics()
+{
+    //Close all graphics
+    QHashIterator<QString, Figure2D*> i(figures);
+    while (i.hasNext())
+    {
+        i.next();
+        delete i.value();
+    }
+    static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
+}
+
+void VibesWindow::hideAllGraphics()
+{
+    //Hide all graphics
+    QHashIterator<QString, Figure2D*> i(figures);
+    while (i.hasNext())
+    {
+        i.next();
+        i.value()->hide();
+    }
+}
+
 void VibesWindow::exportCurrentFigureGraphics()
 {
     // Get current selected item in tree view
@@ -381,6 +471,11 @@ void VibesWindow::exportCurrentFigureGraphics()
     {
         pfig->exportGraphics();
     }
+}
+
+void VibesWindow::openHelpDialog()
+{
+    QMessageBox::information(this, "VIBes", tr("Show a figure: S or double-click\nHide a figure: H\nClose a figure: DEL\nEdit group properties: P"));
 }
 
 void
