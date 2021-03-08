@@ -366,10 +366,10 @@ VibesWindow::processMessage(const QByteArray &msg_data)
     {
         return false;
     }
-
+    const QModelIndex index = ui->treeView->selectionModel()->currentIndex(); //Save the selection before updating 
     /// \todo Do not force update after each message
     static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
-
+    ui->treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows); //Apply the saved selection
     return true;
 }
 
@@ -475,11 +475,10 @@ void VibesWindow::exportCurrentFigureGraphics()
 
 void VibesWindow::openHelpDialog()
 {
-    QMessageBox::information(this, "VIBes", tr("Show a figure: S or double-click\nHide a figure: H\nClose a figure: DEL\nEdit group properties: P"));
+    QMessageBox::information(this, "VIBes", tr("Open a figure: O or double-click\nHide a figure: H\nClose a figure: DEL\nEdit group properties: P"));
 }
 
-void
-VibesWindow::readFile()
+void VibesWindow::readFile()
 {
     // Display we are reading data
     if (!file.atEnd())

@@ -22,7 +22,7 @@ void TreeView::keyPressEvent(QKeyEvent *event)
 	{
 		emit hideFigureEvent();
 	}
-	else if(event->key() == Qt::Key_S)
+	else if(event->key() == Qt::Key_O)
 	{
 		emit showFigureEvent();
 	}
