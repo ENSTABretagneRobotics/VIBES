@@ -16,7 +16,7 @@ VIBes consists in two parts:
 
 The use of a separate viewer application enables an easy set-up on every system. First, pre-built binaries of the VIBes viewer are provided for Windows, MacOS and Linux platforms (but you are free to build the viewer from sources). Then, the API consists only of a few files that have to be included in your program.
 
-The "?" menu display useful keyboard shorcuts.
+The "?" menu display useful keyboard shortcuts.
 
 ## Building from sources
 ### Linux
