@@ -45,7 +45,8 @@ SET(VIBes_viewer_SOURCES main.cpp
                          figure2d.cpp
                          vibestreemodel.cpp
                          vibeswindow.cpp
-                         propertyeditdialog.cpp )
+                         propertyeditdialog.cpp
+			 treeview.cpp )
 
 # Headers
 SET(VIBes_viewer_HEADERS
@@ -54,7 +55,8 @@ SET(VIBes_viewer_HEADERS
                          figure2d.h
                          vibestreemodel.h
                          vibeswindow.h
-                         propertyeditdialog.h )
+                         propertyeditdialog.h
+			 treeview.h )
 
 # Qt designer UI files
 SET(VIBes_viewer_FORMS vibeswindow.ui propertyeditdialog.ui)

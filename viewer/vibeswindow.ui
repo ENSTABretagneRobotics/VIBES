@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>166</width>
+    <width>321</width>
     <height>320</height>
    </rect>
   </property>
@@ -16,8 +16,8 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTreeView" name="treeView">
-      <property name="rootIsDecorated">
+     <widget class="TreeView" name="treeView" native="true">
+      <property name="rootIsDecorated" stdset="0">
        <bool>true</bool>
       </property>
      </widget>
@@ -29,7 +29,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>166</width>
+     <width>321</width>
      <height>22</height>
     </rect>
    </property>
@@ -42,18 +42,61 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionExportGraphics"/>
+   <addaction name="actionOpenGraphics"/>
+   <addaction name="actionHideGraphics"/>
+   <addaction name="actionCloseGraphics"/>
+   <addaction name="actionHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExportGraphics">
    <property name="text">
-    <string>Export Graphics</string>
+    <string>Export</string>
    </property>
    <property name="toolTip">
     <string>tr(&quot;Exports the current figure to image file.&quot;)</string>
    </property>
   </action>
+  <action name="actionCloseGraphics">
+   <property name="text">
+    <string>Close All</string>
+   </property>
+   <property name="toolTip">
+    <string>tr(&quot;Close all the figures&quot;)</string>
+   </property>
+  </action>
+  <action name="actionHideGraphics">
+   <property name="text">
+    <string>Hide All</string>
+   </property>
+   <property name="toolTip">
+    <string>tr(&quot;Hide all the figures&quot;)</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>?</string>
+   </property>
+   <property name="toolTip">
+    <string>tr(&quot;Help&quot;)</string>
+   </property>
+  </action>
+  <action name="actionOpenGraphics">
+   <property name="text">
+    <string>Open All</string>
+   </property>
+   <property name="toolTip">
+    <string>tr(&quot;Open all the figures&quot;)</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>TreeView</class>
+   <extends>QWidget</extends>
+   <header>treeview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -68,6 +111,70 @@
     </hint>
     <hint type="destinationlabel">
      <x>82</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCloseGraphics</sender>
+   <signal>triggered()</signal>
+   <receiver>VibesWindow</receiver>
+   <slot>closeAllGraphics()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>132</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionHideGraphics</sender>
+   <signal>triggered()</signal>
+   <receiver>VibesWindow</receiver>
+   <slot>hideAllGraphics()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>113</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionHelp</sender>
+   <signal>triggered()</signal>
+   <receiver>VibesWindow</receiver>
+   <slot>openHelpDialog()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>121</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpenGraphics</sender>
+   <signal>triggered()</signal>
+   <receiver>VibesWindow</receiver>
+   <slot>openAllGraphics()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>160</x>
      <y>159</y>
     </hint>
    </hints>
