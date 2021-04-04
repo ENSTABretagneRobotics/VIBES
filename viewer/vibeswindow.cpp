@@ -434,13 +434,17 @@ void VibesWindow::showSingleGraphic()
 void VibesWindow::closeAllGraphics()
 {
     //Close all graphics
-    QHashIterator<QString, Figure2D*> i(figures);
-    while (i.hasNext())
+    int answer = QMessageBox::question(this, "VIBes", tr("You are about to close all the figures in a definitive manner. Are you sure?"),QMessageBox::Yes|QMessageBox::No);
+    if(answer == QMessageBox::Yes)
     {
-        i.next();
-        delete i.value();
+        QHashIterator<QString, Figure2D*> i(figures);
+        while (i.hasNext())
+        {
+            i.next();
+            delete i.value();
+        }
+        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
     }
-    static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
 }
 
 void VibesWindow::openAllGraphics()

@@ -60,7 +60,6 @@ void TreeView::openMenu(const QPoint &point)
 void TreeView::keyPressEvent(QKeyEvent *event)
 {
 	//Override keyPressEvent
-	QTreeView::keyPressEvent(event);
 	if(event->key() == Qt::Key_Delete)
 	{
 		emit deleteFigureEvent();
@@ -77,15 +76,16 @@ void TreeView::keyPressEvent(QKeyEvent *event)
 	{
 		emit propertiesEvent();
 	}
+	event->accept();
 }
 
 void TreeView::mouseDoubleClickEvent(QMouseEvent *event)
 {	
 	//Overide mouseDoubleClickEvent
-	QTreeView::mouseDoubleClickEvent(event);
 	if(event->button() == Qt::LeftButton)
 	{
 		emit showFigureEvent();
 		emit propertiesEvent();
 	}
+	event->accept();
 }

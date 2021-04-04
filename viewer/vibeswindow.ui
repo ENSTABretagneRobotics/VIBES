@@ -58,7 +58,7 @@
   </action>
   <action name="actionCloseGraphics">
    <property name="text">
-    <string>Close All</string>
+    <string>Close all</string>
    </property>
    <property name="toolTip">
     <string>tr(&quot;Close all the figures&quot;)</string>
@@ -66,7 +66,7 @@
   </action>
   <action name="actionHideGraphics">
    <property name="text">
-    <string>Hide All</string>
+    <string>Hide all</string>
    </property>
    <property name="toolTip">
     <string>tr(&quot;Hide all the figures&quot;)</string>
@@ -82,7 +82,7 @@
   </action>
   <action name="actionOpenGraphics">
    <property name="text">
-    <string>Open All</string>
+    <string>Open all</string>
    </property>
    <property name="toolTip">
     <string>tr(&quot;Open all the figures&quot;)</string>
