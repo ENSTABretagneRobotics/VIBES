@@ -367,9 +367,29 @@ VibesWindow::processMessage(const QByteArray &msg_data)
         return false;
     }
     const QModelIndex index = ui->treeView->selectionModel()->currentIndex(); //Save the selection before updating 
+
+    ui->treeView->setSelectionMode(QAbstractItemView::MultiSelection); // Save the list of expanded items
+    ui->treeView->selectAll();
+    const QModelIndexList indexList = ui->treeView->selectionModel()->selectedIndexes();
+    ui->treeView->clearSelection();
+    ui->treeView->setSelectionMode(QAbstractItemView::SingleSelection);
+    QHash<QModelIndex,bool> isExpandedList;
+    for(int i = 0; i < indexList.size();i++)
+    {
+        isExpandedList[indexList[i]] = ui->treeView->isExpanded(indexList[i]); 
+    }
+
     /// \todo Do not force update after each message
+
     static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
+
+
     ui->treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows); //Apply the saved selection
+    for(int i = 0; i < indexList.size();i++)
+    {
+        ui->treeView->setExpanded(indexList[i],isExpandedList[indexList[i]]); // Apply the saved list of expanded items
+    }
+
     return true;
 }
 
@@ -434,16 +454,19 @@ void VibesWindow::showSingleGraphic()
 void VibesWindow::closeAllGraphics()
 {
     //Close all graphics
-    int answer = QMessageBox::question(this, "VIBes", tr("You are about to close all the figures in a definitive manner. Are you sure?"),QMessageBox::Yes|QMessageBox::No);
-    if(answer == QMessageBox::Yes)
+    if(figures.size() != 0)
     {
-        QHashIterator<QString, Figure2D*> i(figures);
-        while (i.hasNext())
+        int answer = QMessageBox::question(this, "VIBes", tr("You are about to close all the figures in a definitive manner. Are you sure?"),QMessageBox::Yes|QMessageBox::No);
+        if(answer == QMessageBox::Yes)
         {
-            i.next();
-            delete i.value();
+            QHashIterator<QString, Figure2D*> i(figures);
+            while (i.hasNext())
+            {
+                i.next();
+                delete i.value();
+            }
+            static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
         }
-        static_cast<VibesTreeModel*> (ui->treeView->model())->forceUpdate();
     }
 }
 
@@ -492,7 +515,7 @@ void VibesWindow::exportCurrentFigureGraphics()
 
 void VibesWindow::openHelpDialog()
 {
-    QMessageBox::information(this, "VIBes", tr("Open a figure: O or double-click\nHide a figure: H\nClose a figure: DEL\nEdit group properties: P or double-click"));
+    QMessageBox::information(this, "VIBes", tr("Open a figure: O or double-click\nHide a figure: H\nClose a figure: DEL\nEdit group properties: P or double-click\nRight-click on an item opens a menu with the same options"));
 }
 
 void VibesWindow::readFile()
