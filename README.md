@@ -20,7 +20,7 @@ The use of a separate viewer application enables an easy set-up on every system.
 ###Linux
 You should have git, cmake, qt5 and its svg module installed. On a Debian-like distribution, you can install them via:
 ```bash
-sudo apt-get install qt5-default libqt5svg5-dev cmake git
+sudo apt-get install qt5-default libqt5svg5-dev qtbase5-dev cmake git
 ```
 You can then clone the git repository:
 ```bash
