@@ -1,4 +1,5 @@
 #include "vibestreemodel.h"
+#include "vibesgraphicsitem.h"
 #include "figure2d.h"
 #include <QGraphicsItem>
 
@@ -126,11 +127,23 @@ QVariant VibesTreeModel::data(const QModelIndex &index, int role) const
         const void *childItem = index.internalPointer();
         if (childItem == 0)
         {
-        //    return QColor(Qt::green);
+            //return QColor(Qt::green);
         }
         if (const Figure2D* childFigure = static_cast<const Figure2D*>(childItem))
         {
-            return QColor(Qt::red);
+            //If the group have a face color or a edge color, a square of that color will appear next to its name in the tree
+            VibesGraphicsItem * item = childFigure->scene()->itemByName(childFigure->scene()->namedItems().at(index.row()));
+            QString edgeColor = item->jsonValue("EdgeColor").toString();
+            QString faceColor = item->jsonValue("FaceColor").toString();
+            if(faceColor != "")
+            {
+                return QColor(faceColor);
+            }
+            else if(edgeColor != "")
+            {
+                return QColor(edgeColor);
+            }
+            
         }
         return QVariant();
     }
