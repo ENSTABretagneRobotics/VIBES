@@ -408,7 +408,11 @@ bool VibesGraphicsBox::computeProjection(int dimX, int dimY)
     this->setPen(pen);
     this->setBrush(brush);
     QString msg;// = QString("[%1, %2]x[%3, %4]").arg(lb_x).arg(ub_x).arg(lb_y).arg(ub_y);
+#if QT_VERSION >= 0x050600 // Qt 5.6 or over
+    msg = QString::asprintf("x: [%f ; %f]\ny: [%f ; %f]\n %f x %f", lb_x, ub_x, lb_y, ub_y, ub_x - lb_x, ub_y - lb_y);
+#else
     msg.sprintf("x: [%f ; %f]\ny: [%f ; %f]\n %f x %f", lb_x, ub_x, lb_y, ub_y, ub_x - lb_x, ub_y - lb_y);
+#endif
     this->setToolTip(msg);
 
     // Update successful
