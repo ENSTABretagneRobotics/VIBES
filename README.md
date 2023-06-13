@@ -1,7 +1,7 @@
 VIBes
 =====
 
-[![Build Status](https://travis-ci.org/ENSTABretagneRobotics/VIBES.png)](https://travis-ci.org/ENSTABretagneRobotics/VIBES)
+[![Build Status](../../actions/workflows/unixmatrix.yml/badge.svg)](../../actions)
 
 **V**isualizer for **I**ntervals and **B**oxes: http://ENSTABretagneRobotics.github.io/VIBES
 
