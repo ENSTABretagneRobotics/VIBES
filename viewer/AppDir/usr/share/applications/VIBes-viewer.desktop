@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=VIBes-viewer
+GenericName=VIBes-viewer
+Comment=VIBes-viewer
+Exec=VIBes-viewer
+Icon=vibes
+Terminal=false
+Categories=Science;Education;Development;Engineering;
