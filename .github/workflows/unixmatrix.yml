@@ -1,0 +1,142 @@
+on:
+    push:
+        branches: '**'
+#        branches: 'master'
+        tags: '' # Restrict to blank tags
+    pull_request:
+
+jobs:
+ # This job may be commented if a new release should not be created...
+ deploy:
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: softprops/action-gh-release@v2
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        draft: true
+        tag_name: autotagname-${{ github.sha }}
+      if: github.event_name != 'pull_request'
+
+ unixmatrix:
+    runs-on: ${{ matrix.cfg.os }}
+    defaults:
+        run:
+            shell: ${{ matrix.cfg.shell }}
+    strategy:
+        fail-fast: false
+        matrix:
+            cfg:
+            - { os: windows-2022, shell: cmd, arch: x64, bitness: 64, runtime: vc16, cmake_params: '-G "Visual Studio 17" -T v142 -A x64', desc: 'Windows Visual Studio 2019 x64' }
+            - { os: windows-2022, shell: cmd, arch: x86, bitness: 32, runtime: vc16, cmake_params: '-G "Visual Studio 17" -T v142 -A Win32', choco_flags: '--x86', desc: 'Windows Visual Studio 2019 x86' }
+            - { os: windows-2022, shell: cmd, arch: x64, bitness: 64, runtime: mingw11, cmake_params: '-G "MinGW Makefiles"', desc: 'Windows MinGW 11.2.0 x64' }
+            - { os: windows-2019, shell: cmd, arch: x86, bitness: 32, runtime: mingw8, cmake_params: '-G "MinGW Makefiles"', choco_flags: '--x86', desc: 'Windows MinGW 8.1.0 x86' }
+            - { os: ubuntu-20.04, shell: bash, arch: amd64, bitness: 64, runtime: focal, desc: 'Ubuntu 20.04 amd64' } # See https://github.com/probonopd/linuxdeployqt/issues/340.
+            #
+            # Still problems for macOS arm64, generated app does not run possibly due to Qt6 problems and Qt5 does not seem supported either, also mandatory code signing of apps might complicate things...
+            # Current workaround is to use Intel app with Rosetta...
+            #
+            #- { os: macos-14, shell: bash, arch: arm64, bitness: 64, runtime: sonoma, desc: 'macOS Sonoma arm64' }
+            - { os: macos-12, shell: bash, arch: x86_64, bitness: 64, runtime: monterey, desc: 'macOS Monterey x86_64' }
+    name: ${{ matrix.cfg.desc }}
+    steps: 
+    - uses: actions/checkout@v4  
+    - run: |
+        choco install -y -r --no-progress wget zip
+        wget http://www.ensta-bretagne.fr/lebars/Share/cmake_extra_tools.zip --no-check-certificate -nv
+        7z x cmake_extra_tools.zip -o"%SystemDrive%" -y
+        del /f /q cmake_extra_tools.zip
+        wget https://gist.github.com/lebarsfa/237841f9e5dad55ef192713b3b1b2f16/raw/04d77ced3457346c55f183ca12a10dbcb850e6d5/refreshenv.bashrc --no-check-certificate -nv
+        move /y refreshenv.bashrc %USERPROFILE%
+      if: runner.os=='Windows'
+    - run: |
+        choco install -y -r --no-progress mingw --version=8.1.0 --force ${{ matrix.cfg.choco_flags }}
+        %SystemDrive%\cmake_extra_tools\pathman /as C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw${{ matrix.cfg.bitness }}\bin & cd. & rem Non-zero exit code...?
+        echo export BASHMINGWPATH=/c/ProgramData/chocolatey/lib/mingw/tools/install/mingw${{ matrix.cfg.bitness }}/bin>>%USERPROFILE%\.bashrc
+      if: (matrix.cfg.runtime=='mingw8')
+    - run: |
+        choco install -y -r --no-progress mingw --version=11.2.0.07112021 --force ${{ matrix.cfg.choco_flags }}
+        %SystemDrive%\cmake_extra_tools\pathman /as C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw${{ matrix.cfg.bitness }}\bin & cd. & rem Non-zero exit code...?
+        echo export BASHMINGWPATH=/c/ProgramData/chocolatey/lib/mingw/tools/install/mingw${{ matrix.cfg.bitness }}/bin>>%USERPROFILE%\.bashrc
+      if: (matrix.cfg.runtime=='mingw11')
+    - run: |
+        choco install -y -r --no-progress aqt --version=3.1.9 ${{ matrix.cfg.choco_flags }}
+        refreshenv & aqt.exe install-qt --outputdir C:\Qt windows desktop 6.2.4 win64_msvc2019_64 -m qtcharts & reg add "HKLM\SOFTWARE\Kitware\CMake\Packages\Qt" /v "qt6_624_win64_msvc2019" /t REG_SZ /d "C:\Qt\6.2.4\msvc2019_64" /f & reg add "HKLM\SOFTWARE\Kitware\CMake\Packages\Qt6" /v "qt6_624_win64_msvc2019" /t REG_SZ /d "C:\Qt\6.2.4\msvc2019_64" /f & %SystemDrive%\cmake_extra_tools\pathman /as C:\Qt\6.2.4\msvc2019_64\bin & cd. & rem Non-zero exit code...?
+      if: startsWith(matrix.cfg.runtime, 'vc')&&(matrix.cfg.arch=='x64')
+    - run: |
+        choco install -y -r --no-progress aqt --version=3.1.9 ${{ matrix.cfg.choco_flags }}
+        refreshenv & aqt.exe install-qt --outputdir C:\Qt windows desktop 5.15.2 win32_msvc2019 -m qtcharts qtscript & reg add "HKLM\SOFTWARE\Kitware\CMake\Packages\Qt" /v "qt5_5152_win32_msvc2019" /t REG_SZ /d "C:\Qt\5.15.2\msvc2019" /f & reg add "HKLM\SOFTWARE\Kitware\CMake\Packages\Qt5" /v "qt5_5152_win32_msvc2019" /t REG_SZ /d "C:\Qt\5.15.2\msvc2019" /f & %SystemDrive%\cmake_extra_tools\pathman /as C:\Qt\5.15.2\msvc2019\bin & cd. & rem Non-zero exit code...?
+      if: startsWith(matrix.cfg.runtime, 'vc')&&(matrix.cfg.arch=='x86')
+    - run: |
+        choco install -y -r --no-progress aqt --version=3.1.9 ${{ matrix.cfg.choco_flags }}
+        choco install -y -r --no-progress qt6-base-dev --version=6.2.4.20240217 --params "'/Path'" ${{ matrix.cfg.choco_flags }}
+      if: startsWith(matrix.cfg.runtime, 'mingw')&&(matrix.cfg.arch=='x64')
+    - run: |
+        choco install -y -r --no-progress aqt --version=3.1.9 ${{ matrix.cfg.choco_flags }}
+        choco install -y -r --no-progress qt5-default --version=5.15.2.20240217 --params "'/Path'" ${{ matrix.cfg.choco_flags }}
+      if: startsWith(matrix.cfg.runtime, 'mingw')&&(matrix.cfg.arch=='x86')
+ #   - run: sudo apt-get -q update ; sudo apt-get -y install qt6-base-dev libgl1-mesa-dev libqt6svg6-dev cmake git build-essential libfuse2 || true
+    - run: sudo apt-get -q update ; sudo apt-get -y install qt5-default libqt5svg5-dev cmake git build-essential libfuse2 || true
+      if: runner.os=='Linux'
+    - run: |
+        brew install qt@5
+        brew link --force qt@5 ; sudo ln -s $(brew --prefix qt@5)/mkspecs $(brew --prefix)/mkspecs ; sudo ln -s $(brew --prefix qt@5)/plugins $(brew --prefix)/plugins ; sudo ln -s $(brew --prefix qt@5)/libexec $(brew --prefix)/libexec ; sudo ln -s $(brew --prefix qt@5)/doc $(brew --prefix)/doc ; sudo ln -s $(brew --prefix qt@5)/qml $(brew --prefix)/qml ; sudo ln -s $(brew --prefix qt@5)/translations $(brew --prefix)/translations ; sudo ln -s $(brew --prefix qt@5)/phrasebooks $(brew --prefix)/phrasebooks
+      if: (runner.os=='macOS')&&(matrix.cfg.arch=='x86_64')
+    - run: brew install qt
+      if: (runner.os=='macOS')&&(matrix.cfg.arch=='arm64')
+    - run: |
+        if [ ${{ runner.os }} = Windows ]; then source ~/refreshenv.bashrc ; refreshenv ; export PATH=$BASHMINGWPATH:$PATH ; fi
+        cd viewer
+        mkdir build ; cd build
+        cmake ${{ matrix.cfg.cmake_params }} ..
+        cmake --build . -j 4 --config Release
+        #cmake ${{ matrix.cfg.cmake_params }} -DCMAKE_INSTALL_PREFIX=distrib ..
+        #cmake --build . --config Release --target install
+        cd ../..
+      shell: bash
+    - run: |
+        cd viewer/build
+        mkdir -p VIBes-viewer/
+        mv -f ./VIBes-viewer.exe VIBes-viewer/
+        /c/Qt/*/mingw*/bin/windeployqt VIBes-viewer/VIBes-viewer.exe
+        cp -rf /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw*/bin/libwinpthread-1.dll VIBes-viewer/
+        if [ ${{ matrix.cfg.arch }} = 'x86' ]; then cp -f /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw*/bin/libgcc_s_dw2-1.dll VIBes-viewer/ ;
+        else cp -f /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw*/bin/libgcc_s_seh-1.dll VIBes-viewer/ ; fi
+        cp -rf /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw*/bin/libstdc++-6.dll VIBes-viewer/
+        zip -q -r ./VIBes-viewer_${{ matrix.cfg.arch }}.zip VIBes-viewer/
+        rm -rf VIBes-viewer/
+        cd ../..
+      shell: bash
+      if: startsWith(matrix.cfg.runtime, 'mingw')
+    - run: |
+        cd viewer/build
+        cp -rf ../AppDir AppDir
+        mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+        cp -rf ../icons/vibes_512.png AppDir/usr/share/icons/hicolor/256x256/apps/vibes.png
+        mkdir -p AppDir/usr/share/icons/hicolor/512x512/apps
+        cp -rf ../icons/vibes_512.png AppDir/usr/share/icons/hicolor/512x512/apps/vibes.png
+        mkdir -p AppDir/usr/bin
+        mv -f ./VIBes-viewer AppDir/usr/bin/VIBes-viewer
+        wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+        chmod a+x ./linuxdeployqt-continuous-x86_64.AppImage
+        ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/VIBes-viewer.desktop -appimage
+        mv -f ./VIBes-viewer*.AppImage ./VIBes-viewer_${{ matrix.cfg.arch }}.AppImage
+        cd ../..
+      if: runner.os=='Linux'
+    - run: |
+        cd viewer/build
+        # For Qt6, but still dependency problems...
+        if [ ${{ matrix.cfg.arch }} = 'arm64' ]; then git clone https://github.com/GDATASoftwareAG/macdeployqt ; mkdir -p macdeployqt/build ; cd macdeployqt/build ; cmake .. ; cmake --build . ; cp -f macdeployqt /usr/local/bin/macdeployqt ; cp -f macdeployqt /usr/local/bin/macdeployqt6 ; cd ../.. ; mkdir -p ./VIBes-viewer.app/Contents/Frameworks ; cp -rf $(brew --prefix qt)/lib/QtDBus.framework ./VIBes-viewer.app/Contents/Frameworks || true ; fi
+        macdeployqt ./VIBes-viewer.app -dmg        
+        mv -f ./VIBes-viewer.dmg ./VIBes-viewer_${{ matrix.cfg.arch }}.dmg
+        cd ../..
+      if: runner.os=='macOS'
+    - uses: xresloader/upload-to-github-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: "viewer/build/VIBes-viewer*"
+        overwrite: true
+        tag_name: autotagname-${{ github.sha }}
+      if: (!startsWith(matrix.cfg.runtime, 'vc'))&&(github.event_name != 'pull_request')
