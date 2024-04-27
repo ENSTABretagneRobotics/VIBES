@@ -28,6 +28,7 @@ or
 ```bash
 sudo apt-get install qt5-default qtbase5-dev libqt5svg5-dev cmake git build-essential
 ```
+Note that `qt5-default` package might not be always available nor mandatory. You might also have issues if you have both qt5 and qt6 installed on your system, so try to check carefully which packages you really need.
 
 You can then clone the git repository:
 
@@ -45,7 +46,7 @@ make
 make install
 ```
 
-If everything went well, a VIBes-viewer executable is now in the distrib folder.
+If everything went well, a `VIBes-viewer` executable is now in the `distrib/bin` folder.
 
 ### Windows
 

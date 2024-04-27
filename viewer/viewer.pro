@@ -13,9 +13,9 @@ else {
  QMAKE_CXXFLAGS += -std=c++0x
 }
 # Input
-HEADERS +=  vibestreemodel.h vibeswindow.h figure2d.h vibesscene2d.h vibesgraphicsitem.h propertyeditdialog.h
+HEADERS +=  vibestreemodel.h vibeswindow.h figure2d.h vibesscene2d.h vibesgraphicsitem.h propertyeditdialog.h treeview.h
 FORMS += vibeswindow.ui propertyeditdialog.ui
-SOURCES += main.cpp vibestreemodel.cpp vibeswindow.cpp figure2d.cpp vibesscene2d.cpp vibesgraphicsitem.cpp propertyeditdialog.cpp
+SOURCES += main.cpp vibestreemodel.cpp vibeswindow.cpp figure2d.cpp vibesscene2d.cpp vibesgraphicsitem.cpp propertyeditdialog.cpp treeview.cpp
 
 # Application icon
 win32:RC_FILE += icons/vibes.rc
