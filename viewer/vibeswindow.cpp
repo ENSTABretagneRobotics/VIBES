@@ -515,7 +515,7 @@ void VibesWindow::exportCurrentFigureGraphics()
 
 void VibesWindow::openHelpDialog()
 {
-    QMessageBox::information(this, "VIBes", tr("Open a figure: O or double-click\nHide a figure: H\nClose a figure: DEL\nEdit group properties: P or double-click\nRight-click on an item opens a menu with the same options"));
+    QMessageBox::information(this, "VIBes", tr("Open a figure: O or double-click\nHide a figure: H\nClose a figure: DEL\nChange font size: * and /\nEdit group properties: P or double-click\nRight-click on an item opens a menu with the same options"));
 }
 
 void VibesWindow::readFile()

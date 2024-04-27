@@ -15,7 +15,8 @@ Figure2D::Figure2D(QWidget *parent) :
     QGraphicsView(parent),
     lbProjX(new QLabel("xlabelhere",this)),
     lbProjY(new QLabel("ylabelhere",this)),
-    showAxis(true)
+    showAxis(true),
+    fontSize(11)
 {
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
@@ -169,7 +170,7 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
     painter->setTransform(QTransform());
     painter->setWindow(this->viewport()->rect());
 
-    QFont axisTicksFont("Helvetica", 11);
+    QFont axisTicksFont("Helvetica", fontSize);
     axisTicksFont.setStyleHint(QFont::Helvetica);
     painter->setFont(axisTicksFont);
     painter->setPen(QColor(0,0,0));
@@ -245,6 +246,16 @@ void Figure2D::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Minus:
     case Qt::Key_W:
         this->scale(0.8,0.8);
+        break;
+    case Qt::Key_Asterisk:
+    case Qt::Key_F:
+        this->fontSize = this->fontSize < 512? this->fontSize+1: 512;
+        this->scene()->update();
+        break;
+    case Qt::Key_Slash:
+    case Qt::Key_V:
+        this->fontSize = this->fontSize > 1? this->fontSize-1: 1;
+        this->scene()->update();
         break;
     default:
         QGraphicsView::keyPressEvent(event);

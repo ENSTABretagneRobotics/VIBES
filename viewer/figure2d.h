@@ -33,6 +33,8 @@ protected:
 
     // bool to indicate if axis needs to be drawn or not
     bool showAxis;
+
+    int fontSize;
 signals:
 
 public slots:
