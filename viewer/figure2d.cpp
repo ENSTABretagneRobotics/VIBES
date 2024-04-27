@@ -330,7 +330,7 @@ void Figure2D::exportGraphics(QString fileName)
             || fileName.endsWith(".png", Qt::CaseInsensitive)
             || fileName.endsWith(".bmp", Qt::CaseInsensitive))
     {
-        QImage image(this->size()*2, QImage::Format_ARGB32);
+        QImage image(this->size(), QImage::Format_ARGB32);
         image.fill(QColor(255,255,255,0));
         QPainter painter;
         painter.begin(&image);
