@@ -96,7 +96,7 @@ IF(APPLE)
 
     # Copy API files
     add_library(VIBES STATIC ../client-api/C++/src/vibes.h ../client-api/C++/src/vibes.cpp)
-    install(TARGETS Vibes LIBRARY DESTINATION lib)
+    install(TARGETS VIBES LIBRARY DESTINATION lib)
     install(FILES ../client-api/C++/src/vibes.h DESTINATION include)
 
     # Setup DMG window appearance: background image, size and icon layout
