@@ -185,7 +185,7 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
             xtick_txt.setNum(xtick, 'f', 0);
         else
             xtick_txt.setNum(xtick, 'g');
-        painter->drawText(x_wnd+4,12, xtick_txt);
+        painter->drawText(x_wnd+3,fontSize+3, xtick_txt);
     }
 
     for (double ytick=y0; ytick<qMax(rect.top(),rect.bottom()); ytick+=scale_y)
@@ -198,7 +198,7 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
             ytick_txt.setNum(ytick, 'f', 0);
         else
             ytick_txt.setNum(ytick, 'g');
-        painter->drawText(2, y_wnd+12, ytick_txt);
+        painter->drawText(3, y_wnd+fontSize+3, ytick_txt);
     }
 }
 
