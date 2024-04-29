@@ -35,6 +35,8 @@ protected:
     bool showAxis;
 
     int fontSize;
+    int xTicksSpacing;
+    int yTicksSpacing;
 signals:
 
 public slots:

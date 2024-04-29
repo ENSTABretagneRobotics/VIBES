@@ -16,7 +16,9 @@ Figure2D::Figure2D(QWidget *parent) :
     lbProjX(new QLabel("xlabelhere",this)),
     lbProjY(new QLabel("ylabelhere",this)),
     showAxis(true),
-    fontSize(11)
+    fontSize(11),
+    xTicksSpacing(50),
+    yTicksSpacing(35)
 {
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
@@ -145,8 +147,8 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
     //painter->drawRect(this->sceneRect());
 
     // Min spacing between ticks (divisor is min spacing in px)
-    double nb_ticks_x = this->viewport()->width() / 50.0;
-    double nb_ticks_y = this->viewport()->height() / 35.0;
+    double nb_ticks_x = this->viewport()->width() / (double)xTicksSpacing;
+    double nb_ticks_y = this->viewport()->height() / (double)yTicksSpacing;
 
     int log_scale_x = ceil(log10(rect.width()/nb_ticks_x)*3.0);
     double scale_x = pow(10.0, floor((double)log_scale_x/3));
@@ -247,6 +249,22 @@ void Figure2D::keyPressEvent(QKeyEvent *event)
     case Qt::Key_W:
         this->scale(0.8,0.8);
         break;
+    case Qt::Key_X:
+        this->xTicksSpacing = this->xTicksSpacing < 512? this->xTicksSpacing+1: 512;
+        this->scene()->update();
+        break;
+    case Qt::Key_S:
+        this->xTicksSpacing = this->xTicksSpacing > 1? this->xTicksSpacing-1: 1;
+        this->scene()->update();
+        break;
+    case Qt::Key_Y:
+        this->yTicksSpacing = this->yTicksSpacing < 512? this->yTicksSpacing+1: 512;
+        this->scene()->update();
+        break;
+    case Qt::Key_H:
+        this->yTicksSpacing = this->yTicksSpacing > 1? this->yTicksSpacing-1: 1;
+        this->scene()->update();
+        break;
     case Qt::Key_Asterisk:
     case Qt::Key_F:
         this->fontSize = this->fontSize < 512? this->fontSize+1: 512;
@@ -255,6 +273,14 @@ void Figure2D::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Slash:
     case Qt::Key_V:
         this->fontSize = this->fontSize > 1? this->fontSize-1: 1;
+        this->scene()->update();
+        break;
+    case Qt::Key_Space:
+        // Back to default settings
+        this->showAxis = true;
+        this->xTicksSpacing = 50;
+        this->yTicksSpacing = 35;
+        this->fontSize = 11;
         this->scene()->update();
         break;
     default:
