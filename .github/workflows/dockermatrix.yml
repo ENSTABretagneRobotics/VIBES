@@ -1,11 +1,11 @@
 on:
     push:
-#        branches: '**'
+        branches: '**'
 #        branches: 'master'
-        branches: 'devel'
+#        branches: 'devel'
         tags: '' # Restrict to blank tags
     pull_request:
-        branches: 'devel'
+#        branches: 'devel'
 
 jobs:
  dockermatrix:
@@ -18,10 +18,11 @@ jobs:
         matrix:
             cfg:
             #
-            # Still /bin/bash: ./appimagetool-828-aarch64.AppImage: cannot execute binary file: Exec format error for both configurations, need to run on a Mac vm...
+            # Still /bin/bash: ./appimagetool-831-aarch64.AppImage: cannot execute binary file: Exec format error for both configurations, need to run on a Mac vm...
             #
-            - { img: 'lebarsfa/pi-64:focal-for-codac', shell: bash, arch: arm64, bitness: 64, runtime: focal, desc: 'Ubuntu 20.04 arm64' }
+            #- { img: 'lebarsfa/pi-64:focal-for-codac', shell: bash, arch: arm64, bitness: 64, runtime: focal, desc: 'Ubuntu 20.04 arm64' }
             #- { img: 'arm64v8/ubuntu:focal', shell: bash, arch: arm64, bitness: 64, runtime: focal, docker_flags: '--platform linux/arm64', desc: 'Ubuntu 20.04 arm64' }
+            - { img: 'amd64/ubuntu:focal', shell: bash, arch: amd64, bitness: 64, runtime: focal, docker_flags: '--platform linux/amd64', desc: 'Ubuntu 20.04 amd64' }
     name: ${{ matrix.cfg.desc }}
     steps: 
     - uses: actions/checkout@v4
@@ -29,15 +30,15 @@ jobs:
         sudo apt-get -y install qemu binfmt-support qemu-user-static || true
         #docker run --rm --privileged multiarch/qemu-user-static:register --reset
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      if: (matrix.cfg.arch!='x86_64')&&(matrix.cfg.arch!='i386')
+      if: (matrix.cfg.arch!='amd64')&&(matrix.cfg.arch!='x86_64')&&(matrix.cfg.arch!='i386')
     - run: |
-        docker run ${{ matrix.cfg.docker_flags }} -i -v "${PWD}/..:${PWD}/.." ${{ matrix.cfg.img }} /bin/bash -c "uname -a ; cat /etc/os-release ; apt-get -q update --allow-releaseinfo-change ; export DEBIAN_FRONTEND=noninteractive ; export UCF_FORCE_CONFFOLD=1 ; apt-get -y install sudo apt-transport-https ca-certificates gnupg gnupg-agent qtbase5-dev libqt5svg5-dev cmake git build-essential libfuse2 patchelf lsb-release file wget --no-install-recommends ; \
+        docker run ${{ matrix.cfg.docker_flags }} --privileged -i -v "${PWD}/..:${PWD}/.." ${{ matrix.cfg.img }} /bin/bash -c "uname -a ; cat /etc/os-release ; apt-get -q update ; export DEBIAN_FRONTEND=noninteractive ; export UCF_FORCE_CONFFOLD=1 ; apt-get -y install sudo apt-transport-https ca-certificates gnupg gnupg-agent qtbase5-dev libqt5svg5-dev cmake git build-essential libfuse2 lsb-release file wget --no-install-recommends ; \
         uname -a ; cat /etc/os-release ; lsb_release -a ; cd ${PWD} && pwd && \
         sudo apt-get -q update && sudo apt-get -y install qtbase5-dev libqt5svg5-dev cmake git build-essential libfuse2 patchelf lsb-release file wget || true && \
         cd viewer && \
         mkdir build ; cd build && \
         cmake ${{ matrix.cfg.cmake_params }} .. && \
-        cmake --build . -j 4 --config Release && \
+        cmake --build . --config Release && \
         cd ../.. && \
         cd viewer/build && \
         cp -rf ../AppDir AppDir && \
@@ -51,8 +52,8 @@ jobs:
         chmod +x appimagetool-*.AppImage && \
         file ./appimagetool-*.AppImage && \
         uname -a ; cat /etc/os-release ; lsb_release -a && \
-        ./appimagetool-*.AppImage -s deploy AppDir/usr/share/applications/VIBes-viewer.desktop && \
-        ./appimagetool-*.AppImage AppDir && \
+        ./appimagetool-*.AppImage --appimage-extract-and-run -s deploy AppDir/usr/share/applications/VIBes-viewer.desktop && \
+        ./appimagetool-*.AppImage --appimage-extract-and-run AppDir && \
         mv -f ./VIBes-viewer*.AppImage ./VIBes-viewer_${{ matrix.cfg.arch }}.AppImage && \
         rm -rf ./VIBes-viewer_automoc.cpp ; \
         cd ../.."
