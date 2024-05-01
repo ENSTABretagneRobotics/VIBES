@@ -104,7 +104,18 @@ jobs:
         if [ ${{ matrix.cfg.arch }} = 'x86' ]; then cp -f /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw*/bin/libgcc_s_dw2-1.dll VIBes-viewer/ ;
         else cp -f /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw*/bin/libgcc_s_seh-1.dll VIBes-viewer/ ; fi
         cp -rf /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw*/bin/libstdc++-6.dll VIBes-viewer/
-        zip -q -r ./VIBes-viewer_${{ matrix.cfg.arch }}.zip VIBes-viewer/
+        #wget https://www.7-zip.org/a/lzma2301.7z --no-check-certificate -nv
+        #7z x lzma2301.7z -o"lzma2301" -y
+        wget https://github.com/github/ghfw-build-extra/raw/69bd5e6f85e4842f07db71c9618a621154c52254/7-Zip/7zSD.sfx --no-check-certificate -nv
+        echo ';!@Install@!UTF-8!'>config.txt
+        echo 'RunProgram="VIBes-viewer\VIBes-viewer.exe"'>>config.txt
+        echo 'GUIMode="2"'>>config.txt
+        echo ';!@InstallEnd@!'>>config.txt
+        7z a VIBes-viewer.7z VIBes-viewer -y
+        #cmd //c "copy /b /y lzma2301\\bin\\7zSD.sfx + config.txt + VIBes-viewer.7z VIBes-viewer_${{ matrix.cfg.arch }}.exe"
+        cmd //c "copy /b /y 7zSD.sfx + config.txt + VIBes-viewer.7z VIBes-viewer_${{ matrix.cfg.arch }}.exe"
+        rm -rf VIBes-viewer.7z
+        #zip -q -r ./VIBes-viewer_${{ matrix.cfg.arch }}.zip VIBes-viewer/
         rm -rf VIBes-viewer/
         cd ../..
       shell: bash
