@@ -22,11 +22,11 @@ The use of a separate viewer application enables an easy set-up on every system.
 
 You should have git, cmake, qt5/6 and its svg module installed. On a Debian-like distribution, you can install them via:
 ```bash
-sudo apt-get install qt6-base-dev libgl1-mesa-dev libqt6svg6-dev cmake git build-essential
+sudo apt-get install qtbase5-dev libqt5svg5-dev cmake git build-essential
 ```
 or
 ```bash
-sudo apt-get install qt5-default qtbase5-dev libqt5svg5-dev cmake git build-essential
+sudo apt-get install qt6-base-dev libgl1-mesa-dev libqt6svg6-dev cmake git build-essential
 ```
 Note that `qt5-default` package might not be always available nor mandatory. You might also have issues if you have both qt5 and qt6 installed on your system, so try to check carefully which packages you really need.
 

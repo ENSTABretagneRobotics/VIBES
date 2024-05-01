@@ -31,9 +31,9 @@ jobs:
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       if: (matrix.cfg.arch!='x86_64')&&(matrix.cfg.arch!='i386')
     - run: |
-        docker run ${{ matrix.cfg.docker_flags }} -i -v "${PWD}/..:${PWD}/.." ${{ matrix.cfg.img }} /bin/bash -c "uname -a ; cat /etc/os-release ; apt-get -q update --allow-releaseinfo-change ; export DEBIAN_FRONTEND=noninteractive ; export UCF_FORCE_CONFFOLD=1 ; apt-get -y install sudo apt-transport-https ca-certificates gnupg gnupg-agent qt5-default libqt5svg5-dev cmake git build-essential libfuse2 lsb-release file wget --no-install-recommends ; \
+        docker run ${{ matrix.cfg.docker_flags }} -i -v "${PWD}/..:${PWD}/.." ${{ matrix.cfg.img }} /bin/bash -c "uname -a ; cat /etc/os-release ; apt-get -q update --allow-releaseinfo-change ; export DEBIAN_FRONTEND=noninteractive ; export UCF_FORCE_CONFFOLD=1 ; apt-get -y install sudo apt-transport-https ca-certificates gnupg gnupg-agent qtbase5-dev libqt5svg5-dev cmake git build-essential libfuse2 patchelf lsb-release file wget --no-install-recommends ; \
         uname -a ; cat /etc/os-release ; lsb_release -a ; cd ${PWD} && pwd && \
-        sudo apt-get -q update && sudo apt-get -y install qt5-default libqt5svg5-dev cmake git build-essential libfuse2 lsb-release file wget || true && \
+        sudo apt-get -q update && sudo apt-get -y install qtbase5-dev libqt5svg5-dev cmake git build-essential libfuse2 patchelf lsb-release file wget || true && \
         cd viewer && \
         mkdir build ; cd build && \
         cmake ${{ matrix.cfg.cmake_params }} .. && \
@@ -54,6 +54,7 @@ jobs:
         ./appimagetool-*.AppImage -s deploy AppDir/usr/share/applications/VIBes-viewer.desktop && \
         ./appimagetool-*.AppImage AppDir && \
         mv -f ./VIBes-viewer*.AppImage ./VIBes-viewer_${{ matrix.cfg.arch }}.AppImage && \
+        rm -rf ./VIBes-viewer_automoc.cpp ; \
         cd ../.."
     - uses: xresloader/upload-to-github-release@v1
       env:

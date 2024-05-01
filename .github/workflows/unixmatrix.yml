@@ -76,8 +76,8 @@ jobs:
         choco install -y -r --no-progress aqt --version=3.1.9 ${{ matrix.cfg.choco_flags }}
         choco install -y -r --no-progress qt5-default --version=5.15.2.20240217 --params "'/Path'" ${{ matrix.cfg.choco_flags }}
       if: startsWith(matrix.cfg.runtime, 'mingw')&&(matrix.cfg.arch=='x86')
- #   - run: sudo apt-get -q update ; sudo apt-get -y install qt6-base-dev libgl1-mesa-dev libqt6svg6-dev cmake git build-essential libfuse2 || true
-    - run: sudo apt-get -q update ; sudo apt-get -y install qt5-default libqt5svg5-dev cmake git build-essential libfuse2 || true
+ #   - run: sudo apt-get -q update ; sudo apt-get -y install qt6-base-dev libgl1-mesa-dev libqt6svg6-dev cmake git build-essential libfuse2 patchelf || true
+    - run: sudo apt-get -q update ; sudo apt-get -y install qtbase5-dev libqt5svg5-dev cmake git build-essential libfuse2 patchelf || true
       if: runner.os=='Linux'
     - run: |
         brew install qt@5
