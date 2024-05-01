@@ -33,6 +33,10 @@ protected:
 
     // bool to indicate if axis needs to be drawn or not
     bool showAxis;
+
+    int fontSize;
+    int xTicksSpacing;
+    int yTicksSpacing;
 signals:
 
 public slots:

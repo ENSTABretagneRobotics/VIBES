@@ -130,5 +130,5 @@ install(DIRECTORY ../client-api/C++/src DESTINATION "Vibes C++")
 install(DIRECTORY ../client-api/C++/examples DESTINATION "Vibes C++")
 
 add_library(VIBES STATIC ../client-api/C++/src/vibes.h ../client-api/C++/src/vibes.cpp)
-install(TARGETS VIBES LIBRARY DESTINATION lib)
+install(TARGETS VIBES ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
 install(FILES ../client-api/C++/src/vibes.h DESTINATION include)

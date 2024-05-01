@@ -32,7 +32,7 @@ jobs:
             - { os: windows-2022, shell: cmd, arch: x86, bitness: 32, runtime: vc16, cmake_params: '-G "Visual Studio 17" -T v142 -A Win32', choco_flags: '--x86', desc: 'Windows Visual Studio 2019 x86' }
             - { os: windows-2022, shell: cmd, arch: x64, bitness: 64, runtime: mingw11, cmake_params: '-G "MinGW Makefiles"', desc: 'Windows MinGW 11.2.0 x64' }
             - { os: windows-2019, shell: cmd, arch: x86, bitness: 32, runtime: mingw8, cmake_params: '-G "MinGW Makefiles"', choco_flags: '--x86', desc: 'Windows MinGW 8.1.0 x86' }
-            - { os: ubuntu-20.04, shell: bash, arch: amd64, bitness: 64, runtime: focal, desc: 'Ubuntu 20.04 amd64' } # See https://github.com/probonopd/linuxdeployqt/issues/340.
+            #- { os: ubuntu-20.04, shell: bash, arch: amd64, bitness: 64, runtime: focal, desc: 'Ubuntu 20.04 amd64' } # See https://github.com/probonopd/linuxdeployqt/issues/340.
             #
             # Still problems for macOS arm64, generated app does not run possibly due to Qt6 problems and Qt5 does not seem supported either, also mandatory code signing of apps might complicate things...
             # Current workaround is to use Intel app with Rosetta...
@@ -76,8 +76,8 @@ jobs:
         choco install -y -r --no-progress aqt --version=3.1.9 ${{ matrix.cfg.choco_flags }}
         choco install -y -r --no-progress qt5-default --version=5.15.2.20240217 --params "'/Path'" ${{ matrix.cfg.choco_flags }}
       if: startsWith(matrix.cfg.runtime, 'mingw')&&(matrix.cfg.arch=='x86')
- #   - run: sudo apt-get -q update ; sudo apt-get -y install qt6-base-dev libgl1-mesa-dev libqt6svg6-dev cmake git build-essential libfuse2 || true
-    - run: sudo apt-get -q update ; sudo apt-get -y install qt5-default libqt5svg5-dev cmake git build-essential libfuse2 || true
+ #   - run: sudo apt-get -q update ; sudo apt-get -y install qt6-base-dev libgl1-mesa-dev libqt6svg6-dev cmake git build-essential libfuse2 patchelf || true
+    - run: sudo apt-get -q update ; sudo apt-get -y install qtbase5-dev libqt5svg5-dev cmake git build-essential libfuse2 patchelf || true
       if: runner.os=='Linux'
     - run: |
         brew install qt@5
@@ -104,7 +104,18 @@ jobs:
         if [ ${{ matrix.cfg.arch }} = 'x86' ]; then cp -f /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw*/bin/libgcc_s_dw2-1.dll VIBes-viewer/ ;
         else cp -f /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw*/bin/libgcc_s_seh-1.dll VIBes-viewer/ ; fi
         cp -rf /c/ProgramData/chocolatey/lib/mingw/tools/install/mingw*/bin/libstdc++-6.dll VIBes-viewer/
-        zip -q -r ./VIBes-viewer_${{ matrix.cfg.arch }}.zip VIBes-viewer/
+        #wget https://www.7-zip.org/a/lzma2301.7z --no-check-certificate -nv
+        #7z x lzma2301.7z -o"lzma2301" -y
+        wget https://github.com/github/ghfw-build-extra/raw/69bd5e6f85e4842f07db71c9618a621154c52254/7-Zip/7zSD.sfx --no-check-certificate -nv
+        echo ';!@Install@!UTF-8!'>config.txt
+        echo 'RunProgram="VIBes-viewer\VIBes-viewer.exe"'>>config.txt
+        echo 'GUIMode="2"'>>config.txt
+        echo ';!@InstallEnd@!'>>config.txt
+        7z a VIBes-viewer.7z VIBes-viewer -y
+        #cmd //c "copy /b /y lzma2301\\bin\\7zSD.sfx + config.txt + VIBes-viewer.7z VIBes-viewer_${{ matrix.cfg.arch }}.exe"
+        cmd //c "copy /b /y 7zSD.sfx + config.txt + VIBes-viewer.7z VIBes-viewer_${{ matrix.cfg.arch }}.exe"
+        rm -rf VIBes-viewer.7z
+        #zip -q -r ./VIBes-viewer_${{ matrix.cfg.arch }}.zip VIBes-viewer/
         rm -rf VIBes-viewer/
         cd ../..
       shell: bash

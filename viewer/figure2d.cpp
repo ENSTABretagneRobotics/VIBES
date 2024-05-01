@@ -15,7 +15,10 @@ Figure2D::Figure2D(QWidget *parent) :
     QGraphicsView(parent),
     lbProjX(new QLabel("xlabelhere",this)),
     lbProjY(new QLabel("ylabelhere",this)),
-    showAxis(true)
+    showAxis(true),
+    fontSize(11),
+    xTicksSpacing(50),
+    yTicksSpacing(35)
 {
     setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
@@ -144,8 +147,8 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
     //painter->drawRect(this->sceneRect());
 
     // Min spacing between ticks (divisor is min spacing in px)
-    double nb_ticks_x = this->viewport()->width() / 50.0;
-    double nb_ticks_y = this->viewport()->height() / 35.0;
+    double nb_ticks_x = this->viewport()->width() / (double)xTicksSpacing;
+    double nb_ticks_y = this->viewport()->height() / (double)yTicksSpacing;
 
     int log_scale_x = ceil(log10(rect.width()/nb_ticks_x)*3.0);
     double scale_x = pow(10.0, floor((double)log_scale_x/3));
@@ -169,7 +172,7 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
     painter->setTransform(QTransform());
     painter->setWindow(this->viewport()->rect());
 
-    QFont axisTicksFont("Helvetica", 11);
+    QFont axisTicksFont("Helvetica", fontSize);
     axisTicksFont.setStyleHint(QFont::Helvetica);
     painter->setFont(axisTicksFont);
     painter->setPen(QColor(0,0,0));
@@ -184,7 +187,7 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
             xtick_txt.setNum(xtick, 'f', 0);
         else
             xtick_txt.setNum(xtick, 'g');
-        painter->drawText(x_wnd+4,12, xtick_txt);
+        painter->drawText(x_wnd+3,fontSize+3, xtick_txt);
     }
 
     for (double ytick=y0; ytick<qMax(rect.top(),rect.bottom()); ytick+=scale_y)
@@ -197,7 +200,7 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
             ytick_txt.setNum(ytick, 'f', 0);
         else
             ytick_txt.setNum(ytick, 'g');
-        painter->drawText(2, y_wnd+12, ytick_txt);
+        painter->drawText(3, y_wnd+fontSize+3, ytick_txt);
     }
 }
 
@@ -246,6 +249,40 @@ void Figure2D::keyPressEvent(QKeyEvent *event)
     case Qt::Key_W:
         this->scale(0.8,0.8);
         break;
+    case Qt::Key_X:
+        this->xTicksSpacing = this->xTicksSpacing < 512? this->xTicksSpacing+1: 512;
+        this->scene()->update();
+        break;
+    case Qt::Key_S:
+        this->xTicksSpacing = this->xTicksSpacing > 1? this->xTicksSpacing-1: 1;
+        this->scene()->update();
+        break;
+    case Qt::Key_Y:
+        this->yTicksSpacing = this->yTicksSpacing < 512? this->yTicksSpacing+1: 512;
+        this->scene()->update();
+        break;
+    case Qt::Key_H:
+        this->yTicksSpacing = this->yTicksSpacing > 1? this->yTicksSpacing-1: 1;
+        this->scene()->update();
+        break;
+    case Qt::Key_Asterisk:
+    case Qt::Key_F:
+        this->fontSize = this->fontSize < 512? this->fontSize+1: 512;
+        this->scene()->update();
+        break;
+    case Qt::Key_Slash:
+    case Qt::Key_V:
+        this->fontSize = this->fontSize > 1? this->fontSize-1: 1;
+        this->scene()->update();
+        break;
+    case Qt::Key_Space:
+        // Back to default settings
+        this->showAxis = true;
+        this->xTicksSpacing = 50;
+        this->yTicksSpacing = 35;
+        this->fontSize = 11;
+        this->scene()->update();
+        break;
     default:
         QGraphicsView::keyPressEvent(event);
     }
@@ -293,7 +330,7 @@ void Figure2D::exportGraphics(QString fileName)
             || fileName.endsWith(".png", Qt::CaseInsensitive)
             || fileName.endsWith(".bmp", Qt::CaseInsensitive))
     {
-        QImage image(this->size()*2, QImage::Format_ARGB32);
+        QImage image(this->size(), QImage::Format_ARGB32);
         image.fill(QColor(255,255,255,0));
         QPainter painter;
         painter.begin(&image);
