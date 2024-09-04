@@ -19,6 +19,8 @@
 #include <cmath>
 using namespace std;
 
+#include <iostream>
+
 // The only instance of VibesDefaults
 VibesDefaults VibesDefaults::_instance;
 
@@ -150,6 +152,11 @@ void VibesGraphicsItem::setJsonValues(const QJsonObject &values)
 
     if (bNeedProjection)
         computeProjection(_dimX, _dimY);
+
+    if (this->_qGraphicsItem->type() != VibesGraphicsGroupType)
+    {
+        this->updateProj();
+    }
 }
 
 bool VibesGraphicsItem::setProj(int dimX, int dimY)
