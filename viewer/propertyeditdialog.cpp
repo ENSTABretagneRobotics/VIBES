@@ -3,9 +3,6 @@
 
 #include <QDebug>
 
-// TO DELETE
-#include <iostream>
-
 PropertyEditDialog::PropertyEditDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PropertyEditDialog)

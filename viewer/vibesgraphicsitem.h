@@ -12,9 +12,6 @@
 #include <QHash>
 #include <QPen>
 
-// TO DELETE
-#include <iostream>
-
 // Singleton class to hold Vibes defaults and constants
 class VibesDefaults {
     QHash<QString, QBrush> _brushes;

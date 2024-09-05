@@ -45,7 +45,7 @@ vibes.showAxis(False)
 
 
 # vibes.selectFigure("test")
-# vibes.clearGroup("Pie")
+# vibes.clearFigure()
 # vibes.selectFigure("test2")
 # vibes.saveImage('./test.svg', "test")
 # vibes.closeFigure("test2")
