@@ -151,6 +151,7 @@ void VibesGraphicsItem::setJsonValues(const QJsonObject &values)
     if (bNeedProjection)
         computeProjection(_dimX, _dimY);
 
+    // Apply property change
     if (this->_qGraphicsItem->type() != VibesGraphicsGroupType)
     {
         this->updateProj();
@@ -1055,6 +1056,7 @@ bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
     polygon << QPointF(+3. * length, 0. * length) + centerPoint;
     polygon << QPointF(-1. * length, -1. * length) + centerPoint;
 
+    // Erase last draw
     QGraphicsPolygonItem *graphics_polygon_eraser = new QGraphicsPolygonItem(polygon);
     graphics_polygon_eraser->setPen(pen_eraser);
     graphics_polygon_eraser->setBrush(brush_eraser);
@@ -1063,6 +1065,7 @@ bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
     graphics_polygon_eraser->setScale(length / 4.); // initial vehicle's length is 4
     this->addToGroup(graphics_polygon_eraser);
 
+    // Draw with the new properties
     QGraphicsPolygonItem *graphics_polygon = new QGraphicsPolygonItem(polygon);
     graphics_polygon->setPen(pen);
     graphics_polygon->setBrush(brush);
@@ -1154,6 +1157,7 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
         body << QPointF(2. * length, -1. * length) + centerPoint;
         body << QPointF(-2. * length, -1. * length) + centerPoint;
 
+        // Erase last draw
         QGraphicsPolygonItem *graphics_body_eraser = new QGraphicsPolygonItem(body);
         graphics_body_eraser->setPen(pen_eraser);
         graphics_body_eraser->setBrush(brush_eraser);
@@ -1162,6 +1166,7 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
         graphics_body_eraser->setScale(length / 7.); // initial vehicle's length is 7
         this->addToGroup(graphics_body_eraser);
 
+        // Draw with the new properties
         QGraphicsPolygonItem *graphics_body = new QGraphicsPolygonItem(body);
         graphics_body->setPen(pen);
         graphics_body->setBrush(brush);
@@ -1180,6 +1185,7 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
         propunit << QPointF(-3.25 * length, -1 * length) + centerPoint;
         propunit << QPointF(-4. * length, -1 * length) + centerPoint;
 
+        // Erase last draw
         QGraphicsPolygonItem *graphics_propunit_eraser = new QGraphicsPolygonItem(propunit);
         graphics_propunit_eraser->setPen(pen_eraser);
         graphics_propunit_eraser->setBrush(brush_eraser);
@@ -1188,6 +1194,7 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
         graphics_propunit_eraser->setScale(length / 7.); // initial vehicle's length is 7
         this->addToGroup(graphics_propunit_eraser);
 
+        // Draw with the new properties
         QGraphicsPolygonItem *graphics_propunit = new QGraphicsPolygonItem(propunit);
         graphics_propunit->setPen(pen);
         graphics_propunit->setBrush(brush);
@@ -1285,6 +1292,7 @@ bool VibesGraphicsVehicleTank::computeProjection(int dimX, int dimY)
         body << QPointF(0., -1.) + centerPoint;
         body << QPointF(0., -1.5) + centerPoint;
 
+        // Erase last draw
         QGraphicsPolygonItem *graphics_body_eraser = new QGraphicsPolygonItem(body);
         graphics_body_eraser->setPen(pen_eraser);
         graphics_body_eraser->setBrush(brush_eraser);
@@ -1294,6 +1302,7 @@ bool VibesGraphicsVehicleTank::computeProjection(int dimX, int dimY)
         graphics_body_eraser->setScale(length/4.); // initial vehicle's length is 4
         this->addToGroup(graphics_body_eraser);
 
+        // Draw with the new properties
         QGraphicsPolygonItem *graphics_body = new QGraphicsPolygonItem(body);
         graphics_body->setPen(pen);
         graphics_body->setBrush(brush);
@@ -1515,11 +1524,13 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
         path.arcTo(QRectF(QPointF(cx - rho_p, cy - rho_p), QPointF(cx + rho_p, cy + rho_p)), theta_m, dtheta);
         path.arcTo(QRectF(QPointF(cx - rho_m, cy - rho_m), QPointF(cx + rho_m, cy + rho_m)), theta_p, -dtheta);
 
+        // Erase last draw
         QGraphicsPathItem *graphics_path_eraser = new QGraphicsPathItem(path);
         graphics_path_eraser->setPen(pen_eraser);
         graphics_path_eraser->setBrush(brush_eraser);
         this->addToGroup(graphics_path_eraser);
 
+        // Draw with the new properties
         QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
         graphics_path->setPen(pen);
         graphics_path->setBrush(brush);
@@ -1711,6 +1722,7 @@ bool VibesGraphicsPoints::computeProjection(int dimX, int dimY)
 
         double r = radiusesExist ? radiuses[i].toDouble() : radius;
 
+        // Erase last draw
         QGraphicsEllipseItem * disk_eraser = new QGraphicsEllipseItem(0, 0, 2 * r, 2 * r);
         disk_eraser->setPos(x, y);
 
@@ -1725,6 +1737,7 @@ bool VibesGraphicsPoints::computeProjection(int dimX, int dimY)
         }
         this->addToGroup(disk_eraser);
 
+        // Draw with the new properties
         QGraphicsEllipseItem * disk = new QGraphicsEllipseItem(0, 0, 2 * r, 2 * r);
         disk->setPos(x, y);
 
@@ -1823,11 +1836,13 @@ bool VibesGraphicsRing::computeProjection(int dimX, int dimY)
 
         path = path.subtracted(pathM);
 
+        // Erase last draw
         QGraphicsPathItem *graphics_path_eraser = new QGraphicsPathItem(path);
         graphics_path_eraser->setPen(pen_eraser);
         graphics_path_eraser->setBrush(brush_eraser);
         this->addToGroup(graphics_path_eraser);
 
+        // Draw with the new properties
         QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
         graphics_path->setPen(pen);
         graphics_path->setBrush(brush);
