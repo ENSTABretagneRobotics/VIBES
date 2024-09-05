@@ -12,6 +12,9 @@
 #include <QHash>
 #include <QPen>
 
+// TO DELETE
+#include <iostream>
+
 // Singleton class to hold Vibes defaults and constants
 class VibesDefaults {
     QHash<QString, QBrush> _brushes;
@@ -38,6 +41,9 @@ public:
         if(style == QString("..")) return Qt::DotLine;
         return Qt::SolidLine;
     }
+    const qreal parsePenWidth(const QString& width){
+        return std::max(0.,width.toDouble());
+    }
     const QBrush brush(const QString & name = QString()) {
         if( !_brushes.contains(name)){
             _brushes[name] = QBrush(parseColorName(name));
@@ -45,11 +51,12 @@ public:
         return _brushes[name];
     }
 
-    const QPen pen(const QString & name = QString(),const QString & style = QString()) {
+    const QPen pen(const QString & name = QString(),const QString & style = QString(),const QString & width = QString()) {
         if( !_pens.contains(name)){
             _pens[name] = QPen(parseColorName(name),0);
         }
         _pens[name].setStyle(parsePenStyle(style));
+        _pens[name].setWidthF(parsePenWidth(width));
         return _pens[name];
     }
 

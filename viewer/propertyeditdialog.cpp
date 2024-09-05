@@ -3,6 +3,9 @@
 
 #include <QDebug>
 
+// TO DELETE
+#include <iostream>
+
 PropertyEditDialog::PropertyEditDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PropertyEditDialog)
@@ -21,6 +24,7 @@ QJsonObject PropertyEditDialog::showEditorForJson(QJsonObject init)
     dlg->ui->comboBox_LineStyle->setCurrentText(init["LineStyle"].toString());
     dlg->ui->comboBox_FaceColor->setCurrentText(init["FaceColor"].toString());
     dlg->ui->comboBox_EdgeColor->setCurrentText(init["EdgeColor"].toString());
+    dlg->ui->lineEdit_LineWidth->setText(init["LineWidth"].toString());
 
     QJsonObject json;
 
@@ -29,6 +33,7 @@ QJsonObject PropertyEditDialog::showEditorForJson(QJsonObject init)
         json["LineStyle"] = QJsonValue(dlg->ui->comboBox_LineStyle->currentText());
         json["FaceColor"] = QJsonValue(dlg->ui->comboBox_FaceColor->currentText());
         json["EdgeColor"] = QJsonValue(dlg->ui->comboBox_EdgeColor->currentText());
+        json["LineWidth"] = QJsonValue(dlg->ui->lineEdit_LineWidth->text());
     }
 
     // qDebug() << "dlg json result" << json;
