@@ -267,6 +267,11 @@
       </item>
       <item>
        <property name="text">
+        <string>-</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>--</string>
        </property>
       </item>
@@ -277,12 +282,12 @@
       </item>
       <item>
        <property name="text">
-        <string>-</string>
+        <string>-..</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>:</string>
+        <string>..</string>
        </property>
       </item>
      </widget>

@@ -31,7 +31,7 @@ QJsonObject PropertyEditDialog::showEditorForJson(QJsonObject init)
         json["EdgeColor"] = QJsonValue(dlg->ui->comboBox_EdgeColor->currentText());
     }
 
-    qDebug() << "dlg json result" << json;
+    // qDebug() << "dlg json result" << json;
 
     return json;
 }
