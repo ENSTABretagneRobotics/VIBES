@@ -346,6 +346,8 @@ bool VibesGraphicsGroup::parseJsonGraphics(const QJsonObject &json)
     foreach(QGraphicsItem* child, children)
     {
         VibesGraphicsItem * item = qgraphicsitem_cast<VibesGraphicsItem *>(child);
+
+        // Each item gets the group properties
         if (item)
         {
             if (json["EdgeColor"]!=QJsonValue())
