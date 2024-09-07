@@ -257,18 +257,7 @@ bool VibesGraphicsItem::parseJson(QJsonObject &json)
             json["FaceColor"] = QJsonValue(format.mid(fcStart + 1, fcEnd - fcStart - 1).trimmed());
             format.remove(fcStart, fcEnd - fcStart + 1);
         }
-        // Extract LineStyle
-        const QStringList lineStyles = {"-",  "--","-.","-..", ".."};
-
-        foreach(const QString ls, lineStyles)
-        {
-            fcStart = format.indexOf(ls);
-            if (fcStart >= 0)
-            {
-                json["LineStyle"] = QJsonValue(ls);
-                format.remove(fcStart, ls.size());
-            }
-        }
+        
         // Extract EdgeColor
         format = format.trimmed();
         if (!format.isEmpty())
@@ -283,6 +272,20 @@ bool VibesGraphicsItem::parseJson(QJsonObject &json)
     if (json.contains("name") && json["name"].isString())
     {
         this->setName(json["name"].toString());
+    }
+
+    // Process object linewidth
+    if (json.contains("linewidth") )
+    {
+        json["LineWidth"] = QJsonValue(json["linewidth"]);
+        json.remove("linewidth");
+    }
+
+    // Process object linestyle
+    if (json.contains("linestyle") )
+    {
+        json["LineStyle"] = QJsonValue(json["linestyle"]);
+        json.remove("linestyle");
     }
 
     // Process object specific JSON
@@ -489,7 +492,7 @@ bool VibesGraphicsBoxes::parseJsonGraphics(const QJsonObject &json)
             {
                 QGraphicsRectItem * rect = qgraphicsitem_cast<QGraphicsRectItem *>(item);
                 if (!rect) continue;
-                rect->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString()));
+                rect->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString()));
                 rect->setBrush(vibesDefaults.brush(jsonValue("FaceColor").toString()));
             }
 
@@ -614,7 +617,7 @@ bool VibesGraphicsBoxesUnion::parseJsonGraphics(const QJsonObject &json)
             this->_nbDim = nbCols / 2;
 
             // Set graphical properties
-            this->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString()));
+            this->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString()));
             this->setBrush(vibesDefaults.brush(jsonValue("FaceColor").toString()));
 
             // Update successful
@@ -716,7 +719,7 @@ bool VibesGraphicsEllipse::parseJsonGraphics(const QJsonObject &json)
                 this->_nbDim = center.size();
 
                 // Set graphical properties
-                this->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString()));
+                this->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString()));
                 this->setBrush(vibesDefaults.brush(jsonValue("FaceColor").toString()));
 
                 // Update successful
@@ -875,7 +878,7 @@ bool VibesGraphicsLine::parseJsonGraphics(const QJsonObject &json)
             this->_nbDim = nbCols;
 
             // Set pen
-            this->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString()));
+            this->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString()));
 
             // Update successful
             return true;
@@ -1663,7 +1666,7 @@ bool VibesGraphicsPoints::parseJsonGraphics(const QJsonObject& json)
             {
                 QGraphicsEllipseItem * disk = qgraphicsitem_cast<QGraphicsEllipseItem*>(item);
                 if (!disk) continue;
-                disk->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString()));
+                disk->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString()));
                 disk->setBrush(vibesDefaults.brush(jsonValue("FaceColor").toString()));
             }
             // Update successful
