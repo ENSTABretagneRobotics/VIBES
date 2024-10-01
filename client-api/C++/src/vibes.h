@@ -221,8 +221,12 @@ namespace vibes {
   /// Start VIBes in file saving mode. All commands are saved to the specified file.
   void beginDrawing(const std::string &fileName);
 
+  /// Start VIBes in connected mode: connects to the VIBes viewer if needed.
+  void beginDrawingIfNeeded();
+
   /// Close connection to the viewer or the drawing file.
   void endDrawing();
+
 
   /** @} */ // end of group connection
 
