@@ -45,7 +45,7 @@ float angle;
 
 int main()
 {
-  vibes::beginDrawing();
+  // Not needed anymore: vibes::beginDrawing();
   initScene();
   while(true)
     updateScene();

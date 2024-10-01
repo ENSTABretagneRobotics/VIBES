@@ -54,7 +54,7 @@ int main()
             "| VIBES C++ API commands test |" "\n"
             "-------------------------------" << endl;
 
-    VIBES_TEST( vibes::beginDrawing() );
+    // Not needed anymore: VIBES_TEST( vibes::beginDrawing() );
 
     cout << "Figure creation function" << endl;
     VIBES_TEST( vibes::newFigure() );
@@ -303,7 +303,7 @@ int main()
     // vibes::drawRaster("./raster_example.png", 10, 5, 0.1, 0.1);
 
     std::cout << "end drawing" << std::endl;
-    VIBES_TEST( vibes::endDrawing() );
+    // Not needed anymore: VIBES_TEST( vibes::endDrawing() );
 
     // Testing Vibes params system
     cout << "Testing Vibes params system" << endl;

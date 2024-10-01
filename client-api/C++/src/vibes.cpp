@@ -128,11 +128,15 @@ namespace vibes
   void beginDrawing(const std::string &fileName)
   {
     if (!channel)
-      channel = std::shared_ptr<FILE>(fopen(fileName.c_str(),"a"), [](FILE* file) {
-        if (file) {
+      channel = std::shared_ptr<FILE>(
+        fopen(fileName.c_str(),"a"),
+        // Callback for automatically closing the file
+        // when the shared_ptr is released:
+        [](FILE* file) {
+          if(file)
             fclose(file);
         }
-    });
+      );
   }
 
   void beginDrawingIfNeeded()

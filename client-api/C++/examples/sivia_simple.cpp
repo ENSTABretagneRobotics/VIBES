@@ -35,7 +35,7 @@ interval dist(box robot, box landmark)
 
 int main()
 {
-  vibes::beginDrawing();           // <== Initializes the VIBES "connection"
+  // Not needed anymore: vibes::beginDrawing();           // <== Initializes the VIBES "connection"
   vibes::newFigure("SIVIA");       // <== Create a new VIBes figure
 
   box robot(interval(-10,10),interval(-10,10));
@@ -66,6 +66,6 @@ int main()
     }
   }
   
-  vibes::endDrawing();      // <== closes the VIBES "connection"
+  // Not needed anymore: vibes::endDrawing();      // <== closes the VIBES "connection"
   return 0;
 }
