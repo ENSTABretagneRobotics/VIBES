@@ -19,7 +19,6 @@
 #include <cmath>
 using namespace std;
 
-
 // The only instance of VibesDefaults
 VibesDefaults VibesDefaults::_instance;
 
@@ -275,19 +274,7 @@ bool VibesGraphicsItem::parseJson(QJsonObject &json)
         this->setName(json["name"].toString());
     }
 
-    // Process object linewidth
-    if (json.contains("linewidth") )
-    {
-        json["LineWidth"] = QJsonValue(json["linewidth"]);
-        json.remove("linewidth");
-    }
-
-    // Process object linestyle
-    if (json.contains("linestyle") )
-    {
-        json["LineStyle"] = QJsonValue(json["linestyle"]);
-        json.remove("linestyle");
-    }
+    // LineStyle and LineWidth need no processing
 
     // Process object specific JSON
     return parseJsonGraphics(json);
@@ -369,6 +356,7 @@ bool VibesGraphicsGroup::parseJsonGraphics(const QJsonObject &json)
             {
                 item->setJsonValue("LineWidth",json["LineWidth"]);
             }
+            // Update item display
             item->updateProj();
         }
             
@@ -1048,7 +1036,8 @@ bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
     // Get center
     const QPointF & centerPoint = QPointF(center[dimX].toDouble(), center[dimY].toDouble());
 
-    // update child items if they exist
+    // If the shape has already been drawn, it has at least one child
+    // Update child items if they exist
     if (this->childItems().size() > 0)
     {
         foreach(QGraphicsItem * item, this->childItems())
@@ -1062,6 +1051,7 @@ bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
             graphics_polygon->setScale(length / 4.); // initial vehicle's length is 4
         }
     }
+    // Else draw the shape for the first time
     else{
 
         // Set polygon shape
@@ -1145,7 +1135,8 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
 
     /*  This shape is inspired by the MOOS middleware GUI (see pMarineViewer)   */
 
-    // update child items if they exist
+    // If the shape has already been drawn, it has at least one child
+    // Update child items if they exist
     if (this->childItems().size() > 0)
     {
         foreach(QGraphicsItem * item, this->childItems())
@@ -1159,7 +1150,7 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
             graphics_polygon->setScale(length / 7.); // initial vehicle's length is 4
         }
     }
-
+    // Else draw the shape for the first time
     else{
         // Set body shape
         {
@@ -1272,7 +1263,8 @@ bool VibesGraphicsVehicleTank::computeProjection(int dimX, int dimY)
 
     /*  This shape is inspired by Luc Jaulin   */
 
-    // update child items if they exist
+    // If the shape has already been drawn, it has at least one child
+    // Update child items if they exist
     if (this->childItems().size() > 0)
     {
         foreach(QGraphicsItem * item, this->childItems())
@@ -1286,6 +1278,7 @@ bool VibesGraphicsVehicleTank::computeProjection(int dimX, int dimY)
             graphics_polygon->setScale(length / 4.); // initial vehicle's length is 4
         }
     }
+    // Else draw the shape for the first time
     else{
 
         // Set body shape
@@ -1383,20 +1376,20 @@ bool VibesGraphicsArrow::computeProjection(int dimX, int dimY)
 
     double before_last_x = 0., before_last_y = 0., last_x = 0., last_y = 0.;
 
-    
-    // update child items if they exist
+    // If the shape has already been drawn, it has at least one child
+    // Update child items if they exist
     if (this->childItems().size() > 0)
     {
         // item type : 2 if path, 5 if polygon
         foreach(QGraphicsItem * item, this->childItems())
         {
-            if (item->type() == 2)
+            if (item->type() == QGraphicsPathItem::Type)
             {
                 //to vibes graphics item
                 QGraphicsPathItem *graphics_path = qgraphicsitem_cast<QGraphicsPathItem *>(item);
                 graphics_path->setPen(pen);
             }
-            else if (item->type() == 5)
+            else if (item->type() == QGraphicsPolygonItem::Type)
             {
                 //to vibes graphics item
                 QGraphicsPolygonItem *graphics_tip = qgraphicsitem_cast<QGraphicsPolygonItem *>(item);
@@ -1405,6 +1398,7 @@ bool VibesGraphicsArrow::computeProjection(int dimX, int dimY)
             }
         }
     }
+    // Else draw the shape for the first time
     else{
         // Body
         {
@@ -1526,6 +1520,8 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
     Q_ASSERT(rho[0].toDouble() >= 0);
     Q_ASSERT(rho[1].toDouble() >= rho[0].toDouble());
 
+    // If the shape has already been drawn, it has at least one child
+    // Update child items if they exist
     if (this->childItems().size() > 0)
     {
         foreach(QGraphicsItem * item, this->childItems())
@@ -1536,6 +1532,7 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
             graphics_polygon->setBrush(brush);
         }
     }
+    // Else draw the shape for the first time
     else{
         // Body
         {

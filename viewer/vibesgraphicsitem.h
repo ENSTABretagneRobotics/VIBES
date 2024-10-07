@@ -36,9 +36,11 @@ public:
         if(style == QString("-.")) return Qt::DashDotLine;
         if(style == QString("-..")) return Qt::DashDotDotLine;
         if(style == QString("..")) return Qt::DotLine;
+        // by Default SolidLine
         return Qt::SolidLine;
     }
     const qreal parsePenWidth(const QString& width){
+        // Pen cannot have negative width
         return std::max(0.,width.toDouble());
     }
     const QBrush brush(const QString & name = QString()) {
