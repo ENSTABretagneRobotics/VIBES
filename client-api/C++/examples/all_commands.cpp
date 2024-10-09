@@ -270,6 +270,9 @@ int main()
     VIBES_TEST(vibes::drawPoint(17,17,"red[darkyellow]"));
     VIBES_TEST(vibes::drawPoint(27,27,2,vibesParams("FaceColor","magenta","EdgeColor","none","Draggable",true,"FixedScale",false)));
 
+    VIBES_TEST(vibes::drawBox(10,20,10,16,vibesParams("FaceColor","red","EdgeColor","black","LineStyle","-..","LineWidth","0.3","name","custom_line")))
+    VIBES_TEST(vibes::drawTank(12,6,30,4,"black[red]",vibesParams("LineWidth","0.5")))
+
     VIBES_TEST( vibes::axisAuto() );
     //  VIBES_TEST( vibes::axisLimits(-1,1, -3,2) );
 

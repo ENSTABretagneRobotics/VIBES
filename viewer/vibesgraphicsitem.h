@@ -30,6 +30,19 @@ public:
         }
         return color;
     }
+    const Qt::PenStyle parsePenStyle(const QString& style){
+        if(style == QString("-")) return Qt::SolidLine;
+        if(style == QString("--")) return Qt::DashLine;
+        if(style == QString("-.")) return Qt::DashDotLine;
+        if(style == QString("-..")) return Qt::DashDotDotLine;
+        if(style == QString("..")) return Qt::DotLine;
+        // by Default SolidLine
+        return Qt::SolidLine;
+    }
+    const qreal parsePenWidth(const QString& width){
+        // Pen cannot have negative width
+        return std::max(0.,width.toDouble());
+    }
     const QBrush brush(const QString & name = QString()) {
         if( !_brushes.contains(name)){
             _brushes[name] = QBrush(parseColorName(name));
@@ -37,12 +50,15 @@ public:
         return _brushes[name];
     }
 
-    const QPen pen(const QString & name = QString()) {
+    const QPen pen(const QString & name = QString(),const QString & style = QString(),const QString & width = QString()) {
         if( !_pens.contains(name)){
             _pens[name] = QPen(parseColorName(name),0);
         }
+        _pens[name].setStyle(parsePenStyle(style));
+        _pens[name].setWidthF(parsePenWidth(width));
         return _pens[name];
     }
+
 private:
     VibesDefaults();
     static VibesDefaults _instance;
@@ -98,6 +114,7 @@ public:
     bool setProj(int dimX, int dimY);
     bool updateProj() { return setProj(_dimX,_dimY); }
     int dimension() const { return maxDim(); }
+
 
     QString name() const { return _name; }
     void setName(QString name) { if (name != this->name()) { _name=name; if (scene()) scene()->setItemName(this, this->name()); } }

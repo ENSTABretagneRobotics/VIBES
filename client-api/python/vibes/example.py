@@ -9,7 +9,7 @@ vibes.newFigure("test")
 vibes.drawBox(0,1,4,6,color='[#FF12FFA0]', figure='test')
 vibes.drawText(12, 12, 'My Text', 0.1, 'b[r]')
 vibes.axisAuto()
-vibes.drawBox(0.5,2,4,7,color='[#00FFFF66]', figure='test')
+vibes.drawBox(0.5,2,4,7,color='[#00FFFF66]', figure='test', name='box1')
 vibes.drawBox(-1,0,-4,-6,color='r', figure='test')
 vibes.drawLine([[0,0], [4,4]])
 vibes.drawEllipse(3, 5, 1, 3, 45)
@@ -25,7 +25,7 @@ vibes.newGroup("Pie", figure="test", format='[cyan]')
 vibes.drawPie([0,0], [5,9], [-120, -40], group="Pie")
 # vibes.drawPie([0,0], [5,9], [-120, -40], "[b]")
 
-vibes.drawPie([5,2], [1,2], [160, 220]) #, 'g[y]')
+vibes.drawPie([5,2], [1,2], [160, 220],name="pie alone") #, 'g[y]')
 
 # vibes.clearGroup("Pie", figure="test")
 
@@ -57,6 +57,9 @@ vibes.drawArrow([9, 9], [10, 9], 0.3, '[r]')
 
 vibes.drawPolygon([[1,1], [1,4], [5,2], [5, 1]])
 vibes.setFigureProperties({'viewbox':'equal'})
+vibes.drawAUV(5,3, 1, 2, color='blue[yellow]',name='auv1',LineStyle="..",LineWidth="0.3")
+vibes.drawBox(2,4,4,7,color='red[yellow]', figure='test', name='box1',LineStyle="-..",LineWidth="0.1")
+vibes.drawArrow((0,0), (1,1), 0.1, color='[b]', name='arrow1')
 
 vibes.newFigure("raster")
 vibes.drawArrow((0,0), (1,1), 0.1)
