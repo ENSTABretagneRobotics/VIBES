@@ -14,7 +14,7 @@ class vibes(object):
     @classmethod
     def _write(cls, msg, figure=None, **kwargs):
         if(cls.channel is None):
-            print('beginDrawing need to be called first')
+            beginDrawing()
         else:
             #print(kwargs.pop('figure', cls.current_fig))
             msg['figure'] = kwargs.pop('figure', cls.current_fig)

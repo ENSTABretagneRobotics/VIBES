@@ -1549,6 +1549,9 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
             double m1_x = cx + rho_m * std::cos(-theta_m * M_PI / 180.0);
             double m1_y = cy + rho_m * std::sin(-theta_m * M_PI / 180.0);
 
+            double m2_x = cx + rho_m * std::cos(-theta_p * M_PI / 180.0);
+            double m2_y = cy + rho_m * std::sin(-theta_p * M_PI / 180.0);
+
             double m4_x = cx + rho_p * std::cos(-theta_m * M_PI / 180.0);
             double m4_y = cy + rho_p * std::sin(-theta_m * M_PI / 180.0);
 
@@ -1557,6 +1560,7 @@ bool VibesGraphicsPie::computeProjection(int dimX, int dimY)
             QPainterPath path(QPointF(m1_x, m1_y));
             path.lineTo(m4_x, m4_y);
             path.arcTo(QRectF(QPointF(cx - rho_p, cy - rho_p), QPointF(cx + rho_p, cy + rho_p)), theta_m, dtheta);
+            path.lineTo(m2_x, m2_y);
             path.arcTo(QRectF(QPointF(cx - rho_m, cy - rho_m), QPointF(cx + rho_m, cy + rho_m)), theta_p, -dtheta);
 
             // Draw with the new properties
