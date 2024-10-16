@@ -19,9 +19,6 @@
 #include <cmath>
 using namespace std;
 
-// TO DELETE
-#include <iostream>
-
 // The only instance of VibesDefaults
 VibesDefaults VibesDefaults::_instance;
 
