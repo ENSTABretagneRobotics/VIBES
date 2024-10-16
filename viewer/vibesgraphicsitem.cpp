@@ -1648,7 +1648,7 @@ bool VibesGraphicsPoint::computeProjection(int dimX, int dimY)
             rad = json["Radius"].toDouble(0.01);
         }
 
-        this->setRect(0, 0, 2 * rad, 2 * rad);
+        this->setRect(-rad, -rad, 2 * rad, 2 * rad);
 
         this->setPos(cx, cy);
 
@@ -1752,7 +1752,7 @@ bool VibesGraphicsPoints::computeProjection(int dimX, int dimY)
         double r = radiusesExist ? radiuses[i].toDouble() : radius;
 
         // Draw with the new properties
-        QGraphicsEllipseItem * disk = new QGraphicsEllipseItem(0, 0, 2 * r, 2 * r);
+        QGraphicsEllipseItem * disk = new QGraphicsEllipseItem(-r, -r, 2 * r, 2 * r);
         disk->setPos(x, y);
 
         disk->setPen(pen);
