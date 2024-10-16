@@ -19,6 +19,9 @@
 #include <cmath>
 using namespace std;
 
+// TO DELETE
+#include <iostream>
+
 // The only instance of VibesDefaults
 VibesDefaults VibesDefaults::_instance;
 
@@ -1648,7 +1651,7 @@ bool VibesGraphicsPoint::computeProjection(int dimX, int dimY)
             rad = json["Radius"].toDouble(0.01);
         }
 
-        this->setRect(0, 0, 2 * rad, 2 * rad);
+        this->setRect(-rad, -rad, 2 * rad, 2 * rad);
 
         this->setPos(cx, cy);
 
