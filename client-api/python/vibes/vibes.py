@@ -458,6 +458,26 @@ class vibes(object):
                           }
               }
         cls._write(msg, **kwargs)
+
+    @classmethod
+    def drawPoints(cls,cx,cy, color='r', **kwargs):
+        """Draw a set of points at position (cx, cy)
+
+        Args:
+            cx,cy (list of double): location of the points
+
+        """
+        points = []
+        for i in range(len(cx)):
+            points.append([cx[i], cy[i]])
+        msg = {'action': 'draw',
+                'shape': {'type': 'points',
+                          'centers': points,
+                          'format': color
+                          }
+              }
+        cls._write(msg, **kwargs)
+
     @classmethod
     def drawRing(cls, cx, cy, r_min, r_max, color='r', **kwargs):
         """Draw a ring at position (cx, cy) with radius between (r_min, r_max)
