@@ -1056,9 +1056,9 @@ bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
 
         // Set polygon shape
         QPolygonF polygon;
-        polygon << QPointF(-1. * length, 1. * length) + centerPoint;
-        polygon << QPointF(+3. * length, 0. * length) + centerPoint;
-        polygon << QPointF(-1. * length, -1. * length) + centerPoint;
+        polygon << QPointF(-1., 1.) + centerPoint;
+        polygon << QPointF(+3., 0.) + centerPoint;
+        polygon << QPointF(-1., -1.) + centerPoint;
 
 
         // Draw with the new properties
@@ -1147,7 +1147,7 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
             graphics_polygon->setBrush(brush);
             graphics_polygon->setTransformOriginPoint(centerPoint);
             graphics_polygon->setRotation(orientation);
-            graphics_polygon->setScale(length / 7.); // initial vehicle's length is 4
+            graphics_polygon->setScale(length / 7.); // initial vehicle's length is 7
         }
     }
     // Else draw the shape for the first time
@@ -1155,16 +1155,16 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
         // Set body shape
         {
             QPolygonF body;
-            body << QPointF(-4. * length, 0. * length) + centerPoint;
-            body << QPointF(-2. * length, 1. * length) + centerPoint;
-            body << QPointF(2. * length, 1. * length) + centerPoint;
+            body << QPointF(-4., 0.) + centerPoint;
+            body << QPointF(-2., 1.) + centerPoint;
+            body << QPointF(2., 1.) + centerPoint;
 
             for (float i = 90.; i > -90.; i -= 10.) // noise
-                body << QPointF((cos(i * M_PI / 180.0) + 2.) * length,
-                                (sin(i * M_PI / 180.0) + 0.) * length) + centerPoint;
+                body << QPointF((cos(i * M_PI / 180.0) + 2.),
+                                (sin(i * M_PI / 180.0) + 0.)) + centerPoint;
 
-            body << QPointF(2. * length, -1. * length) + centerPoint;
-            body << QPointF(-2. * length, -1. * length) + centerPoint;
+            body << QPointF(2., -1.) + centerPoint;
+            body << QPointF(-2., -1.) + centerPoint;
 
 
             // Draw with the new properties
@@ -1181,10 +1181,10 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
         // Set propulsion unit shape
         {
             QPolygonF propunit;
-            propunit << QPointF(-4. * length, 1 * length) + centerPoint;
-            propunit << QPointF(-3.25 * length, 1 * length) + centerPoint;
-            propunit << QPointF(-3.25 * length, -1 * length) + centerPoint;
-            propunit << QPointF(-4. * length, -1 * length) + centerPoint;
+            propunit << QPointF(-4., 1) + centerPoint;
+            propunit << QPointF(-3.25, 1) + centerPoint;
+            propunit << QPointF(-3.25, -1) + centerPoint;
+            propunit << QPointF(-4., -1) + centerPoint;
 
             // Draw with the new properties
             QGraphicsPolygonItem *graphics_propunit = new QGraphicsPolygonItem(propunit);

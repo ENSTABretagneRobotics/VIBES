@@ -1,0 +1,13 @@
+LICENSE
+MANIFEST.in
+README.md
+setup.cfg
+setup.py
+vibes/__init__.py
+vibes/example.py
+vibes/example_allfigures.py
+vibes/vibes.py
+vibes.egg-info/PKG-INFO
+vibes.egg-info/SOURCES.txt
+vibes.egg-info/dependency_links.txt
+vibes.egg-info/top_level.txt
