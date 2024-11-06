@@ -1,7 +1,7 @@
 // This file is part of VIBes' C++ API
 //
 // Copyright (c) 2013-2015 Vincent Drevelle, Jeremy Nicola, Simon Rohou,
-//                         Benoit Desrochers
+//                         Benoit Desrochers, Maël Godard
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal

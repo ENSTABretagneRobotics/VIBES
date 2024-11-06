@@ -1,6 +1,6 @@
 /// \file    vibes.h
 /// \brief   Vibes C++ API Header
-/// \author  Vincent Drevelle, Jeremy Nicola, Simon Rohou, Benoit Desrochers
+/// \author  Vincent Drevelle, Jeremy Nicola, Simon Rohou, Benoit Desrochers, Maël Godard
 /// \date    2013-2015
 /// \version 0.2.0beta
 //
