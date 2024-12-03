@@ -1913,7 +1913,7 @@ bool VibesGraphicsRaster::computeProjection(int dimX, int dimY)
 
         }
 
-        QTransform transform(xres, 0, 0, yres, xlb, yub);
+        QTransform transform(xres, 0, 0, -yres, xlb, yub);
         QGraphicsPixmapItem *pixmap_item = new QGraphicsPixmapItem(pixmap);
 
         pixmap_item->setShapeMode(QGraphicsPixmapItem::MaskShape);
