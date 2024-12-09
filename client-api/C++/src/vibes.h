@@ -377,7 +377,7 @@ namespace vibes {
   /// The color used for transparency is throw the pen color
   VIBES_FUNC_COLOR_PARAM_5(drawRaster, const std::string&, rasterFilename,
                                        const double &,ulb, const double &, yub,
-                                       const double &,xres, const double &, yres);
+                                       const double &,width, const double &, height);
 
   /// @}
   /// @name Objects grouping and deletion

@@ -305,7 +305,7 @@ int main()
         
 
     vibes::newFigure("test Raster");
-    vibes::drawRaster(std::filesystem::current_path().string()+"/../VIBes.png", 10, 5, 0.1, 0.1);
+    vibes::drawRaster(std::filesystem::current_path().string()+"/../VIBes.png", 10, 5, 10.,5.);
 
     std::cout << "end drawing" << std::endl;
 

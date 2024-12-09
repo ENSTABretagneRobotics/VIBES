@@ -539,7 +539,7 @@ class vibes(object):
         cls._write(msg, **kwargs)
 
     @classmethod
-    def drawRaster(cls, filename, xlb, yub, xres, yres, **kwargs):
+    def drawRaster(cls, filename, xlb, yub, width, height, **kwargs):
       """Draw raster from <filename> on the screen with upper left corner at <xlb, yub>
          with pixels size of <xres, yres>.
 
@@ -553,7 +553,7 @@ class vibes(object):
               'shape': {'type': 'raster',
                         'filename' : filename,
                         'ul_corner':  [xlb, yub],
-                        'scale' : [xres, yres],
+                        'size' : [width, height],
                         }
             }
       if "color" in kwargs:
