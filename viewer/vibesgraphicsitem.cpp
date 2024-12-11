@@ -1869,10 +1869,10 @@ bool VibesGraphicsRaster::parseJsonGraphics(const QJsonObject& json)
         QString type = json["type"].toString();
 
         // VibesGraphicsPie has JSON type "arrow"
-        if (type == "raster" && json.contains("filename") && json.contains("ul_corner") && json.contains("scale"))
+        if (type == "raster" && json.contains("filename") && json.contains("ul_corner") && json.contains("size"))
         {
             if (json["ul_corner"].toArray().size() != 2) return false;
-            if (json["scale"].toArray().size() != 2) return false;
+            if (json["size"].toArray().size() != 2) return false;
             // Compute dimension
             this->_nbDim = 2; //center.size();
             // Update successful
@@ -1899,14 +1899,16 @@ bool VibesGraphicsRaster::computeProjection(int dimX, int dimY)
     {
         QString filename = json["filename"].toString();
         QJsonArray ul_corner = json["ul_corner"].toArray();
-        QJsonArray scale = json["scale"].toArray();
+        QJsonArray size = json["size"].toArray();
         double xlb = ul_corner[0].toDouble();
         double yub = ul_corner[1].toDouble();
-        double xres = scale[0].toDouble();
-        double yres = scale[1].toDouble();
 
         QImage image(filename);
         QPixmap pixmap = QPixmap::fromImage(image);
+
+        double xres = size[0].toDouble()/pixmap.width();
+        double yres = size[1].toDouble()/pixmap.height();
+        
         if (json.contains("EdgeColor")) {
           const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString());
           pixmap.setMask(pixmap.createMaskFromColor(pen.color().rgb()));
