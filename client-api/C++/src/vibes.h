@@ -342,6 +342,14 @@ namespace vibes {
   /// Draw a 2-D polygon from the list of abscissae \a x and the list of ordinates \a y
   VIBES_FUNC_COLOR_PARAM_2(drawPolygon,const std::vector<double> &,x, const std::vector<double> &,y)
 
+  /// Draw a text <text> at position <cx, cy>
+	VIBES_FUNC_COLOR_PARAM_3(drawText, const double&, cx, const double&, cy,
+																			const std::string&, text)
+
+  /// Draw a text <text> at position <cx, cy> and with scale <scale>
+	VIBES_FUNC_COLOR_PARAM_4(drawText, const double&, cx, const double&, cy,
+																			const std::string&, text, const double&, scale)
+
   /// Draw a 2-D vehicle at position (cx,cy)
   VIBES_FUNC_COLOR_PARAM_4(drawVehicle,const double &,cx, const double &,cy, const double &,rot, const double &,length)
 

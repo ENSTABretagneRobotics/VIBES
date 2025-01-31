@@ -653,6 +653,34 @@ namespace vibes
     fflush(channel.get());
   }
 
+  void drawText(const double &cx, const double &cy, const string& text, Params params)
+  {
+      Params msg;
+      Vec2d cxy = { cx, cy };
+      msg["action"]="draw";
+      msg["figure"]=params.pop("figure",current_fig);
+      msg["shape"]=(params, "type","text",
+														"text",text,
+                            "position",cxy);
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel.get());
+      fflush(channel.get());
+  }
+
+  void drawText(const double &cx, const double &cy, const string& text,
+								const double &scale, Params params)
+  {
+      Params msg;
+      Vec2d cxy = { cx, cy };
+      msg["action"]="draw";
+      msg["figure"]=params.pop("figure",current_fig);
+      msg["shape"]=(params, "type","text",
+														"text",text,
+                            "position",cxy,
+														"scale", scale);
+      fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel.get());
+      fflush(channel.get());
+  }
+
   void drawVehicle(const double &cx, const double &cy, const double &rot, const double &length, Params params)
   {
       beginDrawingIfNeeded();
