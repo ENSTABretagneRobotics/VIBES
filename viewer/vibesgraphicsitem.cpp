@@ -1018,7 +1018,7 @@ bool VibesGraphicsText::computeProjection(int dimX, int dimY)
     const QJsonObject & json = this->_json;
     // Get ring color (or default if not specified)
     const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
-    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString());
 
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)

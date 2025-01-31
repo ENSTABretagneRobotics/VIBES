@@ -669,6 +669,7 @@ namespace vibes
   void drawText(const double &cx, const double &cy, const string& text,
 								const double &scale, Params params)
   {
+      beginDrawingIfNeeded();
       Params msg;
       Vec2d cxy = { cx, cy };
       msg["action"]="draw";
