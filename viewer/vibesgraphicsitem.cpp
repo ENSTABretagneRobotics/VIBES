@@ -1013,6 +1013,11 @@ bool VibesGraphicsText::parseJsonGraphics(const QJsonObject& json)
 }
 // #define GET_WITH_DEFAULT(dict,key,type,default_value) \
 // 	dict.contains[key] ? dict[key].type
+
+// TO DELETE
+#include <iostream>
+using namespace std;
+
 bool VibesGraphicsText::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
@@ -1039,7 +1044,7 @@ bool VibesGraphicsText::computeProjection(int dimX, int dimY)
     {
         QFont textFont(fontName, fontSize);
         this->setFont(textFont);
-        this->setTransform(QTransform(1, 0, 0, -1, pos[0].toDouble(), pos[1].toDouble()));
+        this->setTransform(QTransform(1, 0, 0, -1, pos[0].toDouble(),pos[1].toDouble()));
         this->setText(text);
         this->setPen(pen);
         this->setBrush(brush);

@@ -343,11 +343,11 @@ namespace vibes {
   VIBES_FUNC_COLOR_PARAM_2(drawPolygon,const std::vector<double> &,x, const std::vector<double> &,y)
 
   /// Draw a text <text> at position <cx, cy>
-	VIBES_FUNC_COLOR_PARAM_3(drawText, const double&, cx, const double&, cy,
+	VIBES_FUNC_COLOR_PARAM_3(drawText, const double&, top_left_x, const double&, top_left_y,
 																			const std::string&, text)
 
   /// Draw a text <text> at position <cx, cy> and with scale <scale>
-	VIBES_FUNC_COLOR_PARAM_4(drawText, const double&, cx, const double&, cy,
+	VIBES_FUNC_COLOR_PARAM_4(drawText, const double&, top_left_x, const double&, top_left_y,
 																			const std::string&, text, const double&, scale)
 
   /// Draw a 2-D vehicle at position (cx,cy)
