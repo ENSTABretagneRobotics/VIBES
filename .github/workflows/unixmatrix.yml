@@ -38,7 +38,7 @@ jobs:
             # Current workaround is to use Intel app with Rosetta...
             #
             #- { os: macos-14, shell: bash, arch: arm64, bitness: 64, runtime: sonoma, desc: 'macOS Sonoma arm64' }
-            - { os: macos-12, shell: bash, arch: x86_64, bitness: 64, runtime: monterey, desc: 'macOS Monterey x86_64' }
+            - { os: macos-13, shell: bash, arch: x86_64, bitness: 64, runtime: ventura, desc: 'macOS Ventura x86_64' }
     name: ${{ matrix.cfg.desc }}
     steps: 
     - uses: actions/checkout@v4  

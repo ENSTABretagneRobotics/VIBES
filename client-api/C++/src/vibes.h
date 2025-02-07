@@ -1,6 +1,6 @@
 /// \file    vibes.h
 /// \brief   Vibes C++ API Header
-/// \author  Vincent Drevelle, Jeremy Nicola, Simon Rohou, Benoit Desrochers
+/// \author  Vincent Drevelle, Jeremy Nicola, Simon Rohou, Benoit Desrochers, Maël Godard
 /// \date    2013-2015
 /// \version 0.2.0beta
 //
@@ -373,11 +373,11 @@ namespace vibes {
                                      const double &,r_min, const double &,r_max)
 
   /// Draw a raster image with upper left corner at position <ulb, yub>
-  /// and with <xres, yres> pixel resolution.
+  /// and with <width, height> size.
   /// The color used for transparency is throw the pen color
   VIBES_FUNC_COLOR_PARAM_5(drawRaster, const std::string&, rasterFilename,
                                        const double &,ulb, const double &, yub,
-                                       const double &,xres, const double &, yres);
+                                       const double &,width, const double &, height);
 
   /// @}
   /// @name Objects grouping and deletion

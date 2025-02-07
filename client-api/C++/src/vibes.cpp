@@ -1,7 +1,7 @@
 // This file is part of VIBes' C++ API
 //
 // Copyright (c) 2013-2015 Vincent Drevelle, Jeremy Nicola, Simon Rohou,
-//                         Benoit Desrochers
+//                         Benoit Desrochers, Maël Godard
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@
 //
 // Vibes properties key,value system implementation
 //
+
 
 namespace vibes {
     std::string Value::toJSONString() const {
@@ -700,11 +701,11 @@ namespace vibes
       fflush(channel.get());
   }
 
-  void drawRaster(const std::string& rasterFilename, const double &xlb, const double &yub, const double &xres, const double &yres, Params params)
+  void drawRaster(const std::string& rasterFilename, const double &xlb, const double &yub, const double &width, const double &height, Params params)
   {
     beginDrawingIfNeeded();
     Vec2d ul_corner = { xlb, yub };
-    Vec2d scale = { xres, yres };
+    Vec2d size = { width, height };
 
     Params msg;
     msg["action"] = "draw";
@@ -712,7 +713,7 @@ namespace vibes
     msg["shape"] = (params, "type", "raster",
                             "filename", rasterFilename,
                             "ul_corner", ul_corner,
-                            "scale", scale
+                            "size", size
                    );
 
     fputs(Value(msg).toJSONString().append("\n\n").c_str(), channel.get());

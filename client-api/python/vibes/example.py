@@ -57,12 +57,11 @@ vibes.drawArrow([9, 9], [10, 9], 0.3, '[r]')
 
 vibes.drawPolygon([[1,1], [1,4], [5,2], [5, 1]])
 vibes.setFigureProperties({'viewbox':'equal'})
-vibes.drawAUV(5,3, 1, 2, color='blue[yellow]',name='auv1',LineStyle="..",LineWidth="0.3")
+vibes.drawAUV(5,3,1,2, color='blue[yellow]',name='auv1',LineStyle="..",LineWidth="0.3")
 vibes.drawBox(2,4,4,7,color='red[yellow]', figure='test', name='box1',LineStyle="-..",LineWidth="0.1")
 vibes.drawArrow((0,0), (1,1), 0.1, color='[b]', name='arrow1')
 
 vibes.newFigure("raster")
 vibes.drawArrow((0,0), (1,1), 0.1)
-
 
 vibes.endDrawing()

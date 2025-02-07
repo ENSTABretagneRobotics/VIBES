@@ -387,6 +387,26 @@ class vibes(object):
         cls._write(msg, **kwargs)
 
     @classmethod
+    def drawTank(cls, cx, cy, oritentation, length, color='r', **kwargs):
+        """Draw a tank centered at (cx, cy) with heading <heading> and size length
+
+        Args:
+            cx,cy  (double): position of the tank
+            heading  (double): heading of the vehicle in degree
+            lenght (double): length of the vehicle
+
+        """
+        msg = {'action': 'draw',
+               'shape': {'type': 'vehicle_tank',
+                         'center': [cx, cy],
+                         'length': length,
+                         'orientation': oritentation,
+                         'format': color
+                         }
+              }
+        cls._write(msg, **kwargs)
+
+    @classmethod
     def drawPie(cls, center, rho, theta, color='r', use_radian=False, **kwargs):
         """Draw a Pie centered at <center> with raduis in <rho> and angle in <theta>
 
@@ -458,6 +478,26 @@ class vibes(object):
                           }
               }
         cls._write(msg, **kwargs)
+
+    @classmethod
+    def drawPoints(cls,cx,cy, color='r', **kwargs):
+        """Draw a set of points at position (cx, cy)
+
+        Args:
+            cx,cy (list of double): location of the points
+
+        """
+        points = []
+        for i in range(len(cx)):
+            points.append([cx[i], cy[i]])
+        msg = {'action': 'draw',
+                'shape': {'type': 'points',
+                          'centers': points,
+                          'format': color
+                          }
+              }
+        cls._write(msg, **kwargs)
+
     @classmethod
     def drawRing(cls, cx, cy, r_min, r_max, color='r', **kwargs):
         """Draw a ring at position (cx, cy) with radius between (r_min, r_max)
@@ -499,7 +539,7 @@ class vibes(object):
         cls._write(msg, **kwargs)
 
     @classmethod
-    def drawRaster(cls, filename, xlb, yub, xres, yres, **kwargs):
+    def drawRaster(cls, filename, xlb, yub, width, height, **kwargs):
       """Draw raster from <filename> on the screen with upper left corner at <xlb, yub>
          with pixels size of <xres, yres>.
 
@@ -513,7 +553,7 @@ class vibes(object):
               'shape': {'type': 'raster',
                         'filename' : filename,
                         'ul_corner':  [xlb, yub],
-                        'scale' : [xres, yres],
+                        'size' : [width, height],
                         }
             }
       if "color" in kwargs:

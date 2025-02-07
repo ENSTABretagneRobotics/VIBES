@@ -36,6 +36,7 @@
 #include <vector>
 #include <cmath>
 #include <cstdlib>
+#include <filesystem>
 
 // Utility macro to log executed instructions on terminal
 #define VIBES_TEST(instruction) \
@@ -301,11 +302,13 @@ int main()
     }
 
     vibes::drawPoints(x,y,vibesParams("FaceColor","red","EdgeColor","darkRed","Radius",100));
+        
 
-    // vibes::newFigure("test Raster");
-    // vibes::drawRaster("./raster_example.png", 10, 5, 0.1, 0.1);
+    vibes::newFigure("test Raster");
+    vibes::drawRaster(std::filesystem::current_path().string()+"/../VIBes.png", 10, 5, 10.,5.);
 
     std::cout << "end drawing" << std::endl;
+
     // Not needed anymore: VIBES_TEST( vibes::endDrawing() );
 
     // Testing Vibes params system

@@ -1056,9 +1056,9 @@ bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
 
         // Set polygon shape
         QPolygonF polygon;
-        polygon << QPointF(-1. * length, 1. * length) + centerPoint;
-        polygon << QPointF(+3. * length, 0. * length) + centerPoint;
-        polygon << QPointF(-1. * length, -1. * length) + centerPoint;
+        polygon << QPointF(-1., 1.) + centerPoint;
+        polygon << QPointF(+3., 0.) + centerPoint;
+        polygon << QPointF(-1., -1.) + centerPoint;
 
 
         // Draw with the new properties
@@ -1147,7 +1147,7 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
             graphics_polygon->setBrush(brush);
             graphics_polygon->setTransformOriginPoint(centerPoint);
             graphics_polygon->setRotation(orientation);
-            graphics_polygon->setScale(length / 7.); // initial vehicle's length is 4
+            graphics_polygon->setScale(length / 7.); // initial vehicle's length is 7
         }
     }
     // Else draw the shape for the first time
@@ -1155,16 +1155,16 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
         // Set body shape
         {
             QPolygonF body;
-            body << QPointF(-4. * length, 0. * length) + centerPoint;
-            body << QPointF(-2. * length, 1. * length) + centerPoint;
-            body << QPointF(2. * length, 1. * length) + centerPoint;
+            body << QPointF(-4., 0.) + centerPoint;
+            body << QPointF(-2., 1.) + centerPoint;
+            body << QPointF(2., 1.) + centerPoint;
 
             for (float i = 90.; i > -90.; i -= 10.) // noise
-                body << QPointF((cos(i * M_PI / 180.0) + 2.) * length,
-                                (sin(i * M_PI / 180.0) + 0.) * length) + centerPoint;
+                body << QPointF((cos(i * M_PI / 180.0) + 2.),
+                                (sin(i * M_PI / 180.0) + 0.)) + centerPoint;
 
-            body << QPointF(2. * length, -1. * length) + centerPoint;
-            body << QPointF(-2. * length, -1. * length) + centerPoint;
+            body << QPointF(2., -1.) + centerPoint;
+            body << QPointF(-2., -1.) + centerPoint;
 
 
             // Draw with the new properties
@@ -1181,10 +1181,10 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
         // Set propulsion unit shape
         {
             QPolygonF propunit;
-            propunit << QPointF(-4. * length, 1 * length) + centerPoint;
-            propunit << QPointF(-3.25 * length, 1 * length) + centerPoint;
-            propunit << QPointF(-3.25 * length, -1 * length) + centerPoint;
-            propunit << QPointF(-4. * length, -1 * length) + centerPoint;
+            propunit << QPointF(-4., 1) + centerPoint;
+            propunit << QPointF(-3.25, 1) + centerPoint;
+            propunit << QPointF(-3.25, -1) + centerPoint;
+            propunit << QPointF(-4., -1) + centerPoint;
 
             // Draw with the new properties
             QGraphicsPolygonItem *graphics_propunit = new QGraphicsPolygonItem(propunit);
@@ -1869,10 +1869,10 @@ bool VibesGraphicsRaster::parseJsonGraphics(const QJsonObject& json)
         QString type = json["type"].toString();
 
         // VibesGraphicsPie has JSON type "arrow"
-        if (type == "raster" && json.contains("filename") && json.contains("ul_corner") && json.contains("scale"))
+        if (type == "raster" && json.contains("filename") && json.contains("ul_corner") && json.contains("size"))
         {
             if (json["ul_corner"].toArray().size() != 2) return false;
-            if (json["scale"].toArray().size() != 2) return false;
+            if (json["size"].toArray().size() != 2) return false;
             // Compute dimension
             this->_nbDim = 2; //center.size();
             // Update successful
@@ -1899,21 +1899,23 @@ bool VibesGraphicsRaster::computeProjection(int dimX, int dimY)
     {
         QString filename = json["filename"].toString();
         QJsonArray ul_corner = json["ul_corner"].toArray();
-        QJsonArray scale = json["scale"].toArray();
+        QJsonArray size = json["size"].toArray();
         double xlb = ul_corner[0].toDouble();
         double yub = ul_corner[1].toDouble();
-        double xres = scale[0].toDouble();
-        double yres = scale[1].toDouble();
 
         QImage image(filename);
         QPixmap pixmap = QPixmap::fromImage(image);
+
+        double xres = size[0].toDouble()/pixmap.width();
+        double yres = size[1].toDouble()/pixmap.height();
+        
         if (json.contains("EdgeColor")) {
           const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString());
           pixmap.setMask(pixmap.createMaskFromColor(pen.color().rgb()));
 
         }
 
-        QTransform transform(xres, 0, 0, yres, xlb, yub);
+        QTransform transform(xres, 0, 0, -yres, xlb, yub);
         QGraphicsPixmapItem *pixmap_item = new QGraphicsPixmapItem(pixmap);
 
         pixmap_item->setShapeMode(QGraphicsPixmapItem::MaskShape);
