@@ -223,6 +223,10 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     {
         return new VibesGraphicsPolygon();
     }
+    else if (type == "text")
+    {
+        return new VibesGraphicsText();
+    }
     else if (type == "vehicle")
     {
         return new VibesGraphicsVehicle();
@@ -973,6 +977,79 @@ bool VibesGraphicsPolygon::computeProjection(int dimX, int dimY)
     // Update polygon color
     this->setPen(pen);
     this->setBrush(brush);
+
+    // Update successful
+    return true;
+}
+
+//
+// VibesGraphicsText
+//
+
+bool VibesGraphicsText::parseJsonGraphics(const QJsonObject& json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsPie has JSON type "position"
+        if (type == "text" && json.contains("position") && json.contains("text"))
+        {
+            QJsonArray position = json["position"].toArray();
+            if (position.size() != 2) return false;
+//            // Compute dimension
+            this->_nbDim = position.size();
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+// #define GET_WITH_DEFAULT(dict,key,type,default_value) \
+// 	dict.contains[key] ? dict[key].type
+
+// TO DELETE
+#include <iostream>
+using namespace std;
+
+bool VibesGraphicsText::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+    // Get ring color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString());
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT(json.contains("type"));
+    // VibesGraphicsText has JSON type "text"
+    Q_ASSERT(json["type"].toString() == "text");
+
+    QString text = json["text"].toString();
+		// Get property with default value
+    double scale = json.contains("scale") ?  json["scale"].toDouble() : 1. ;
+		QString fontName = json.contains("fontName") ? json["fontName"].toString() : "Helvetica" ;
+		int fontSize = json.contains("fontSize") ? json["fontSize"].toInt() : 1 ;
+
+    QJsonArray pos = json["position"].toArray();
+    Q_ASSERT(pos.size() == 2);
+
+    // Body
+    {
+        QFont textFont(fontName, fontSize);
+        this->setFont(textFont);
+        this->setTransform(QTransform(1, 0, 0, -1, pos[0].toDouble(),pos[1].toDouble()));
+        this->setText(text);
+        this->setPen(pen);
+        this->setBrush(brush);
+        this->setScale(scale);
+    }
 
     // Update successful
     return true;
