@@ -1980,6 +1980,10 @@ bool VibesGraphicsRaster::computeProjection(int dimX, int dimY)
         double xlb = ul_corner[0].toDouble();
         double yub = ul_corner[1].toDouble();
 
+        double rot = 0.;
+        if (json.contains("rot"))
+          rot = json["rot"].toDouble();
+
         QImage image(filename);
         QPixmap pixmap = QPixmap::fromImage(image);
 
@@ -1997,6 +2001,8 @@ bool VibesGraphicsRaster::computeProjection(int dimX, int dimY)
 
         pixmap_item->setShapeMode(QGraphicsPixmapItem::MaskShape);
         pixmap_item->setTransform(transform);
+        pixmap_item->setTransformOriginPoint(0,0);
+        pixmap_item->setRotation(rot);
 
         this->addToGroup(pixmap_item);
     }
