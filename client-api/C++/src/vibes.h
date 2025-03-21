@@ -356,6 +356,9 @@ namespace vibes {
   /// Draw a 2-D submarine (type AUV) at position (cx,cy)
   VIBES_FUNC_COLOR_PARAM_4(drawAUV,const double &,cx, const double &,cy, const double &,rot, const double &,length)
 
+  /// Draw a 2-D motor boat (type USV) at position (cx,cy)
+  VIBES_FUNC_COLOR_PARAM_4(drawMotorBoat,const double &,cx, const double &,cy, const double &,rot, const double &,length)
+
   /// Draw a 2-D tank at position (cx,cy)
   VIBES_FUNC_COLOR_PARAM_4(drawTank,const double &,cx, const double &,cy, const double &,rot, const double &,length)
 
