@@ -387,6 +387,26 @@ class vibes(object):
         cls._write(msg, **kwargs)
 
     @classmethod
+    def drawMotorBoat(cls, cx, cy, oritentation, length, color='r', **kwargs):
+        """Draw a motor boat centered at (cx, cy) with heading <heading> and size length
+
+        Args:
+            cx,cy  (double): position of the vehicle
+            heading  (double): heading of the vehicle in degree
+            lenght (double): length of the vehicle
+
+        """
+        msg = {'action': 'draw',
+               'shape': {'type': 'vehicle_motor_boat',
+                         'center': [cx, cy],
+                         'length': length,
+                         'orientation': oritentation,
+                         'format': color
+                         }
+              }
+        cls._write(msg, **kwargs)
+
+    @classmethod
     def drawTank(cls, cx, cy, oritentation, length, color='r', **kwargs):
         """Draw a tank centered at (cx, cy) with heading <heading> and size length
 

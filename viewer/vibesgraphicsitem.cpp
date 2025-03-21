@@ -239,6 +239,10 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     {
         return new VibesGraphicsVehicleTank();
     }
+    else if (type == "vehicle_motor_boat")
+    {
+        return new VibesGraphicsVehicleMotorBoat();
+    }
     else if (type == "raster")
     {
         return new VibesGraphicsRaster();
@@ -1388,6 +1392,220 @@ bool VibesGraphicsVehicleTank::computeProjection(int dimX, int dimY)
 
             graphics_body->setScale(length/4.); // initial vehicle's length is 4
             this->addToGroup(graphics_body);
+        }
+    }
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsVehicleMotorBoat
+//
+
+bool VibesGraphicsVehicleMotorBoat::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // JSON type for VibesGraphicsVehicleMotorBoat is "vehicle_motor_boat"
+        if (type == "vehicle_motor_boat")
+        {
+            if (json.contains("center") && json.contains("length") && json.contains("orientation"))
+            {
+                int center_size = json["center"].toArray().size();
+                if (center_size == 2 && json["length"].toDouble() > 0.)
+                {
+                    // Set dimension
+                    this->_nbDim = center_size;
+
+                    // Update successful
+                    return true;
+                }
+            }
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString());
+
+    Q_ASSERT(json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "vehicle_motor_boat");
+
+    QJsonArray center = json["center"].toArray();
+    double length = json["length"].toDouble();
+    double orientation = json["orientation"].toDouble();
+
+    Q_ASSERT(center.size() == 2);
+    Q_ASSERT(this->_nbDim == center.size());
+    Q_ASSERT(length > 0.);
+
+    // Get center
+    const QPointF & centerPoint = QPointF(center[dimX].toDouble(), center[dimY].toDouble());
+
+    // If the shape has already been drawn, it has at least one child
+    // Update child items if they exist
+    if (this->childItems().size() > 0)
+    {
+        foreach(QGraphicsItem * item, this->childItems())
+        {
+            //to vibes graphics item
+            QGraphicsPolygonItem *graphics_polygon = qgraphicsitem_cast<QGraphicsPolygonItem *>(item);
+            graphics_polygon->setPen(pen);
+            graphics_polygon->setBrush(brush);
+            graphics_polygon->setTransformOriginPoint(centerPoint);
+            graphics_polygon->setRotation(orientation);
+            graphics_polygon->setScale(length / 401.);
+        }
+    }
+    // Else draw the shape for the first time
+    else{
+
+        // Set body shape
+        {
+            QPolygonF body;
+            body << QPointF(-72,80) + centerPoint;
+            body << QPointF(120,80) + centerPoint;
+            body << QPointF(136,79.) + centerPoint;
+            body << QPointF(152,79) + centerPoint;
+            body << QPointF(168,78) + centerPoint;
+            body << QPointF(184,76) + centerPoint;
+            body << QPointF(200,74) + centerPoint;
+            body << QPointF(216,71) + centerPoint;
+            body << QPointF(232,67) + centerPoint;
+            body << QPointF(248,63) + centerPoint;
+            body << QPointF(264,57) + centerPoint;
+            body << QPointF(280,49) + centerPoint;
+            body << QPointF(296,39) + centerPoint;
+            body << QPointF(312,24) + centerPoint;
+            body << QPointF(329,0) + centerPoint;
+            body << QPointF(312,-24) + centerPoint;
+            body << QPointF(296,-39) + centerPoint;
+            body << QPointF(280,-49) + centerPoint;
+            body << QPointF(264,-57) + centerPoint;
+            body << QPointF(248,-63) + centerPoint;
+            body << QPointF(232,-67) + centerPoint;
+            body << QPointF(216,-71) + centerPoint;
+            body << QPointF(200,-74) + centerPoint;
+            body << QPointF(184,-76) + centerPoint;
+            body << QPointF(168,-78) + centerPoint;
+            body << QPointF(152,-79) + centerPoint;
+            body << QPointF(136,-79.) + centerPoint;
+            body << QPointF(120,-80) + centerPoint;
+            body << QPointF(-72,-80) + centerPoint;
+
+            // Draw with the new properties
+            QGraphicsPolygonItem *graphics_body = new QGraphicsPolygonItem(body);
+            graphics_body->setPen(pen);
+            graphics_body->setBrush(brush);
+            graphics_body->setTransformOriginPoint(centerPoint);
+            graphics_body->setRotation(orientation);
+
+            graphics_body->setScale(length/401.);
+            this->addToGroup(graphics_body);
+        }
+
+        // Left prop
+        {
+            QPolygonF left_prop;
+            left_prop << QPointF(-80,48) + centerPoint;
+            left_prop << QPointF(-72,48) + centerPoint;
+            left_prop << QPointF(-72,16) + centerPoint;
+            left_prop << QPointF(-80,16) + centerPoint;
+
+            // Draw with the new properties
+            QGraphicsPolygonItem *graphics_left_prop = new QGraphicsPolygonItem(left_prop);
+            graphics_left_prop->setPen(pen);
+            graphics_left_prop->setBrush(QBrush(pen.color()));
+            graphics_left_prop->setTransformOriginPoint(centerPoint);
+            graphics_left_prop->setRotation(orientation);
+
+            graphics_left_prop->setScale(length/401.);
+            this->addToGroup(graphics_left_prop);
+        }
+
+        // Right prop
+        {
+            QPolygonF right_prop;
+            right_prop << QPointF(-80,-16) + centerPoint;
+            right_prop << QPointF(-72,-16) + centerPoint;
+            right_prop << QPointF(-72,-48) + centerPoint;
+            right_prop << QPointF(-80,-48) + centerPoint;
+
+            // Draw with the new properties
+            QGraphicsPolygonItem *graphics_right_prop = new QGraphicsPolygonItem(right_prop);
+            graphics_right_prop->setPen(pen);
+            graphics_right_prop->setBrush(QBrush(pen.color()));
+            graphics_right_prop->setTransformOriginPoint(centerPoint);
+            graphics_right_prop->setRotation(orientation);
+
+            graphics_right_prop->setScale(length/401.);
+            this->addToGroup(graphics_right_prop);
+        }
+
+        // Engine
+        {
+            QPolygonF engine;
+            engine << QPointF(-15,22.5) + centerPoint;
+            engine << QPointF(30,22.5) + centerPoint;
+            engine << QPointF(30,-22.5) + centerPoint;
+            engine << QPointF(-15,-22.5) + centerPoint;
+
+            // Draw with the new properties
+            QGraphicsPolygonItem *graphics_engine = new QGraphicsPolygonItem(engine);
+            graphics_engine->setPen(pen);
+            graphics_engine->setBrush(QBrush(pen.color()));
+            graphics_engine->setTransformOriginPoint(centerPoint);
+            graphics_engine->setRotation(orientation);
+
+            graphics_engine->setScale(length/401.);
+            this->addToGroup(graphics_engine);
+        }
+
+        // Circle
+        {
+            // Draw with the new properties
+            QGraphicsEllipseItem *circle_item = new QGraphicsEllipseItem(centerPoint.x()-24+200, centerPoint.y()-24, 48, 48);
+            circle_item->setPen(pen);
+            circle_item->setTransformOriginPoint(centerPoint);
+            circle_item->setRotation(orientation);
+
+            circle_item->setScale(length/401.);
+            this->addToGroup(circle_item);
+        }
+
+        // Hull details
+        {
+            QPainterPath hull_details;
+            hull_details.moveTo(120 + centerPoint.x(), 80 + centerPoint.y());
+            hull_details.lineTo(104 + centerPoint.x(), 64 + centerPoint.y());
+            hull_details.lineTo(-56 + centerPoint.x(), 64 + centerPoint.y());
+            hull_details.lineTo(-56 + centerPoint.x(), -64 + centerPoint.y());
+            hull_details.lineTo(104 + centerPoint.x(), -64 + centerPoint.y());
+            hull_details.lineTo(120 + centerPoint.x(), -80 + centerPoint.y());
+
+            // Draw with the new properties
+            QGraphicsPathItem *graphics_hull_details = new QGraphicsPathItem(hull_details);
+            graphics_hull_details->setPen(pen);
+            graphics_hull_details->setTransformOriginPoint(centerPoint);
+            graphics_hull_details->setRotation(orientation);
+
+            graphics_hull_details->setScale(length/401.);
+            this->addToGroup(graphics_hull_details);
         }
     }
 

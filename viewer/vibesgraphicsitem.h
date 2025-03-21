@@ -91,6 +91,7 @@ public:
            VibesGraphicsVehicleType,
            VibesGraphicsVehicleAUVType,
            VibesGraphicsVehicleTankType,
+           VibesGraphicsVehicleMotorBoatType,
            // List based types
            VibesGraphicsLineType,
            VibesGraphicsBoxesType,
@@ -318,6 +319,17 @@ protected:
 class VibesGraphicsVehicleTank : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsVehicleTank, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("center","length","orientation")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+/// A tank vehicle type
+
+class VibesGraphicsVehicleMotorBoat : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsVehicleMotorBoat, QGraphicsItemGroup)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("center","length","orientation")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);

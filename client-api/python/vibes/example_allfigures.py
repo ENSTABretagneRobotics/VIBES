@@ -14,6 +14,7 @@ def shapeGen():
 	(x,y) = yield vibes.drawRing(x,y, 1,2, '[red]')
 	# (x,y) = yield vibes.drawPie( (x, y), (1,2), [0,360] , "y[cyan]")
 	(x,y) = yield vibes.drawVehicle( x, y, 20, 1, "[darkBlue]")
+	(x,y) = yield vibes.drawMotorBoat( x, y, 20, 1, "[yellow]")
 	(x,y) = yield vibes.drawPoint( x,y, 1, "[k]")
 	(x,y) = yield vibes.drawText( x,y, "Text", 1)
 
