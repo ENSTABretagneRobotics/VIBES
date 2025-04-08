@@ -1018,9 +1018,6 @@ bool VibesGraphicsText::parseJsonGraphics(const QJsonObject& json)
 // #define GET_WITH_DEFAULT(dict,key,type,default_value) \
 // 	dict.contains[key] ? dict[key].type
 
-// TO DELETE
-#include <iostream>
-using namespace std;
 
 bool VibesGraphicsText::computeProjection(int dimX, int dimY)
 {
@@ -2124,9 +2121,23 @@ bool VibesGraphicsRing::computeProjection(int dimX, int dimY)
     Q_ASSERT(rho[0].toDouble() >= 0);
     Q_ASSERT(rho[1].toDouble() >= rho[0].toDouble());
     
-    //
-    // Body
+    // If the shape has already been drawn, it has at least one child
+    // Update child items if they exist
+    if (this->childItems().size() > 0)
     {
+        foreach(QGraphicsItem * item, this->childItems())
+        {
+            //to vibes graphics item
+            QGraphicsPathItem *graphics_path = qgraphicsitem_cast<QGraphicsPathItem *>(item);
+            graphics_path->setPen(pen);
+            graphics_path->setBrush(brush);
+        }
+    }
+    // Else draw the shape for the first time
+    else
+    {
+        //
+        // Body
         double cx = center[0].toDouble();
         double cy = center[1].toDouble();
 
