@@ -2094,7 +2094,7 @@ bool VibesGraphicsRing::parseJsonGraphics(const QJsonObject& json)
             if (json["rho"].toArray().size() != 2) return false;
             // Compute dimension
             this->_nbDim = center.size();
-
+            
             // Update successful
             return true;
         }
