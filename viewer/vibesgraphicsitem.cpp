@@ -1460,13 +1460,27 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
     {
         foreach(QGraphicsItem * item, this->childItems())
         {
-            //to vibes graphics item
-            QGraphicsPolygonItem *graphics_polygon = qgraphicsitem_cast<QGraphicsPolygonItem *>(item);
-            graphics_polygon->setPen(pen);
-            graphics_polygon->setBrush(brush);
-            graphics_polygon->setTransformOriginPoint(centerPoint);
-            graphics_polygon->setRotation(orientation);
-            graphics_polygon->setScale(length / 401.);
+            if (item->type() == QGraphicsPathItem::Type)
+            {
+                //to vibes graphics item
+                QGraphicsPathItem *graphics_path = qgraphicsitem_cast<QGraphicsPathItem *>(item);
+                graphics_path->setPen(pen);
+                graphics_path->setBrush(brush);
+            }
+            else if (item->type() == QGraphicsPolygonItem::Type)
+            {
+                //to vibes graphics item
+                QGraphicsPolygonItem *graphics_polygon = qgraphicsitem_cast<QGraphicsPolygonItem *>(item);
+                graphics_polygon->setPen(pen);
+                graphics_polygon->setBrush(brush);
+            }
+            else if (item->type() == QGraphicsEllipseItem::Type)
+            {
+                //to vibes graphics item
+                QGraphicsEllipseItem *graphics_ellipse = qgraphicsitem_cast<QGraphicsEllipseItem *>(item);
+                graphics_ellipse->setPen(pen);
+                graphics_ellipse->setBrush(brush);
+            }
         }
     }
     // Else draw the shape for the first time
@@ -1573,39 +1587,37 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
             this->addToGroup(graphics_engine);
         }
 
-        // These shapes cause issues when trying to add the Motorboat to a group
+        // Circle
+        {
+            // Draw with the new properties
+            QGraphicsEllipseItem *circle_item = new QGraphicsEllipseItem(centerPoint.x()-24+200, centerPoint.y()-24, 48, 48);
+            circle_item->setPen(pen);
+            circle_item->setTransformOriginPoint(centerPoint);
+            circle_item->setRotation(orientation);
 
-        // // Circle
-        // {
-        //     // Draw with the new properties
-        //     QGraphicsEllipseItem *circle_item = new QGraphicsEllipseItem(centerPoint.x()-24+200, centerPoint.y()-24, 48, 48);
-        //     circle_item->setPen(pen);
-        //     circle_item->setTransformOriginPoint(centerPoint);
-        //     circle_item->setRotation(orientation);
-
-        //     circle_item->setScale(length/401.);
-        //     // this->addToGroup(circle_item);
-        // }
+            circle_item->setScale(length/401.);
+            this->addToGroup(circle_item);
+        }
 
         // Hull details
-        // {
-        //     QPainterPath hull_details;
-        //     hull_details.moveTo(120 + centerPoint.x(), 80 + centerPoint.y());
-        //     hull_details.lineTo(104 + centerPoint.x(), 64 + centerPoint.y());
-        //     hull_details.lineTo(-56 + centerPoint.x(), 64 + centerPoint.y());
-        //     hull_details.lineTo(-56 + centerPoint.x(), -64 + centerPoint.y());
-        //     hull_details.lineTo(104 + centerPoint.x(), -64 + centerPoint.y());
-        //     hull_details.lineTo(120 + centerPoint.x(), -80 + centerPoint.y());
+        {
+            QPainterPath hull_details;
+            hull_details.moveTo(120 + centerPoint.x(), 80 + centerPoint.y());
+            hull_details.lineTo(104 + centerPoint.x(), 64 + centerPoint.y());
+            hull_details.lineTo(-56 + centerPoint.x(), 64 + centerPoint.y());
+            hull_details.lineTo(-56 + centerPoint.x(), -64 + centerPoint.y());
+            hull_details.lineTo(104 + centerPoint.x(), -64 + centerPoint.y());
+            hull_details.lineTo(120 + centerPoint.x(), -80 + centerPoint.y());
 
-        //     // Draw with the new properties
-        //     QGraphicsPathItem *graphics_hull_details = new QGraphicsPathItem(hull_details);
-        //     graphics_hull_details->setPen(pen);
-        //     graphics_hull_details->setTransformOriginPoint(centerPoint);
-        //     graphics_hull_details->setRotation(orientation);
+            // Draw with the new properties
+            QGraphicsPathItem *graphics_hull_details = new QGraphicsPathItem(hull_details);
+            graphics_hull_details->setPen(pen);
+            graphics_hull_details->setTransformOriginPoint(centerPoint);
+            graphics_hull_details->setRotation(orientation);
 
-        //     graphics_hull_details->setScale(length/401.);
-        //     this->addToGroup(graphics_hull_details);
-        // }
+            graphics_hull_details->setScale(length/401.);
+            this->addToGroup(graphics_hull_details);
+        }
     }
 
     // Update successful
