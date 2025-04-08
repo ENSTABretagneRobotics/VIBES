@@ -999,7 +999,7 @@ bool VibesGraphicsText::parseJsonGraphics(const QJsonObject& json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "position"
+        // VibesGraphicsText has JSON type "text"
         if (type == "text" && json.contains("position") && json.contains("text"))
         {
             QJsonArray position = json["position"].toArray();
@@ -1771,7 +1771,7 @@ bool VibesGraphicsPie::parseJsonGraphics(const QJsonObject &json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "arrow"
+        // VibesGraphicsPie has JSON type "pie"
         if (type == "pie" && json.contains("center"))
         {
             QJsonArray center = json["center"].toArray();
@@ -2141,9 +2141,6 @@ bool VibesGraphicsRing::computeProjection(int dimX, int dimY)
         QRectF boundingBoxM(cx - rho_m, cy - rho_m, 2 * rho_m, 2 * rho_m);
         path.addEllipse(boundingBoxM);
 
-        // path = path.subtracted(pathM);
-
-
         // Draw with the new properties
         QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
         graphics_path->setPen(pen);
@@ -2164,7 +2161,7 @@ bool VibesGraphicsRaster::parseJsonGraphics(const QJsonObject& json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "arrow"
+        // VibesGraphicsRaster has JSON type "raster"
         if (type == "raster" && json.contains("filename") && json.contains("ul_corner") && json.contains("size"))
         {
             if (json["ul_corner"].toArray().size() != 2) return false;
