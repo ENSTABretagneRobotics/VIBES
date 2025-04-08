@@ -1923,7 +1923,7 @@ bool VibesGraphicsPoint::computeProjection(int dimX, int dimY)
     // Get arrow color (or default if not specified)
 
 
-    // VibesGraphicsPie has JSON type "arrow"
+    // VibesGraphicsPoint has JSON type "point"
     Q_ASSERT(json["type"].toString() == "point");
     // "bounds" is a matrix
     QJsonArray point = json["point"].toArray();
@@ -1970,7 +1970,7 @@ bool VibesGraphicsPoints::parseJsonGraphics(const QJsonObject& json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "arrow"
+        // VibesGraphicsPoints has JSON type "points"
         if (type == "points")
         {
             QJsonArray centers = json["centers"].toArray();
@@ -2016,7 +2016,7 @@ bool VibesGraphicsPoints::computeProjection(int dimX, int dimY)
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
     Q_ASSERT(json.contains("type"));
-    // VibesGraphicsRing has JSON type "ring"
+    // VibesGraphicscPoints has JSON type "points"
     Q_ASSERT(json["type"].toString() == "points");
 
     // Before update, we first remove all existing points
@@ -2086,7 +2086,7 @@ bool VibesGraphicsRing::parseJsonGraphics(const QJsonObject& json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "arrow"
+        // VibesGraphicsRing has JSON type "ring"
         if (type == "ring" && json.contains("center") && json.contains("rho"))
         {
             QJsonArray center = json["center"].toArray();
@@ -2139,10 +2139,9 @@ bool VibesGraphicsRing::computeProjection(int dimX, int dimY)
         path.addEllipse(boundingBoxP);
 
         QRectF boundingBoxM(cx - rho_m, cy - rho_m, 2 * rho_m, 2 * rho_m);
-        QPainterPath pathM;
-        pathM.addEllipse(boundingBoxM);
+        path.addEllipse(boundingBoxM);
 
-        path = path.subtracted(pathM);
+        // path = path.subtracted(pathM);
 
 
         // Draw with the new properties
@@ -2188,7 +2187,7 @@ bool VibesGraphicsRaster::computeProjection(int dimX, int dimY)
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
     Q_ASSERT(json.contains("type"));
-    // VibesGraphicsRing has JSON type "ring"
+    // VibesGraphicsRaster has JSON type "raster"
     Q_ASSERT(json["type"].toString() == "raster");
 
 
