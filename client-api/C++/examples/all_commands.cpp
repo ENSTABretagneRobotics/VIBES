@@ -136,7 +136,6 @@ int main()
             }
             VIBES_TEST( vibes::drawBox(box_bounds,vibesParams("group","blue group")) );
         }
-        VIBES_TEST( vibes::drawMotorBoat(0, 0, 0, 1,vibesParams("group","blue group")) );
         VIBES_TEST( vibes::setObjectProperty("blue group","format","cyan[blue]") );
     }
 
