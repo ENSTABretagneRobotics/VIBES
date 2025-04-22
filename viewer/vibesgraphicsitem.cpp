@@ -999,7 +999,7 @@ bool VibesGraphicsText::parseJsonGraphics(const QJsonObject& json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "position"
+        // VibesGraphicsText has JSON type "text"
         if (type == "text" && json.contains("position") && json.contains("text"))
         {
             QJsonArray position = json["position"].toArray();
@@ -1018,9 +1018,6 @@ bool VibesGraphicsText::parseJsonGraphics(const QJsonObject& json)
 // #define GET_WITH_DEFAULT(dict,key,type,default_value) \
 // 	dict.contains[key] ? dict[key].type
 
-// TO DELETE
-#include <iostream>
-using namespace std;
 
 bool VibesGraphicsText::computeProjection(int dimX, int dimY)
 {
@@ -1463,13 +1460,27 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
     {
         foreach(QGraphicsItem * item, this->childItems())
         {
-            //to vibes graphics item
-            QGraphicsPolygonItem *graphics_polygon = qgraphicsitem_cast<QGraphicsPolygonItem *>(item);
-            graphics_polygon->setPen(pen);
-            graphics_polygon->setBrush(brush);
-            graphics_polygon->setTransformOriginPoint(centerPoint);
-            graphics_polygon->setRotation(orientation);
-            graphics_polygon->setScale(length / 401.);
+            if (item->type() == QGraphicsPathItem::Type)
+            {
+                //to vibes graphics item
+                QGraphicsPathItem *graphics_path = qgraphicsitem_cast<QGraphicsPathItem *>(item);
+                graphics_path->setPen(pen);
+                graphics_path->setBrush(brush);
+            }
+            else if (item->type() == QGraphicsPolygonItem::Type)
+            {
+                //to vibes graphics item
+                QGraphicsPolygonItem *graphics_polygon = qgraphicsitem_cast<QGraphicsPolygonItem *>(item);
+                graphics_polygon->setPen(pen);
+                graphics_polygon->setBrush(brush);
+            }
+            else if (item->type() == QGraphicsEllipseItem::Type)
+            {
+                //to vibes graphics item
+                QGraphicsEllipseItem *graphics_ellipse = qgraphicsitem_cast<QGraphicsEllipseItem *>(item);
+                graphics_ellipse->setPen(pen);
+                graphics_ellipse->setBrush(brush);
+            }
         }
     }
     // Else draw the shape for the first time
@@ -1769,7 +1780,7 @@ bool VibesGraphicsPie::parseJsonGraphics(const QJsonObject &json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "arrow"
+        // VibesGraphicsPie has JSON type "pie"
         if (type == "pie" && json.contains("center"))
         {
             QJsonArray center = json["center"].toArray();
@@ -1921,7 +1932,7 @@ bool VibesGraphicsPoint::computeProjection(int dimX, int dimY)
     // Get arrow color (or default if not specified)
 
 
-    // VibesGraphicsPie has JSON type "arrow"
+    // VibesGraphicsPoint has JSON type "point"
     Q_ASSERT(json["type"].toString() == "point");
     // "bounds" is a matrix
     QJsonArray point = json["point"].toArray();
@@ -1968,7 +1979,7 @@ bool VibesGraphicsPoints::parseJsonGraphics(const QJsonObject& json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "arrow"
+        // VibesGraphicsPoints has JSON type "points"
         if (type == "points")
         {
             QJsonArray centers = json["centers"].toArray();
@@ -2014,7 +2025,7 @@ bool VibesGraphicsPoints::computeProjection(int dimX, int dimY)
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
     Q_ASSERT(json.contains("type"));
-    // VibesGraphicsRing has JSON type "ring"
+    // VibesGraphicscPoints has JSON type "points"
     Q_ASSERT(json["type"].toString() == "points");
 
     // Before update, we first remove all existing points
@@ -2084,7 +2095,7 @@ bool VibesGraphicsRing::parseJsonGraphics(const QJsonObject& json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "arrow"
+        // VibesGraphicsRing has JSON type "ring"
         if (type == "ring" && json.contains("center") && json.contains("rho"))
         {
             QJsonArray center = json["center"].toArray();
@@ -2092,7 +2103,7 @@ bool VibesGraphicsRing::parseJsonGraphics(const QJsonObject& json)
             if (json["rho"].toArray().size() != 2) return false;
             // Compute dimension
             this->_nbDim = center.size();
-
+            
             // Update successful
             return true;
         }
@@ -2122,9 +2133,23 @@ bool VibesGraphicsRing::computeProjection(int dimX, int dimY)
     Q_ASSERT(rho[0].toDouble() >= 0);
     Q_ASSERT(rho[1].toDouble() >= rho[0].toDouble());
     
-    //
-    // Body
+    // If the shape has already been drawn, it has at least one child
+    // Update child items if they exist
+    if (this->childItems().size() > 0)
     {
+        foreach(QGraphicsItem * item, this->childItems())
+        {
+            //to vibes graphics item
+            QGraphicsPathItem *graphics_path = qgraphicsitem_cast<QGraphicsPathItem *>(item);
+            graphics_path->setPen(pen);
+            graphics_path->setBrush(brush);
+        }
+    }
+    // Else draw the shape for the first time
+    else
+    {
+        //
+        // Body
         double cx = center[0].toDouble();
         double cy = center[1].toDouble();
 
@@ -2137,11 +2162,7 @@ bool VibesGraphicsRing::computeProjection(int dimX, int dimY)
         path.addEllipse(boundingBoxP);
 
         QRectF boundingBoxM(cx - rho_m, cy - rho_m, 2 * rho_m, 2 * rho_m);
-        QPainterPath pathM;
-        pathM.addEllipse(boundingBoxM);
-
-        path = path.subtracted(pathM);
-
+        path.addEllipse(boundingBoxM);
 
         // Draw with the new properties
         QGraphicsPathItem *graphics_path = new QGraphicsPathItem(path);
@@ -2163,7 +2184,7 @@ bool VibesGraphicsRaster::parseJsonGraphics(const QJsonObject& json)
         // Retrieve type
         QString type = json["type"].toString();
 
-        // VibesGraphicsPie has JSON type "arrow"
+        // VibesGraphicsRaster has JSON type "raster"
         if (type == "raster" && json.contains("filename") && json.contains("ul_corner") && json.contains("size"))
         {
             if (json["ul_corner"].toArray().size() != 2) return false;
@@ -2186,7 +2207,7 @@ bool VibesGraphicsRaster::computeProjection(int dimX, int dimY)
     // Now process shape-specific properties
     // (we can only update properties of a shape, but mutation into another type is not supported)
     Q_ASSERT(json.contains("type"));
-    // VibesGraphicsRing has JSON type "ring"
+    // VibesGraphicsRaster has JSON type "raster"
     Q_ASSERT(json["type"].toString() == "raster");
 
 
