@@ -276,6 +276,35 @@ bool VibesGraphicsItem::parseJson(QJsonObject &json)
         json.remove("format");
     }
 
+    //>[VBS_VR_000002]
+    if (this->_qGraphicsItem->type() == VibesGraphicsGroupType){
+        if(!json.contains("FaceColor")){
+            json["FaceColor"] = QJsonValue("black");
+        }
+        else{
+            QString color = json["FaceColor"].toString();
+            vibesDefaults.replaceColorName(color);
+            json["FaceColor"] = QJsonValue(color);
+
+        }
+        if(!json.contains("EdgeColor")){
+            json["EdgeColor"] = QJsonValue("black");
+        }
+        else{
+            QString color = json["EdgeColor"].toString();
+            vibesDefaults.replaceColorName(color);
+            json["EdgeColor"] = QJsonValue(color);
+
+        }
+        if(!json.contains("LineStyle")){
+            json["LineStyle"] = QJsonValue("-");
+        }
+        if(!json.contains("LineWidth")){
+            json["LineWidth"] = QJsonValue("0");
+        }
+    }
+    //<[VBS_VR_000002]
+
     // Process object name
     if (json.contains("name") && json["name"].isString())
     {

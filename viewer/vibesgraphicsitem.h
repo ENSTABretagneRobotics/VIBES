@@ -45,6 +45,25 @@ public:
         // Pen cannot have negative width
         return std::max(0.,width.toDouble());
     }
+
+    //>[VBS_VR_000002]
+    bool replaceColorName(QString &color){
+
+        if     (color.compare("none")==0){ color="transparent"; }
+        else if(color.compare("c")   ==0){ color="cyan"; }
+        else if(color.compare("y")   ==0){ color="yellow"; }
+        else if(color.compare("m")   ==0){ color="magenta"; }
+        else if(color.compare("r")   ==0){ color="red"; }
+        else if(color.compare("g")   ==0){ color="green"; }
+        else if(color.compare("b")   ==0){ color="blue"; }
+        else if(color.compare("k")   ==0){ color="black"; }
+        else if(color.compare("w")   ==0){ color="white"; }
+        else                             { return false; }
+
+        return true;
+    }
+    //<[VBS_VR_000002]
+
     const QBrush brush(const QString & name = QString()) {
         if( !_brushes.contains(name)){
             _brushes[name] = QBrush(parseColorName(name));
