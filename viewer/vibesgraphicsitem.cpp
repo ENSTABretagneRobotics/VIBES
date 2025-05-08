@@ -277,30 +277,20 @@ bool VibesGraphicsItem::parseJson(QJsonObject &json)
     }
 
     //>[VBS_VR_000002]
+    // Hexadecimal/Short color name -> Qt Predefined color name
+    //   for group color names
     if (this->_qGraphicsItem->type() == VibesGraphicsGroupType){
-        if(!json.contains("FaceColor")){
-            json["FaceColor"] = QJsonValue("black");
-        }
-        else{
+        if(json.contains("FaceColor")){
             QString color = json["FaceColor"].toString();
-            vibesDefaults.replaceColorName(color);
-            json["FaceColor"] = QJsonValue(color);
-
+            if(vibesDefaults.toPredefinedColorName(color)){
+                json["FaceColor"] = QJsonValue(color);
+            }
         }
-        if(!json.contains("EdgeColor")){
-            json["EdgeColor"] = QJsonValue("black");
-        }
-        else{
+        if(json.contains("EdgeColor")){
             QString color = json["EdgeColor"].toString();
-            vibesDefaults.replaceColorName(color);
-            json["EdgeColor"] = QJsonValue(color);
-
-        }
-        if(!json.contains("LineStyle")){
-            json["LineStyle"] = QJsonValue("-");
-        }
-        if(!json.contains("LineWidth")){
-            json["LineWidth"] = QJsonValue("0");
+            if(vibesDefaults.toPredefinedColorName(color)){
+                json["EdgeColor"] = QJsonValue(color);
+            }
         }
     }
     //<[VBS_VR_000002]
