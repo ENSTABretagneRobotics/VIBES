@@ -78,7 +78,7 @@ public:
         else if(colorU.compare("#008000")==0){ color="darkGreen"; }
         else if(colorU.compare("#808000")==0){ color="darkYellow"; }
         else if(colorU.compare("#800000")==0){ color="darkRed"; }
-        else if(colorU.compare("#800080")==0){ color="darlMagenta"; }
+        else if(colorU.compare("#800080")==0){ color="darkMagenta"; }
         else                                 { return false; }
 
         return true;
