@@ -1096,16 +1096,16 @@ bool VibesGraphicsVehicle::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
 
-    // Get shape color (or default if not specified)
-    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
-    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString());
-
-    Q_ASSERT(json.contains("type"));
-    Q_ASSERT(json["type"].toString() == "vehicle");
-
     QJsonArray center = json["center"].toArray();
     double length = json["length"].toDouble();
     double orientation = json["orientation"].toDouble();
+    
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),QString::number(4.0*jsonValue("LineWidth").toString().toDouble()/length));
+
+    Q_ASSERT(json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "vehicle");
 
     Q_ASSERT(center.size() == 2);
     Q_ASSERT(this->_nbDim == center.size());
@@ -1193,16 +1193,16 @@ bool VibesGraphicsVehicleAUV::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
 
-    // Get shape color (or default if not specified)
-    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
-    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString());
-
-    Q_ASSERT(json.contains("type"));
-    Q_ASSERT(json["type"].toString() == "vehicle_auv");
-
     QJsonArray center = json["center"].toArray();
     double length = json["length"].toDouble();
     double orientation = json["orientation"].toDouble();
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(), QString::number(7.0*jsonValue("LineWidth").toString().toDouble()/length));
+
+    Q_ASSERT(json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "vehicle_auv");
 
     Q_ASSERT(center.size() == 2);
     Q_ASSERT(this->_nbDim == center.size());
@@ -1321,16 +1321,16 @@ bool VibesGraphicsVehicleTank::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
 
-    // Get shape color (or default if not specified)
-    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
-    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString());
-
-    Q_ASSERT(json.contains("type"));
-    Q_ASSERT(json["type"].toString() == "vehicle_tank");
-
     QJsonArray center = json["center"].toArray();
     double length = json["length"].toDouble();
     double orientation = json["orientation"].toDouble();
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),QString::number(4.0*jsonValue("LineWidth").toString().toDouble()/length));
+
+    Q_ASSERT(json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "vehicle_tank");
 
     Q_ASSERT(center.size() == 2);
     Q_ASSERT(this->_nbDim == center.size());
@@ -1436,16 +1436,16 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
 
-    // Get shape color (or default if not specified)
-    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
-    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),jsonValue("LineWidth").toString());
-
-    Q_ASSERT(json.contains("type"));
-    Q_ASSERT(json["type"].toString() == "vehicle_motor_boat");
-
     QJsonArray center = json["center"].toArray();
     double length = json["length"].toDouble();
     double orientation = json["orientation"].toDouble();
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(),QString::number(401.0*jsonValue("LineWidth").toString().toDouble()/length));
+
+    Q_ASSERT(json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "vehicle_motor_boat");
 
     Q_ASSERT(center.size() == 2);
     Q_ASSERT(this->_nbDim == center.size());
