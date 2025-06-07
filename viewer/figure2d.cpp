@@ -11,10 +11,6 @@
 #include <QLabel>
 #include <QString>
 
-// TO DELETE
-#include <iostream>
-using namespace std;
-
 Figure2D::Figure2D(QWidget *parent) :
     QGraphicsView(parent),
     lbProjX(new QLabel("xlabelhere",this)),
@@ -55,8 +51,7 @@ Figure2D::Figure2D(QWidget *parent) :
     cbProjX = new QComboBox(lbProjX);
     cbProjX->setMaximumSize(lbProjX->size());
     connect(cbProjX, SIGNAL(currentTextChanged(QString)), lbProjX, SLOT(setText(QString)));
-    // bool success = connect(cbProjX, SIGNAL(currentIndexChanged(QString)), lbProjX, SLOT(setText(QString)));
-    // qDebug() << "Connect success:" << success;
+    connect(cbProjX, SIGNAL(currentIndexChanged(QString)), lbProjX, SLOT(setText(QString)));
     for (int i=0; i<3; ++i)
         cbProjX->addItem(QString("x: dim %1").arg(i), i);
     cbProjX->setCurrentIndex(scene()->dimX());
@@ -67,8 +62,7 @@ Figure2D::Figure2D(QWidget *parent) :
     cbProjY = new QComboBox(lbProjY);
     cbProjY->setMaximumSize(lbProjY->size());
     connect(cbProjY, SIGNAL(currentTextChanged(QString)), lbProjY, SLOT(setText(QString)));
-    // bool success2 = connect(cbProjY, SIGNAL(currentIndexChanged(QString)), lbProjY, SLOT(setText(QString)));
-    // qDebug() << "Connect success:" << success2;
+    connect(cbProjY, SIGNAL(currentIndexChanged(QString)), lbProjY, SLOT(setText(QString)));
     for (int i=0; i<3; ++i)
         cbProjY->addItem(QString("y: dim %1").arg(i), i);
     cbProjY->setCurrentIndex(scene()->dimY());
