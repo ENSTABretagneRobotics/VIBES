@@ -45,6 +45,46 @@ public:
         // Pen cannot have negative width
         return std::max(0.,width.toDouble());
     }
+
+    //>[VBS_VR_000002]
+    // Hexadecimal/Short color name -> Qt Predefined color name
+    bool toPredefinedColorName(QString &color){
+
+        QString colorU = color.toUpper();
+        QString colorL = color.toLower();
+
+        if     (colorL.compare("none")   ==0){ color="transparent"; }
+        else if(colorU.compare("#0000FF")==0){ color="blue"; }
+        else if(colorL.compare("b")      ==0){ color="blue"; }
+        else if(colorU.compare("#00FFFF")==0){ color="cyan"; }
+        else if(colorL.compare("c")      ==0){ color="cyan"; }
+        else if(colorU.compare("#00FF00")==0){ color="green"; }
+        else if(colorL.compare("g")      ==0){ color="green"; }
+        else if(colorU.compare("#FFFF00")==0){ color="yellow"; }
+        else if(colorL.compare("y")      ==0){ color="yellow"; }
+        else if(colorU.compare("#FF0000")==0){ color="red"; }
+        else if(colorL.compare("r")      ==0){ color="red"; }
+        else if(colorU.compare("#FF00FF")==0){ color="magenta"; }
+        else if(colorL.compare("m")      ==0){ color="magenta"; }
+        else if(colorU.compare("#FFFFFF")==0){ color="white"; }
+        else if(colorL.compare("w")      ==0){ color="white"; }
+        else if(colorU.compare("#000000")==0){ color="black"; }
+        else if(colorL.compare("k")      ==0){ color="black"; }
+        else if(colorU.compare("#C0C0C0")==0){ color="lightGray"; }
+        else if(colorU.compare("#A0A0A4")==0){ color="gray"; }
+        else if(colorU.compare("#808080")==0){ color="darkGray"; }
+        else if(colorU.compare("#000080")==0){ color="darkBlue"; }
+        else if(colorU.compare("#008080")==0){ color="darkCyan"; }
+        else if(colorU.compare("#008000")==0){ color="darkGreen"; }
+        else if(colorU.compare("#808000")==0){ color="darkYellow"; }
+        else if(colorU.compare("#800000")==0){ color="darkRed"; }
+        else if(colorU.compare("#800080")==0){ color="darkMagenta"; }
+        else                                 { return false; }
+
+        return true;
+    }
+    //<[VBS_VR_000002]
+
     const QBrush brush(const QString & name = QString()) {
         if( !_brushes.contains(name)){
             _brushes[name] = QBrush(parseColorName(name));
