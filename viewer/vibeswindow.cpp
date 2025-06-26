@@ -339,7 +339,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         qreal x, y, w, h;
                         sceneSize.getRect(&x,&y,&w,&h);
 
-                        //>[VBS_VR_000004]
+                        //>[#144]
                         qreal u=x+w/2.0, v=y+h/2.0;
                         qreal m=static_cast<qreal>(fig->width());
                         qreal n=static_cast<qreal>(fig->height());
@@ -348,7 +348,7 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         if(cw>w){ w=cw; x=u-w/2.0; }
                         else    { h=ch; y=v-h/2.0; }
                         fig->setSceneRect(x,y,w,h);
-                        //<[VBS_VR_000004]
+                        //<[#144]
 
                         fig->fitInView(fig->sceneRect());
                     }
