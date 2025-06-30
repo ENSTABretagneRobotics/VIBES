@@ -330,6 +330,13 @@ int main()
 
     cout << "3." << endl;
 
+    VIBES_TEST( vibes::newFigure("Happy birthday") );
+    VIBES_TEST( vibes::drawCake(1, -1, 0, 3, "black[red]") );
+    VIBES_TEST( vibes::drawCake(3, 1, 45., 1, "black[blue]") );
+    VIBES_TEST( vibes::drawCake(-1, -3, -20., 2, "black[green]") );
+    VIBES_TEST( vibes::drawCake(3, -2, -180., 2.5, "black[yellow]") );
+    VIBES_TEST( vibes::axisAuto() );
+
 
     /*  vibes::Params p2 = vibesParams("action", "draw",
                            "figure", "fig_name",

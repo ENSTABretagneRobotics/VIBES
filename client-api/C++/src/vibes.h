@@ -393,6 +393,9 @@ namespace vibes {
                                        const double &,ulb, const double &, yub,
                                        const double &,width, const double &, height, const double &, rot);
 
+  /// Draw a Cake at position (cx,cy)
+  VIBES_FUNC_COLOR_PARAM_4(drawCake,const double &,cx, const double &,cy, const double &,rot, const double &,length)
+
   /// @}
   /// @name Objects grouping and deletion
   /// @{
