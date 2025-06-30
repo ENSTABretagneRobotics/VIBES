@@ -2370,6 +2370,25 @@ bool VibesGraphicsCake::computeProjection(int dimX, int dimY)
         }
 
         {
+            QGraphicsEllipseItem * disk = new QGraphicsEllipseItem(center[dimX].toDouble()-length/2.0, center[dimY].toDouble()+length/4., length, length/4.);
+
+            disk->setPen(empty_pen);
+            disk->setBrush(cream_brush);
+            disk->setTransformOriginPoint(centerPoint);
+            disk->setRotation(orientation);
+            this->addToGroup(disk);
+        }
+
+        {
+            QGraphicsRectItem * rect = new QGraphicsRectItem(center[dimX].toDouble()-length/2.0, center[dimY].toDouble()+length/4. + length/8., length, length/8.);
+            rect->setPen(empty_pen);
+            rect->setBrush(cream_brush);
+            rect->setTransformOriginPoint(centerPoint);
+            rect->setRotation(orientation);
+            this->addToGroup(rect);
+        }
+
+        {
             QPainterPath lef_line_details;
             lef_line_details.moveTo(center[dimX].toDouble()-length/2.0, center[dimY].toDouble());
             lef_line_details.lineTo(center[dimX].toDouble()-length/2.0, center[dimY].toDouble()+length/2.);
