@@ -2322,6 +2322,7 @@ bool VibesGraphicsCake::computeProjection(int dimX, int dimY)
 
     const QBrush & cake_brush = vibesDefaults.brush("#ffde85");
     const QPen & cake_pen = vibesDefaults.pen("black","-", "0.1");
+    const QPen & text_pen = vibesDefaults.pen("#525252","-", "0.5");
 
     const QBrush & cream_brush = vibesDefaults.brush("#fcf7e8");
 
@@ -2435,7 +2436,7 @@ bool VibesGraphicsCake::computeProjection(int dimX, int dimY)
             QGraphicsSimpleTextItem * text = new QGraphicsSimpleTextItem("10");
             text->setTransform(QTransform(1, 0, 0, -1, center[dimX].toDouble()-length/4.0-length/8.0,center[dimY].toDouble()+length));
             text->setScale(0.04*length);
-            text->setPen(cake_pen);
+            text->setPen(text_pen);
             text->setBrush(brush);
 
             disk_1->setPen(pen);
