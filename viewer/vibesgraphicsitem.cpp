@@ -247,6 +247,10 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     {
         return new VibesGraphicsRaster();
     }
+    else if (type == "cake")
+    {
+        return new VibesGraphicsCake();
+    }
     return 0;
 }
 
@@ -2264,6 +2268,222 @@ bool VibesGraphicsRaster::computeProjection(int dimX, int dimY)
 
         this->addToGroup(pixmap_item);
     }
+
+    // Update successful
+    return true;
+}
+
+//
+// VibesGraphicsCake
+//
+
+bool VibesGraphicsCake::parseJsonGraphics(const QJsonObject &json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // JSON type for VibesGraphicsCake is "cake"
+        if (type == "cake")
+        {
+            if (json.contains("center") && json.contains("length") && json.contains("orientation"))
+            {
+                int center_size = json["center"].toArray().size();
+                if (center_size == 2 && json["length"].toDouble() > 0.)
+                {
+                    // Set dimension
+                    this->_nbDim = center_size;
+
+                    // Update successful
+                    return true;
+                }
+            }
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+
+bool VibesGraphicsCake::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+
+    QJsonArray center = json["center"].toArray();
+    double length = json["length"].toDouble();
+    double orientation = json["orientation"].toDouble();
+
+    // Get shape color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString(),jsonValue("LineStyle").toString(), QString::number(7.0*jsonValue("LineWidth").toString().toDouble()/length));
+
+    const QBrush & cake_brush = vibesDefaults.brush("#ffde85");
+    const QPen & cake_pen = vibesDefaults.pen("black","-", "0.1");
+    const QPen & text_pen = vibesDefaults.pen("#525252","-", "0.5");
+
+    const QBrush & cream_brush = vibesDefaults.brush("#fcf7e8");
+
+    const QPen & empty_pen = vibesDefaults.pen("transparent","-", jsonValue("LineWidth").toString());
+
+
+    Q_ASSERT(json.contains("type"));
+    Q_ASSERT(json["type"].toString() == "cake");
+
+    Q_ASSERT(center.size() == 2);
+    Q_ASSERT(this->_nbDim == center.size());
+    Q_ASSERT(length > 0.);
+
+    // Get center
+    const QPointF & centerPoint = QPointF(center[dimX].toDouble(), center[dimY].toDouble());
+
+    /*  This shape is inspired by the MOOS middleware GUI (see pMarineViewer)   */
+
+    // If the shape has already been drawn, it has at least one child
+    // Update child items if they exist
+    if (this->childItems().size() > 0)
+    {
+        // This cake is already perfect, please don't change it
+    }
+    // Else draw the shape for the first time
+    else{
+        // Set body shape
+        {
+            QGraphicsEllipseItem * disk = new QGraphicsEllipseItem(center[dimX].toDouble()-length/2.0, center[dimY].toDouble()-length/8.0, length, length/4.);
+
+            disk->setPen(cake_pen);
+            disk->setBrush(cake_brush);
+            disk->setTransformOriginPoint(centerPoint);
+            disk->setRotation(orientation);
+            this->addToGroup(disk);
+        }
+
+        {
+            QGraphicsRectItem * rect = new QGraphicsRectItem(center[dimX].toDouble()-length/2.0, center[dimY].toDouble(), length, length/2.);
+            rect->setPen(empty_pen);
+            rect->setBrush(cake_brush);
+            rect->setTransformOriginPoint(centerPoint);
+            rect->setRotation(orientation);
+            this->addToGroup(rect);
+
+        }
+
+        {
+            QGraphicsEllipseItem * disk = new QGraphicsEllipseItem(center[dimX].toDouble()-length/2.0, center[dimY].toDouble()+length/4., length, length/4.);
+
+            disk->setPen(empty_pen);
+            disk->setBrush(cream_brush);
+            disk->setTransformOriginPoint(centerPoint);
+            disk->setRotation(orientation);
+            this->addToGroup(disk);
+        }
+
+        {
+            QGraphicsRectItem * rect = new QGraphicsRectItem(center[dimX].toDouble()-length/2.0, center[dimY].toDouble()+length/4. + length/8., length, length/8.);
+            rect->setPen(empty_pen);
+            rect->setBrush(cream_brush);
+            rect->setTransformOriginPoint(centerPoint);
+            rect->setRotation(orientation);
+            this->addToGroup(rect);
+        }
+
+        {
+            QPainterPath lef_line_details;
+            lef_line_details.moveTo(center[dimX].toDouble()-length/2.0, center[dimY].toDouble());
+            lef_line_details.lineTo(center[dimX].toDouble()-length/2.0, center[dimY].toDouble()+length/2.);
+            
+            QGraphicsPathItem * left_line = new QGraphicsPathItem(lef_line_details);
+
+            QPainterPath right_line_details;
+            right_line_details.moveTo(center[dimX].toDouble()+length/2.0, center[dimY].toDouble());
+            right_line_details.lineTo(center[dimX].toDouble()+length/2.0, center[dimY].toDouble()+length/2.);
+
+            QGraphicsPathItem * right_line = new QGraphicsPathItem(right_line_details);
+
+            left_line->setPen(cake_pen);
+            right_line->setPen(cake_pen);
+
+            left_line->setTransformOriginPoint(centerPoint);
+            right_line->setTransformOriginPoint(centerPoint);
+
+            left_line->setRotation(orientation);
+            right_line->setRotation(orientation);
+
+            this->addToGroup(left_line);
+            this->addToGroup(right_line);
+        }
+
+        {
+            QGraphicsEllipseItem * disk = new QGraphicsEllipseItem(center[dimX].toDouble()-length/2.0, center[dimY].toDouble()+length/2.-length/8.0, length, length/4.);
+
+            disk->setPen(cake_pen);
+            disk->setBrush(cream_brush);
+            disk->setTransformOriginPoint(centerPoint);
+            disk->setRotation(orientation);
+            this->addToGroup(disk);
+        }
+
+        {
+            QGraphicsEllipseItem * disk_1 = new QGraphicsEllipseItem(center[dimX].toDouble()-length/2.0, center[dimY].toDouble()+length/2.-length/16., length/8., length/8.);
+            QGraphicsEllipseItem * disk_2 = new QGraphicsEllipseItem(center[dimX].toDouble()+length/2.0-length/8., center[dimY].toDouble()+length/2.-length/16., length/8., length/8.);
+            QGraphicsEllipseItem * disk_3 = new QGraphicsEllipseItem(center[dimX].toDouble()-length/2.0+length/4., center[dimY].toDouble()+length/2.+length/16., length/8., length/8.);
+            QGraphicsEllipseItem * disk_4 = new QGraphicsEllipseItem(center[dimX].toDouble()+length/8., center[dimY].toDouble()+length/2.+length/16., length/8., length/8.);
+            QGraphicsEllipseItem * disk_5 = new QGraphicsEllipseItem(center[dimX].toDouble()-length/2.0+length/4., center[dimY].toDouble()+length/2.-length/8., length/8., length/8.);
+            QGraphicsEllipseItem * disk_6 = new QGraphicsEllipseItem(center[dimX].toDouble()+length/8., center[dimY].toDouble()+length/2.-length/8., length/8., length/8.);
+
+            QGraphicsSimpleTextItem * text = new QGraphicsSimpleTextItem("10");
+            text->setTransform(QTransform(1, 0, 0, -1, center[dimX].toDouble()-length/4.0-length/8.0,center[dimY].toDouble()+length));
+            text->setScale(0.04*length);
+            text->setPen(text_pen);
+            text->setBrush(brush);
+
+            disk_1->setPen(pen);
+            disk_2->setPen(pen);
+            disk_3->setPen(pen);
+            disk_4->setPen(pen);
+            disk_5->setPen(pen);
+            disk_6->setPen(pen);
+
+            disk_1->setBrush(brush);
+            disk_2->setBrush(brush);
+            disk_3->setBrush(brush);
+            disk_4->setBrush(brush);
+            disk_5->setBrush(brush);
+            disk_6->setBrush(brush);
+
+            disk_1->setTransformOriginPoint(centerPoint);
+            disk_2->setTransformOriginPoint(centerPoint);
+            disk_3->setTransformOriginPoint(centerPoint);
+            disk_4->setTransformOriginPoint(centerPoint);
+            disk_5->setTransformOriginPoint(centerPoint);
+            disk_6->setTransformOriginPoint(centerPoint);
+
+            disk_1->setRotation(orientation);
+            disk_2->setRotation(orientation);
+            disk_3->setRotation(orientation);
+            disk_4->setRotation(orientation);
+            disk_5->setRotation(orientation);
+            disk_6->setRotation(orientation);
+
+            this->addToGroup(disk_1);
+            this->addToGroup(disk_2);
+            this->addToGroup(disk_3);
+            this->addToGroup(disk_4);
+
+            if (orientation == 0)
+                this->addToGroup(text);
+
+            this->addToGroup(disk_5);
+            this->addToGroup(disk_6);
+
+        }
+
+
+    }
+
+
 
     // Update successful
     return true;

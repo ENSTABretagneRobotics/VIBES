@@ -140,7 +140,9 @@ public:
            VibesGraphicsTextType,
            // Do not remove the following value! It signals the end of VibesGraphicsItem types
            VibesGraphicsLastType,
-           VibesGraphicsRasterType
+           VibesGraphicsRasterType,
+           // Happy birthday
+           VibesGraphicsCakeType
          };
     // Constructor
     VibesGraphicsItem(QGraphicsItem * qGraphicsItem);
@@ -431,6 +433,15 @@ class VibesGraphicsRaster : public QGraphicsItemGroup, public VibesGraphicsItem
 {
     VIBES_GRAPHICS_ITEM(VibesGraphicsRaster, QGraphicsItemGroup)
     VIBES_GEOMETRY_CHANGING_PROPERTIES("x","y")
+protected:
+    bool parseJsonGraphics(const QJsonObject &json);
+    bool computeProjection(int dimX, int dimY);
+};
+
+class VibesGraphicsCake : public QGraphicsItemGroup, public VibesGraphicsItem
+{
+    VIBES_GRAPHICS_ITEM(VibesGraphicsCake, QGraphicsItemGroup)
+    VIBES_GEOMETRY_CHANGING_PROPERTIES("center","length","orientation")
 protected:
     bool parseJsonGraphics(const QJsonObject &json);
     bool computeProjection(int dimX, int dimY);
