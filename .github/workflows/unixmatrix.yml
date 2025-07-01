@@ -31,7 +31,7 @@ jobs:
             - { os: windows-2022, shell: cmd, arch: x64, bitness: 64, runtime: vc16, cmake_params: '-G "Visual Studio 17" -T v142 -A x64', desc: 'Windows Visual Studio 2019 x64' }
             - { os: windows-2022, shell: cmd, arch: x86, bitness: 32, runtime: vc16, cmake_params: '-G "Visual Studio 17" -T v142 -A Win32', choco_flags: '--x86', desc: 'Windows Visual Studio 2019 x86' }
             - { os: windows-2022, shell: cmd, arch: x64, bitness: 64, runtime: mingw11, cmake_params: '-G "MinGW Makefiles"', desc: 'Windows MinGW 11.2.0 x64' }
-            - { os: windows-2019, shell: cmd, arch: x86, bitness: 32, runtime: mingw8, cmake_params: '-G "MinGW Makefiles"', choco_flags: '--x86', desc: 'Windows MinGW 8.1.0 x86' }
+            - { os: windows-2022, shell: cmd, arch: x86, bitness: 32, runtime: mingw8, cmake_params: '-G "MinGW Makefiles"', choco_flags: '--x86', desc: 'Windows MinGW 8.1.0 x86' }
             #- { os: ubuntu-20.04, shell: bash, arch: amd64, bitness: 64, runtime: focal, desc: 'Ubuntu 20.04 amd64' } # See https://github.com/probonopd/linuxdeployqt/issues/340.
             #
             # Still problems for macOS arm64, generated app does not run possibly due to Qt6 problems and Qt5 does not seem supported either, also mandatory code signing of apps might complicate things...
