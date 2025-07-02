@@ -265,6 +265,9 @@ namespace vibes {
   /// Set axes limits to the bounding box of the drawing
   void axisAuto(const std::string &figureName = std::string());
 
+  /// Set axis equal aspect ratio to the bounding box of the drawing [#144]
+  void axisEqual(const std::string &figureName = std::string());
+
   /// Specify the rectangle to be displayed: Lower-left corner (\a x_lb, \a y_lb) and a upper-right corner (\a x_ub, \a y_ub).
   void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &figureName = std::string());
 

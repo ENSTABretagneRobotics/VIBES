@@ -276,6 +276,7 @@ int main()
 
     VIBES_TEST( vibes::axisAuto() );
     //  VIBES_TEST( vibes::axisLimits(-1,1, -3,2) );
+    VIBES_TEST( vibes::axisEqual() );
 
     VIBES_TEST( vibes::saveImage("vibes_test.png") );
     VIBES_TEST( vibes::saveImage("vibes_test.jpg") );

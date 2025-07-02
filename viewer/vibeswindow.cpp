@@ -338,10 +338,18 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                         QRectF sceneSize=fig->sceneRect();
                         qreal x, y, w, h;
                         sceneSize.getRect(&x,&y,&w,&h);
-                        qreal a = std::max(h,w);
-                        x += (w-a)/2;
-                        y += (h-a)/2;
-                        fig->setSceneRect(x,y,a,a);
+
+                        //>[#144]
+                        qreal u=x+w/2.0, v=y+h/2.0;
+                        qreal m=static_cast<qreal>(fig->width());
+                        qreal n=static_cast<qreal>(fig->height());
+                        qreal cw = h/n*m;
+                        qreal ch = w/m*n;
+                        if(cw>w){ w=cw; x=u-w/2.0; }
+                        else    { h=ch; y=v-h/2.0; }
+                        fig->setSceneRect(x,y,w,h);
+                        //<[#144]
+
                         fig->fitInView(fig->sceneRect());
                     }
 

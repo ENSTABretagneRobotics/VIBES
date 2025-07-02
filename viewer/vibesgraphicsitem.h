@@ -46,7 +46,7 @@ public:
         return std::max(0.,width.toDouble());
     }
 
-    //>[VBS_VR_000002]
+    //>[#142]
     // Hexadecimal/Short color name -> Qt Predefined color name
     bool toPredefinedColorName(QString &color){
 
@@ -83,7 +83,7 @@ public:
 
         return true;
     }
-    //<[VBS_VR_000002]
+    //<[#142]
 
     const QBrush brush(const QString & name = QString()) {
         if( !_brushes.contains(name)){
