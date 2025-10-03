@@ -218,6 +218,14 @@ namespace vibes
     setFigureProperty(figureName.empty()?current_fig:figureName, "viewbox", "auto");
   }
 
+  //>[#144]
+  void axisEqual(const std::string &figureName)
+  {
+    beginDrawingIfNeeded();
+    setFigureProperty(figureName.empty()?current_fig:figureName, "viewbox", "equal");
+  }
+  //<[#144]
+
   void axisLimits(const double &x_lb, const double &x_ub, const double &y_lb, const double &y_ub, const std::string &figureName)
   {
     beginDrawingIfNeeded();

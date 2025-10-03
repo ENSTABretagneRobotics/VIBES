@@ -280,7 +280,7 @@ bool VibesGraphicsItem::parseJson(QJsonObject &json)
         json.remove("format");
     }
 
-    //>[VBS_VR_000002]
+    //>[#142]
     // Hexadecimal/Short color name -> Qt Predefined color name
     //   for group color names
     if (this->_qGraphicsItem->type() == VibesGraphicsGroupType){
@@ -297,7 +297,7 @@ bool VibesGraphicsItem::parseJson(QJsonObject &json)
             }
         }
     }
-    //<[VBS_VR_000002]
+    //<[#142]
 
     // Process object name
     if (json.contains("name") && json["name"].isString())
