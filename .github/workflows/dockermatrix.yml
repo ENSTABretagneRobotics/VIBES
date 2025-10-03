@@ -1,9 +1,9 @@
 on:
     push:
-        branches: '**'
+        branches: ['**']
 #        branches: 'master'
 #        branches: 'devel'
-        tags: '' # Restrict to blank tags
+        tags-ignore: ['**']  # Ignore all tag pushes
     pull_request:
 #        branches: 'devel'
 

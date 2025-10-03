@@ -1,8 +1,8 @@
 on:
     push:
-        branches: '**'
+        branches: ['**']
 #        branches: 'master'
-        tags: '' # Restrict to blank tags
+        tags-ignore: ['**']  # Ignore all tag pushes
     pull_request:
 
 jobs:
