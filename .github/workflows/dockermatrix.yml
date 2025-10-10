@@ -1,9 +1,9 @@
 on:
     push:
-        branches: '**'
+        branches: ['**']
 #        branches: 'master'
 #        branches: 'devel'
-        tags: '' # Restrict to blank tags
+        tags-ignore: ['**']  # Ignore all tag pushes
     pull_request:
 #        branches: 'devel'
 
@@ -22,7 +22,9 @@ jobs:
             #
             #- { img: 'lebarsfa/pi-64:focal-for-codac', shell: bash, arch: arm64, bitness: 64, runtime: focal, desc: 'Ubuntu 20.04 arm64' }
             #- { img: 'arm64v8/ubuntu:focal', shell: bash, arch: arm64, bitness: 64, runtime: focal, docker_flags: '--platform linux/arm64', desc: 'Ubuntu 20.04 arm64' }
-            - { img: 'amd64/ubuntu:focal', shell: bash, arch: amd64, bitness: 64, runtime: focal, docker_flags: '--platform linux/amd64', desc: 'Ubuntu 20.04 amd64' }
+            #- { img: 'amd64/ubuntu:focal', shell: bash, arch: amd64, bitness: 64, runtime: focal, docker_flags: '--platform linux/amd64', desc: 'Ubuntu 20.04 amd64' }
+            #- { img: 'arm64v8/ubuntu:jammy', shell: bash, arch: arm64, bitness: 64, runtime: jammy, docker_flags: '--platform linux/arm64', desc: 'Ubuntu 22.04 arm64' }
+            - { img: 'amd64/ubuntu:jammy', shell: bash, arch: amd64, bitness: 64, runtime: jammy, docker_flags: '--platform linux/amd64', desc: 'Ubuntu 22.04 amd64' }
     name: ${{ matrix.cfg.desc }}
     steps: 
     - uses: actions/checkout@v4
