@@ -248,6 +248,39 @@ namespace vibes
     setFigureProperty( figureName.empty()?current_fig:figureName, "axislabels", labels);
   }
 
+  //-------------------------------------------------------------------------
+  //[>AXISDIMS] [#148]
+  //-------------------------------------------------------------------------
+  void axisDims(const int &x_dim, const int &y_dim, const std::string &figureName){
+    std::vector<int> dims;
+    dims.push_back(x_dim);
+    dims.push_back(y_dim);
+    axisDims(dims, figureName);
+  }
+
+  void axisDims(const std::vector<int> &dims, const std::string &figureName){
+    setFigureProperty(figureName.empty()?current_fig:figureName,
+                      "axisdims", dims);
+  }
+  //-------------------------------------------------------------------------
+  //[<AXISDIMS]
+  //-------------------------------------------------------------------------
+
+  //-------------------------------------------------------------------------
+  //[>AXISOFF/ON] [#148]
+  //-------------------------------------------------------------------------
+  void axisOff(const std::string &figureName){
+    setFigureProperty(figureName.empty()?current_fig:figureName,
+                      "showAxis", false);
+  }
+  void axisOn(const std::string &figureName){
+    setFigureProperty(figureName.empty()?current_fig:figureName,
+                      "showAxis", true);
+  }
+  //-------------------------------------------------------------------------
+  //[<AXISOFF/ON]
+  //-------------------------------------------------------------------------
+
 
   //
   // Drawing functions

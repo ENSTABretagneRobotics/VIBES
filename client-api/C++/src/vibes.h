@@ -276,6 +276,16 @@ namespace vibes {
   /// Set axis labels according to the list provided in \a labels
   void axisLabels(const std::vector<std::string> &labels, const std::string &figureName = std::string());
 
+  /// Set x-axis and y-axis dimensions to respectively \a x_dim and \a y_dim [#148]
+  void axisDims(const int &x_dim, const int &y_dim, const std::string &figureName = std::string());
+  /// Set axis dimensions according to the list provided in \a dims [#148]
+  void axisDims(const std::vector<int> &dims, const std::string &figureName = std::string());
+
+  /// Hide axis [#148]
+  void axisOff(const std::string &figureName = std::string());
+  /// Show axis [#148]
+  void axisOn(const std::string &figureName = std::string());
+
   /// @}
   ///
   ///
