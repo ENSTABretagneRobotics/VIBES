@@ -96,7 +96,7 @@ int main()
 
         std::vector<int> dims;
         dims.push_back(2); dims.push_back(3); dims.push_back(0); dims.push_back(1);
-        vibes::axisDims(dims); //[#148]
+        VIBES_TEST( vibes::axisDims(dims) ); //[#148]
 
         VIBES_TEST( vibes::newFigure("Megatest with boxes union") );
         VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"[darkGreen]") );
@@ -314,7 +314,7 @@ int main()
     VIBES_TEST( vibes::drawText(2,2,"My Text") );
     VIBES_TEST( vibes::drawText(2,2,"My Text", 0.1 , "b[k]") );
     VIBES_TEST( vibes::drawText(2,6,"My Text",vibesParams("FaceColor","red","EdgeColor","black","fontSize",15,"fontName","Cursive","name","Text") ) );
-    vibes::axisOff(); //[#148]
+    VIBES_TEST( vibes::axisOff() ); //[#148]
 
 
 
