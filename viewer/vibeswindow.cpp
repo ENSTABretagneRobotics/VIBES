@@ -354,6 +354,17 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                     }
 
                 }
+                else if (it.key() == "axisdims"){ //[#148]
+                    const QJsonArray dims = it.value().toArray();
+                    int i=0;
+                    if(i<dims.size()){
+                        fig->scene()->setDimX(dims[i].toInt());
+                    }
+                    i=1;
+                    if(i<dims.size()){
+                        fig->scene()->setDimY(dims[i].toInt());
+                    }
+                }
                 else if (it.key() == "axislabels")
                 {
                     const QJsonArray labels = it.value().toArray();
