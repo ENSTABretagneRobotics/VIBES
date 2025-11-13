@@ -1068,7 +1068,7 @@ bool VibesGraphicsText::computeProjection(int dimX, int dimY)
     {
         QFont textFont(fontName, fontSize);
         this->setFont(textFont);
-        this->setTransform(QTransform(1, 0, 0, -1, pos[0].toDouble(),pos[1].toDouble()));
+        this->setTransform(QTransform(1, 0, 0, -1, pos[0].toDouble(), pos[1].toDouble() + scale));
         this->setText(text);
         this->setPen(pen);
         this->setBrush(brush);

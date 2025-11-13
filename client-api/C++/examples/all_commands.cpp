@@ -307,9 +307,9 @@ int main()
 
     // Testing VIbes drawText function
     VIBES_TEST( vibes::newFigure("drawText") );
-    VIBES_TEST( vibes::drawText(2,2,"My Text") );
+    VIBES_TEST( vibes::drawText(2,-1,"My Text") );
     VIBES_TEST( vibes::drawText(2,2,"My Text", 0.1 , "b[k]") );
-    VIBES_TEST( vibes::drawText(2,6,"My Text",vibesParams("FaceColor","red","EdgeColor","black","fontSize",15,"fontName","Cursive","name","Text") ) );
+    VIBES_TEST( vibes::drawText(3,6,"My Text",vibesParams("FaceColor","red","EdgeColor","black","fontSize",15,"fontName","Cursive","name","Text") ) );
 
 
 
