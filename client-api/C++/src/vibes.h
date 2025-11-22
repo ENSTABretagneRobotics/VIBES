@@ -83,6 +83,7 @@ namespace vibes {
     class Value {
 
         union {
+        bool _bool; //[#148]
         int _integer;
         double _decimal;
         const Params *_object;
@@ -91,11 +92,12 @@ namespace vibes {
         std::vector<Value> _array;
 
         enum value_type_enum{
-            vt_none, vt_integer, vt_string, vt_decimal, vt_array, vt_object
+            vt_none, vt_bool, vt_integer, vt_string, vt_decimal, vt_array, vt_object //[#148]
         } _type;
         
     public:
         Value() : _type(vt_none) {}
+        Value(bool b) : _bool(b), _type(vt_bool) {} //[#148]
         Value(int i) : _integer(i), _type(vt_integer) {}
         Value(const double &d) : _decimal(d), _type(vt_decimal) {}
         Value(const std::string &s) : _string(s), _type(vt_string) {}
@@ -275,6 +277,14 @@ namespace vibes {
   void axisLabels(const std::string &x_label, const std::string &y_label, const std::string &figureName = std::string());
   /// Set axis labels according to the list provided in \a labels
   void axisLabels(const std::vector<std::string> &labels, const std::string &figureName = std::string());
+
+  /// Set x-axis and y-axis dimensions to respectively \a x_dim and \a y_dim [#148]
+  void axisDims(const int &x_dim, const int &y_dim, const std::string &figureName = std::string());
+  /// Set axis dimensions according to the list provided in \a dims [#148]
+  void axisDims(const std::vector<int> &dims, const std::string &figureName = std::string());
+
+  /// Display axis if visible is true [#148]
+  void showAxis(bool visible, const std::string &figureName = std::string());
 
   /// @}
   ///

@@ -354,6 +354,25 @@ VibesWindow::processMessage(const QByteArray &msg_data)
                     }
 
                 }
+                else if (it.key() == "axisdims"){ //[#148]
+                    bool changedDimX=false, changedDimY=false;
+                    const QJsonArray dims = it.value().toArray();
+                    if(0<dims.size()){
+                        changedDimX=fig->scene()->setDimX(dims[0].toInt());
+                    }
+                    if(1<dims.size()){
+                        changedDimY=fig->scene()->setDimY(dims[1].toInt());
+                    }
+                    /* first x-axis modification may fails if requested
+                     * dimension is in use in y-axis, second modification
+                     * in this case */
+                    if(0<dims.size()){
+                        changedDimX=fig->scene()->setDimX(dims[0].toInt());
+                    }
+                    if((!changedDimX)||(!changedDimY)){
+                        return false;
+                    }
+                }
                 else if (it.key() == "axislabels")
                 {
                     const QJsonArray labels = it.value().toArray();

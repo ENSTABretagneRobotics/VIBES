@@ -94,6 +94,10 @@ int main()
         VIBES_TEST( vibes::drawBoxes(boxes_bounds,"[darkYellow]") );
         VIBES_TEST( vibes::setFigureProperties(vibesParams("x",0,"y",40,"width",150,"height",150)) );
 
+        std::vector<int> dims;
+        dims.push_back(2); dims.push_back(3); dims.push_back(0); dims.push_back(1);
+        VIBES_TEST( vibes::axisDims(dims) ); //[#148]
+
         VIBES_TEST( vibes::newFigure("Megatest with boxes union") );
         VIBES_TEST( vibes::drawBoxesUnion(boxes_bounds,"[darkGreen]") );
         VIBES_TEST( vibes::setFigureProperties(vibesParams("x",150,"y",40,"width",150,"height",150)) );
@@ -312,7 +316,8 @@ int main()
     VIBES_TEST( vibes::drawText(2,-2,"My Text",vibesParams("group","group"))) ;
     VIBES_TEST( vibes::drawText(2,2,"My Text", 0.1 , "b[k]") );
     VIBES_TEST( vibes::drawText(3,6,"My Text",vibesParams("FaceColor","red","EdgeColor","black","fontSize",15,"fontName","Cursive","name","Text") ) );
-
+    VIBES_TEST( vibes::showAxis(false) ); //[#148]
+    
 
 
     vibes::newFigure("test Raster");
