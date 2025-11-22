@@ -1041,7 +1041,6 @@ bool VibesGraphicsText::parseJsonGraphics(const QJsonObject& json)
 // #define GET_WITH_DEFAULT(dict,key,type,default_value) \
 // 	dict.contains[key] ? dict[key].type
 
-
 bool VibesGraphicsText::computeProjection(int dimX, int dimY)
 {
     const QJsonObject & json = this->_json;
@@ -1068,7 +1067,8 @@ bool VibesGraphicsText::computeProjection(int dimX, int dimY)
     {
         QFont textFont(fontName, fontSize);
         this->setFont(textFont);
-        this->setTransform(QTransform(1, 0, 0, -1, pos[0].toDouble(),pos[1].toDouble()));
+        this->setTransform(QTransform(1, 0, 0, -1, 0., 0.));
+        this->setPos(pos[0].toDouble(), pos[1].toDouble() + scale);
         this->setText(text);
         this->setPen(pen);
         this->setBrush(brush);
@@ -1542,7 +1542,6 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
             body << QPointF(120,-80) + centerPoint;
             body << QPointF(-72,-80) + centerPoint;
 
-            // Draw with the new properties
             QGraphicsPolygonItem *graphics_body = new QGraphicsPolygonItem(body);
             graphics_body->setPen(pen);
             graphics_body->setBrush(brush);
@@ -1561,7 +1560,6 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
             left_prop << QPointF(-72,16) + centerPoint;
             left_prop << QPointF(-80,16) + centerPoint;
 
-            // Draw with the new properties
             QGraphicsPolygonItem *graphics_left_prop = new QGraphicsPolygonItem(left_prop);
             graphics_left_prop->setPen(pen);
             graphics_left_prop->setBrush(QBrush(pen.color()));
@@ -1580,7 +1578,6 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
             right_prop << QPointF(-72,-48) + centerPoint;
             right_prop << QPointF(-80,-48) + centerPoint;
 
-            // Draw with the new properties
             QGraphicsPolygonItem *graphics_right_prop = new QGraphicsPolygonItem(right_prop);
             graphics_right_prop->setPen(pen);
             graphics_right_prop->setBrush(QBrush(pen.color()));
@@ -1589,6 +1586,25 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
 
             graphics_right_prop->setScale(length/401.);
             this->addToGroup(graphics_right_prop);
+        }
+        
+        // Hull details
+        {
+            QPainterPath hull_details;
+            hull_details.moveTo(120 + centerPoint.x(), 80 + centerPoint.y());
+            hull_details.lineTo(104 + centerPoint.x(), 64 + centerPoint.y());
+            hull_details.lineTo(-56 + centerPoint.x(), 64 + centerPoint.y());
+            hull_details.lineTo(-56 + centerPoint.x(), -64 + centerPoint.y());
+            hull_details.lineTo(104 + centerPoint.x(), -64 + centerPoint.y());
+            hull_details.lineTo(120 + centerPoint.x(), -80 + centerPoint.y());
+
+            QGraphicsPathItem *graphics_hull_details = new QGraphicsPathItem(hull_details);
+            graphics_hull_details->setPen(pen);
+            graphics_hull_details->setTransformOriginPoint(centerPoint);
+            graphics_hull_details->setRotation(orientation);
+
+            graphics_hull_details->setScale(length/401.);
+            this->addToGroup(graphics_hull_details);
         }
 
         // Engine
@@ -1599,7 +1615,6 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
             engine << QPointF(30,-22.5) + centerPoint;
             engine << QPointF(-15,-22.5) + centerPoint;
 
-            // Draw with the new properties
             QGraphicsPolygonItem *graphics_engine = new QGraphicsPolygonItem(engine);
             graphics_engine->setPen(pen);
             graphics_engine->setBrush(QBrush(pen.color()));
@@ -1612,7 +1627,6 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
 
         // Circle
         {
-            // Draw with the new properties
             QGraphicsEllipseItem *circle_item = new QGraphicsEllipseItem(centerPoint.x()-24+200, centerPoint.y()-24, 48, 48);
             circle_item->setPen(pen);
             circle_item->setTransformOriginPoint(centerPoint);
@@ -1620,26 +1634,6 @@ bool VibesGraphicsVehicleMotorBoat::computeProjection(int dimX, int dimY)
 
             circle_item->setScale(length/401.);
             this->addToGroup(circle_item);
-        }
-
-        // Hull details
-        {
-            QPainterPath hull_details;
-            hull_details.moveTo(120 + centerPoint.x(), 80 + centerPoint.y());
-            hull_details.lineTo(104 + centerPoint.x(), 64 + centerPoint.y());
-            hull_details.lineTo(-56 + centerPoint.x(), 64 + centerPoint.y());
-            hull_details.lineTo(-56 + centerPoint.x(), -64 + centerPoint.y());
-            hull_details.lineTo(104 + centerPoint.x(), -64 + centerPoint.y());
-            hull_details.lineTo(120 + centerPoint.x(), -80 + centerPoint.y());
-
-            // Draw with the new properties
-            QGraphicsPathItem *graphics_hull_details = new QGraphicsPathItem(hull_details);
-            graphics_hull_details->setPen(pen);
-            graphics_hull_details->setTransformOriginPoint(centerPoint);
-            graphics_hull_details->setRotation(orientation);
-
-            graphics_hull_details->setScale(length/401.);
-            this->addToGroup(graphics_hull_details);
         }
     }
 
