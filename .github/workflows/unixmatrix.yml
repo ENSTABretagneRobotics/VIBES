@@ -44,7 +44,7 @@ jobs:
     - uses: actions/checkout@v4  
     - run: |
         choco install -y -r --no-progress wget zip
-        wget http://www.ensta-bretagne.fr/lebars/Share/cmake_extra_tools.zip --no-check-certificate -nv
+        wget http://www.ensta-bretagne.fr/lebars/Share/cmake_extra_tools.zip --no-check-certificate -nv --user-agent="Mozilla/5.0"
         7z x cmake_extra_tools.zip -o"%SystemDrive%" -y
         del /f /q cmake_extra_tools.zip
         wget https://gist.github.com/lebarsfa/237841f9e5dad55ef192713b3b1b2f16/raw/04d77ced3457346c55f183ca12a10dbcb850e6d5/refreshenv.bashrc --no-check-certificate -nv
